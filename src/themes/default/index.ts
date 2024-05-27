@@ -5,7 +5,15 @@ import fonts from "./fonts"
 
 const theme = extendTheme({
   colors,
-  fonts,
+  // fonts: {
+  //   body: "'Passion One', sans-serif",
+  //   heading: "'Passion One', sans-serif"
+  // },
+  fontWeights: {
+    normal: 400,
+    medium: 700,
+    bold: 900,
+  },
 })
 
 export default theme

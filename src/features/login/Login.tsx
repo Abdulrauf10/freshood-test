@@ -24,6 +24,7 @@ import "swiper/css/pagination"
 import { useForm } from "react-hook-form"
 import ControlledField from "@/components/formHook/ControlledField"
 import { FieldType } from "@/types/form"
+import CustomTitle from "@/components/Text"
 
 const Login = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -42,8 +43,8 @@ const Login = () => {
       height={"100vh"}
       backgroundColor={"#F9F6ED66"}
     >
-      <Image src="/login.png" alt="login" width={"100px"} />
-
+      {/* <Image src="/login.png" alt="login" width={"100px"} /> */}
+      <CustomTitle title={"Log in"} />
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -51,6 +52,7 @@ const Login = () => {
         width={isMobile ? "300px" : "500px"}
         height={"200px"}
         backgroundColor={"#F9F6ED66"}
+        mt={4}
       >
         <Text>Email</Text>
         <ControlledField
