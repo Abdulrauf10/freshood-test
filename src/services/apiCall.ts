@@ -6,7 +6,8 @@ export const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_API_URL,
   headers: {
     Accept: "application/json"
-  }
+  },
+  withCredentials: true
 })
 
 const FetchToken = () => {
@@ -25,10 +26,7 @@ apiClient.interceptors.request.use(
     // if (token) {
     const sessionId = await FetchToken()
     if (sessionId) {
-      ;(request.headers as AxiosHeaders).set(
-        "Authorization",
-        `Bearer ${sessionId}`
-      )
+      ;(request.headers as AxiosHeaders).set(`sessionid ${sessionId}`)
     }
     ;(request.headers as AxiosHeaders).set("accept", `application/json`)
     // }

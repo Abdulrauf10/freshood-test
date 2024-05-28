@@ -25,14 +25,21 @@ import { useForm } from "react-hook-form"
 import ControlledField from "@/components/formHook/ControlledField"
 import { FieldType } from "@/types/form"
 import CustomTitle from "@/components/Text"
+import useLogin from "./hook/useLogin"
+import useSessionStore from "@/store/useSessionStore"
 
 const Login = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
+  const { sessionId } = useSessionStore()
+
+  console.log(sessionId)
 
   const {
     formState: { errors },
-    control
-  } = useForm()
+    control,
+    handleSubmit,
+    onSubmit
+  } = useLogin()
   return (
     <Box
       display={"flex"}
@@ -41,6 +48,9 @@ const Login = () => {
       alignItems={"center"}
       width={"100vw"}
       height={"100vh"}
+      as="form"
+      method="POST"
+      onSubmit={handleSubmit(onSubmit)}
     >
       <CustomTitle title={"Log in"} />
       <Box
@@ -53,7 +63,7 @@ const Login = () => {
       >
         <Text>Email</Text>
         <ControlledField
-          name="username"
+          name="email"
           control={control}
           errors={errors}
           fieldType={FieldType.textfield}
@@ -81,6 +91,7 @@ const Login = () => {
           padding={"16px"}
           borderRadius={"16px"}
           marginTop={"20px"}
+          type="submit"
         >
           Log in
         </Button>
