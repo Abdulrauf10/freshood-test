@@ -41,9 +41,7 @@ const Login = () => {
       alignItems={"center"}
       width={"100vw"}
       height={"100vh"}
-      backgroundColor={"#F9F6ED66"}
     >
-      {/* <Image src="/login.png" alt="login" width={"100px"} /> */}
       <CustomTitle title={"Log in"} />
       <Box
         display={"flex"}
@@ -51,7 +49,6 @@ const Login = () => {
         gap={"5px"}
         width={isMobile ? "300px" : "500px"}
         height={"200px"}
-        backgroundColor={"#F9F6ED66"}
         mt={4}
       >
         <Text>Email</Text>
@@ -70,7 +67,6 @@ const Login = () => {
           control={control}
           errors={errors}
           fieldType={FieldType.textfield}
-          type="password"
           borderRadius={"16px"}
           backgroundColor={"white"}
         />

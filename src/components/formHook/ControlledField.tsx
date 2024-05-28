@@ -1,6 +1,14 @@
-import { FC, useEffect, useRef } from "react"
+import { FC, useState } from "react"
 import { useController } from "react-hook-form"
-import { FormControl, FormLabel, Skeleton } from "@chakra-ui/react"
+import {
+  FormControl,
+  FormLabel,
+  Skeleton,
+  InputGroup,
+  InputRightElement,
+  Icon
+} from "@chakra-ui/react"
+import { IoMdEye as EyeIcon, IoMdEyeOff as EyeOffIcon } from "react-icons/io"
 import { ControlledTextFieldProps, FieldType } from "@/types/form"
 import InputText, { InputTextProps } from "../form/InputText"
 import BaseTextArea from "../form/TextArea"
@@ -32,23 +40,43 @@ const ControlledField: FC<ControlledField> = ({
   ...props
 }) => {
   const { field } = useController({ control, name })
+  const [isPasswordVisible, setPasswordVisibility] = useState(false)
+
   const TypeComponent = () => {
     let FieldComponent = null
 
     switch (fieldType) {
       case FieldType.textfield:
         FieldComponent = (
-          <InputText
-            {...field}
-            placeholder={placeholder}
-            error={errors?.[field?.name]}
-            onChange={(val: any) => {
-              field.onChange(val)
-              handleChange?.(val)
-            }}
-            fontSize={fontSize}
-            {...props}
-          />
+          <InputGroup>
+            <InputText
+              {...field}
+              placeholder={placeholder}
+              error={errors?.[field?.name]}
+              type={
+                field?.name === "password" && !isPasswordVisible
+                  ? "password"
+                  : "text"
+              }
+              onChange={(val: any) => {
+                field.onChange(val)
+                handleChange?.(val)
+              }}
+              fontSize={fontSize}
+              {...props}
+            />
+            {field?.name === "password" && (
+              <InputRightElement>
+                <Icon
+                  as={isPasswordVisible ? EyeOffIcon : EyeIcon}
+                  onClick={() =>
+                    setPasswordVisibility((isVisible) => !isVisible)
+                  }
+                  cursor="pointer"
+                />
+              </InputRightElement>
+            )}
+          </InputGroup>
         )
         break
       case FieldType.textarea:
