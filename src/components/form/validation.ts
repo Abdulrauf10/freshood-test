@@ -5,7 +5,7 @@ export enum validation {
   email_invalid = "Email Invalid",
   min = "Field must have at least 1 items",
   max = "Field must be less than or equal to 8",
-  phone_digit = "Field must be 8 digits",
+  phone_digit = "Field must be 8 - 12 digits",
   typeError = "This field is required"
 }
 

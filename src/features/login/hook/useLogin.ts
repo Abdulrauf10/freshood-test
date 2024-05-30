@@ -7,6 +7,7 @@ import { useMutation } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import Cookies from "js-cookie"
 import { LOGIN_API_URL } from "@/config/endpoint"
+import { LoginService } from "@/services/api/auth"
 
 type LoginFormInput = {
   email: string
@@ -31,29 +32,35 @@ const useLogin = () => {
 
   const mutation = useMutation(
     async (payload: LoginFormInput) => {
-      const response = await fetch(LOGIN_API_URL, {
+      // LoginService(payload)
+
+      await fetch(LOGIN_API_URL, {
         method: "POST",
         headers: {
+          // Accept: "application/json",
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload),
         credentials: "include"
+      }).then((data) => {
+        console.log("ress :", data)
       })
 
-      if (!response.ok) {
-        throw new Error("Login failed")
-      }
+      // if (!response.ok) {
+      //   throw new Error("Login failed")
+      // }
 
-      const sessionId = Cookies.get("sessionid")
-      if (!sessionId) {
-        throw new Error("Failed to retrieve session ID")
-      }
+      // const sessionId = Cookies.get("next-auth.session-token")
 
-      return sessionId
+      // if (!sessionId) {
+      //   throw new Error("Failed to retrieve session ID")
+      // }
+
+      // return sessionId
     },
     {
       onSuccess: (sessionId) => {
-        setSessionId(sessionId as string)
+        // setSessionId(sessionId)
         replace("/")
       },
       onError: (error: any) => {

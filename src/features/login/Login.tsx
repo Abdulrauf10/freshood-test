@@ -32,8 +32,6 @@ const Login = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const { sessionId } = useSessionStore()
 
-  console.log(sessionId)
-
   const {
     formState: { errors },
     control,
