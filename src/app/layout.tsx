@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 // import "./globals.css"
 import ChakraUIProvider from "@/providers/ChakraProvider"
 import ReactQueryProvider from "@/providers/ReactQueryProvider"
+import { Box } from "@chakra-ui/react"
 
 export const metadata: Metadata = {
   title: "Freshood",
@@ -17,7 +18,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ChakraUIProvider>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            <Box maxW={"768px"}
+              mx={"auto"}>
+              {children}
+            </Box>
+          </ReactQueryProvider>
         </ChakraUIProvider>
       </body>
     </html>
