@@ -5,7 +5,7 @@ import Cookies from "js-cookie"
 
 type SessionStoreInterface = {
   sessionId: string | null
-  setSessionId: (id: string) => void
+  setSessionId: (id: any) => void
   removeSessionId: () => void
 }
 

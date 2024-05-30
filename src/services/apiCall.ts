@@ -1,11 +1,14 @@
+"use client"
 import { BASE_API_URL } from "@/config/endpoint"
 import useSessiontore from "@/store/useSessionStore"
 import axios, { AxiosHeaders, AxiosInstance } from "axios"
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_API_URL,
+  withCredentials: true,
   headers: {
-    Accept: "application/json"
+    Accept: "application/json",
+    "Content-Type": "application/json"
   }
 })
 
@@ -18,17 +21,15 @@ const FetchToken = () => {
 }
 
 apiClient.interceptors.request.use(
-  async (request) => {
+  async (request: any) => {
+    console.log("req", request)
     // const token = getToken();
 
     // if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     // if (token) {
     const sessionId = await FetchToken()
     if (sessionId) {
-      ;(request.headers as AxiosHeaders).set(
-        "Authorization",
-        `Bearer ${sessionId}`
-      )
+      ;(request.headers as AxiosHeaders).set(`sessionid ${sessionId}`)
     }
     ;(request.headers as AxiosHeaders).set("accept", `application/json`)
     // }
