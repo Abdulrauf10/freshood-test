@@ -6,43 +6,26 @@ import { useRouter } from "next/navigation"
 import { logoutService } from "@/services/api/auth"
 import { useEffect } from "react"
 import { LOGOUT_API_URL } from "@/config/endpoint"
+import useGetMe from "@/features/login/api/useGetMe"
+import { Button, VStack } from "@chakra-ui/react"
 
 export default function Home() {
   const { replace } = useRouter()
-  const { setSessionId, sessionId } = useSessionStore()
+
+  const { dataMe } = useGetMe()
+
   const logout = () => {
-    fetch(LOGOUT_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    }).then((data) => {
-      console.log(data)
+    logoutService().then(() => {
+      replace("/login")
     })
-
-    // logoutService().then(() => {
-    setSessionId("")
-
-    replace("/login")
-    // })
   }
-  console.log("ids", sessionId)
 
-  useEffect(() => {
-    fetch("https://doge41732.twilightparadox.com/users/me", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    }).then((data) => {
-      console.log(data)
-    })
-  })
   return (
     <main>
-      <button onClick={logout}>Logout</button>
+      <VStack>
+        <text>welcome, {dataMe?.data?.first_name}</text>
+        <Button onClick={logout}>Logout</Button>
+      </VStack>
     </main>
   )
 }

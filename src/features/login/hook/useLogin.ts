@@ -31,39 +31,25 @@ const useLogin = () => {
   })
 
   const mutation = useMutation(
-    async (payload: LoginFormInput) => {
-      // LoginService(payload)
+    async (payload: LoginFormInput) => LoginService(payload),
 
-      await fetch(LOGIN_API_URL, {
-        method: "POST",
-        headers: {
-          // Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload),
-        credentials: "include"
-      }).then((data) => {
-        console.log("ress :", data)
-      })
-
-      // if (!response.ok) {
-      //   throw new Error("Login failed")
-      // }
-
-      // const sessionId = Cookies.get("next-auth.session-token")
-
-      // if (!sessionId) {
-      //   throw new Error("Failed to retrieve session ID")
-      // }
-
-      // return sessionId
-    },
+    // await fetch(LOGIN_API_URL, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "*/*",
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify(payload),
+    //   credentials: "include"
+    // })
     {
       onSuccess: (sessionId) => {
+        console.log("sess :", sessionId)
         // setSessionId(sessionId)
-        replace("/")
+        // replace("/")
       },
       onError: (error: any) => {
+        console.log(error)
         toast({
           title: "Error",
           description: error.message || "Login failed",
