@@ -46,7 +46,7 @@ const useLogin = () => {
       onSuccess: (sessionId) => {
         console.log("sess :", sessionId)
         // setSessionId(sessionId)
-        // replace("/")
+        replace("/")
       },
       onError: (error: any) => {
         console.log(error)
