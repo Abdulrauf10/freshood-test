@@ -37,11 +37,18 @@ const Select: FC<SelectProps> = forwardRef<HTMLInputElement, SelectProps>(
           {...rest}
           classNamePrefix="base-select"
           styles={{
-            multiValue: (provided, state) => ({
+            control: (provided) => ({
               ...provided,
-              backgroundColor: "#0070B5",
-              color: "white"
+              borderRadius: "16px", // Apply border-radius here
+              borderColor: error ? "#F96161" : "#5B91AC"
             }),
+            // styles={{
+            //   multiValue: (provided, state) => ({
+            //     ...provided,
+            //     backgroundColor: "#0070B5",
+            //     color: "white",
+            //     borderRadius: "16px"
+            //   }),
             menu: (base) => ({
               ...base,
               zIndex: 9999,
