@@ -14,9 +14,11 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     return (
-        <Box position={"relative"}>
-            
+        <Flex justifyContent={"center"} h={"100vh"}>
+            <Box position={"relative"} maxW={"768px"} minW={"768px"} bgColor={"red"}>
+
                 {children}
-        </Box>
+            </Box>
+        </Flex>
     )
 }
