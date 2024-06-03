@@ -18,10 +18,13 @@ import useRegister from "./hook/useRegister"
 import useSessionStore from "@/store/useSessionStore"
 import Link from "next/link"
 import ControlledCheckbox from "@/components/formHook/ControlledCheckBox"
+import Stepper from "@/components/stepper/Stepper"
+import { useRouter } from "next/navigation"
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 
 const Register = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
-  const { sessionId } = useSessionStore()
+  const router = useRouter()
 
   const {
     formState: { errors },
@@ -82,45 +85,63 @@ const Register = () => {
     }
   ]
 
+  const steps = [
+    { title: "Account registration" },
+    { title: "About your bussines" },
+    { title: "Verification" }
+  ]
+
   return (
     <Box
       display={"flex"}
       justifyContent={"center"}
       flexDirection={"column"}
       alignItems={"center"}
-      width={"100vw"}
-      height={"100vh"}
       as="form"
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      paddingTop={"200px"}
+      paddingTop={"50px"}
     >
-      <CustomTitle title={"BUYER SIGN UP"} />
+      <HStack position={"relative"} width={"100%"} justifyContent={"center"}>
+        {!isMobile && (
+          <HStack
+            position="absolute"
+            left="0"
+            onClick={() => router.back()}
+            cursor="pointer"
+            marginLeft={"200px"}
+          >
+            <MdOutlineKeyboardArrowLeft />
+            <Text>Back</Text>
+          </HStack>
+        )}
+
+        <CustomTitle title={"MERCHANT SIGN UP"} />
+      </HStack>
+
+      <HStack
+        justifyContent={"center"}
+        marginTop={"50px"}
+        marginBottom={"50px"}
+      >
+        <Text color={"#78716C"}>Already a member?</Text>
+        <Link href={"/login"}>
+          <Text color={"#016748"}>Log in</Text>
+        </Link>
+      </HStack>
+
+      <Stepper steps={steps} initialStep={0} width={isMobile ? "90%" : "60%"} />
+
       <VStack
         display={"flex"}
         flexDirection={"column"}
         gap={"5px"}
-        width={isMobile ? "300px" : "500px"}
-        mt={4}
+        minWidth={isMobile ? "300px" : "440px"}
+        mt={15}
         padding={4}
         backgroundColor={"white"}
       >
-        <Box width={"100%"}>
-          <Text>Title</Text>
-          <ControlledReactSelect
-            name="title"
-            nameData="title"
-            control={control}
-            errors={errors}
-            options={typeOptions}
-            handleChange={(val) => {
-              setValue("user_type", val.value)
-            }}
-            value={typeOptions?.find((val) => val.value == watch("user_type"))}
-          />
-        </Box>
-
-        <Box width={"100%"}>
+        <Box width={isMobile ? "300px" : "440px"}>
           <Text>Title</Text>
           <ControlledReactSelect
             name="title"
@@ -136,7 +157,7 @@ const Register = () => {
           />
         </Box>
 
-        <Box width={"100%"}>
+        <Box width={isMobile ? "300px" : "440px"}>
           <Text>First name</Text>
           <ControlledField
             name="first_name"
@@ -149,7 +170,7 @@ const Register = () => {
           />
         </Box>
 
-        <Box width={"100%"}>
+        <Box width={isMobile ? "300px" : "440px"}>
           <Text>Last name</Text>
           <ControlledField
             name="last_name"
@@ -162,7 +183,7 @@ const Register = () => {
           />
         </Box>
 
-        <Box width={"100%"}>
+        <Box width={isMobile ? "300px" : "440px"}>
           <Text>Email</Text>
           <ControlledField
             name="email"
@@ -175,11 +196,15 @@ const Register = () => {
           />
         </Box>
 
-        <Box width={"100%"} display={"flex"} justifyContent={"flex-start"}>
+        <Box
+          width={isMobile ? "300px" : "440px"}
+          display={"flex"}
+          justifyContent={"flex-start"}
+        >
           <Text>Phone number</Text>
         </Box>
 
-        <HStack width={"100%"}>
+        <HStack width={isMobile ? "300px" : "440px"}>
           <Box width={"20%"}>
             <ControlledReactSelect
               name="country_code"
@@ -191,6 +216,7 @@ const Register = () => {
               value={codeOptions?.find(
                 (val) => val.value == watch("country_code")
               )}
+              placeholder={""}
             />
           </Box>
           <Box width={"80%"}>
@@ -206,7 +232,7 @@ const Register = () => {
           </Box>
         </HStack>
 
-        <Box width={"100%"}>
+        <Box width={isMobile ? "300px" : "440px"}>
           <Text>Country</Text>
           <ControlledReactSelect
             name="country_id"
@@ -223,7 +249,7 @@ const Register = () => {
           />
         </Box>
 
-        <Box width={"100%"}>
+        <Box width={isMobile ? "300px" : "440px"}>
           <Text>City</Text>
           <ControlledReactSelect
             name="city_id"
@@ -237,7 +263,7 @@ const Register = () => {
           />
         </Box>
 
-        <Box width={"100%"}>
+        <Box width={isMobile ? "300px" : "440px"}>
           <Text>Password</Text>
           <ControlledField
             name="password"
@@ -250,7 +276,7 @@ const Register = () => {
           />
         </Box>
 
-        <Flex alignItems={"center"} width={"100%"}>
+        <Flex alignItems={"center"} width={isMobile ? "300px" : "440px"}>
           <ControlledCheckbox
             name="prefers_marketing_updates"
             control={control}
@@ -262,7 +288,9 @@ const Register = () => {
             Freshood&apos;s email, You can opt out anytime.
           </Text>
         </Flex>
+      </VStack>
 
+      {isMobile ? (
         <Button
           color={"white"}
           backgroundColor={"#016748"}
@@ -271,16 +299,29 @@ const Register = () => {
           marginTop={"20px"}
           type="submit"
           isDisabled={!watch("prefers_marketing_updates")}
+          width={"300px"}
+          marginBottom={"90px"}
         >
           Get started
         </Button>
-        <HStack justifyContent={"center"}>
-          <Text color={"#78716C"}>Already a member?</Text>
-          <Link href={"/login"}>
-            <Text color={"#016748"}>Log in</Text>
-          </Link>
-        </HStack>
-      </VStack>
+      ) : (
+        <Box width={"100%"} borderTop={"solid 1px #E5E1D8"}>
+          <Button
+            color={"white"}
+            backgroundColor={"#016748"}
+            padding={"16px"}
+            borderRadius={"16px"}
+            marginTop={"20px"}
+            type="submit"
+            isDisabled={!watch("prefers_marketing_updates")}
+            width={"80%"}
+            marginLeft={"250px"}
+            marginBottom={"10px"}
+          >
+            Get started
+          </Button>
+        </Box>
+      )}
     </Box>
   )
 }

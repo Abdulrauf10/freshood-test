@@ -31,7 +31,10 @@ const useLogin = () => {
   })
 
   const mutation = useMutation(
-    async (payload: LoginFormInput) => LoginService(payload),
+    async (payload: LoginFormInput) =>
+      LoginService(payload).then((data) => {
+        console.log("resp: ", data)
+      }),
 
     // await fetch(LOGIN_API_URL, {
     //   method: "POST",
@@ -46,7 +49,7 @@ const useLogin = () => {
       onSuccess: (sessionId) => {
         console.log("sess :", sessionId)
         // setSessionId(sessionId)
-        replace("/")
+        // replace("/")
       },
       onError: (error: any) => {
         console.log(error)

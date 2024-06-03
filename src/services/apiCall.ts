@@ -62,7 +62,6 @@
 
 // export default apiCall
 
-"use client"
 import { BASE_API_URL } from "@/config/endpoint"
 import useSessionStore from "@/store/useSessionStore"
 import axios, { AxiosInstance } from "axios"
@@ -84,9 +83,10 @@ const FetchToken = () => {
   }
   return null
 }
-
+console.log("inter :", apiClient.interceptors.request)
 apiClient.interceptors.request.use(
   async (request: any) => {
+    console.log("interREq :", request)
     const sessionId = FetchToken()
     if (sessionId) {
       request.headers["sessionid"] = sessionId

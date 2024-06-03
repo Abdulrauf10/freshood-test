@@ -7,6 +7,7 @@ import { useMutation } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import Cookies from "js-cookie"
 import { REGISTER_API_URL, OTP_API_URL } from "@/config/endpoint"
+import { registerService } from "@/services/api/auth"
 
 type RegisterFormInput = {
   user_type: string
@@ -63,75 +64,18 @@ const useRegister = () => {
     resolver: yupResolver(schema)
   })
 
-  const sendOtp = async () => {
-    const response = await fetch(OTP_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-
-    if (!response.ok) {
-      throw new Error("Failed to send OTP")
-    }
-
-    return response.json()
-  }
-
   const mutation = useMutation(
-    async (payload: RegisterFormInput) => {
-      await fetch(REGISTER_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload),
-        credentials: "include"
-      })
-
-      // if (!response.ok) {
-      //   throw new Error("Registration failed")
-      // }
-
-      // const data = await response.json()
-      // const sessionId = data.sessionId
-
-      // if (!sessionId) {
-      //   throw new Error("Failed to retrieve session ID")
-      // }
-
-      // return { sessionId, email: payload.email }
-    },
+    async (payload: RegisterFormInput) => registerService(payload),
     {
       onSuccess: async () => {
         // setSessionId(sessionId)
-        // toast({
-        //   title: "Success",
-        //   description: "Registration successful",
-        //   status: "success",
-        //   duration: 2000,
-        //   isClosable: true
-        // })
-        try {
-          await sendOtp()
-          toast({
-            title: "OTP Sent",
-            description: "An OTP code has been sent to your email",
-            status: "success",
-            duration: 2000,
-            isClosable: true
-          })
-        } catch (error: any) {
-          toast({
-            title: "Error",
-            description: error.message || "Failed to send OTP",
-            status: "error",
-            duration: 2000,
-            isClosable: true
-          })
-        }
-        // replace("/")
+        toast({
+          title: "Success",
+          description: "Registration successful",
+          status: "success",
+          duration: 2000,
+          isClosable: true
+        })
       },
       onError: (error: any) => {
         toast({
@@ -145,8 +89,35 @@ const useRegister = () => {
     }
   )
 
-  const onSubmit = async (data: RegisterFormInput) => {
-    mutation.mutate(data)
+  const onSubmit = async (payload: RegisterFormInput) => {
+    const {
+      user_type,
+      title,
+      first_name,
+      last_name,
+      email,
+      password,
+      country_code,
+      phone_number,
+      country_id,
+      city_id,
+      prefers_marketing_updates
+    } = payload
+
+    const newPayload: RegisterFormInput = {
+      user_type: "Seller",
+      title,
+      first_name,
+      last_name,
+      email,
+      password,
+      country_code,
+      phone_number,
+      country_id,
+      city_id,
+      prefers_marketing_updates
+    }
+    mutation.mutate(newPayload)
   }
 
   return {
