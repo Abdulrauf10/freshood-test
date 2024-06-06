@@ -12,12 +12,21 @@ import {
   Tabs, TabList, TabPanels, Tab, TabPanel,
   IconButton,
   Grid,
-  SimpleGrid
+  SimpleGrid,
+  Drawer
 } from "@chakra-ui/react"
 
 import { IoIosArrowBack, IoIosSettings } from "react-icons/io";
 import Image from "next/image"
 import { FaHeart } from "react-icons/fa";
+import GlobalDrawer from "@/components/drawer/GlobalDrawer";
+import Setting from "@/components/drawer/Setting";
+import PersonalInfo from "@/components/drawer/PersonalInformation";
+import CustomTitle from "@/components/Text";
+import { useDrawer } from "@/context/drawerContext";
+import EditPersonalInfo from "@/components/drawer/EditPersonalInformation";
+import AddressesList from "@/components/drawer/AddressesList";
+import AddAddresses from "@/components/drawer/AddAddresses";
 
 const products = [
   {
@@ -94,6 +103,29 @@ const products = [
 
 const MyAccountMerchant = () => {
 
+  const { activeDrawer, setActiveDrawer } = useDrawer();
+
+  const handleDrawer = (drawer: string) => {
+    setActiveDrawer(drawer);
+  };
+
+  const renderDrawer = () => {
+    switch (activeDrawer) {
+      case "setting":
+        return <Setting handleDrawer={handleDrawer}/>;
+      case "personalInfo":
+        return <PersonalInfo onBackClick={() => handleDrawer("setting")} />;
+      case "editPersonalInfo":
+        return <EditPersonalInfo />;
+      case "addressList":
+        return <AddressesList />;
+      case "addAddresses":
+        return <AddAddresses />;
+      default:
+        return <CustomTitle title="Other Page" />;
+    }
+  }
+
   interface Product {
     imageUrl: string;
     discountPrice: number;
@@ -137,7 +169,7 @@ const MyAccountMerchant = () => {
             </HStack>
             <Text color={"#A8A29D"} textDecoration="line-through"> ${product.realPrice}</Text>
           </HStack>
-          
+
           <Box mt={2} as="span" borderWidth={1} p={1} borderRadius={"lg"} borderColor={"#016748"} color={"#016748"}>{product.city}</Box>
         </Box>
       </Box>
@@ -182,7 +214,10 @@ const MyAccountMerchant = () => {
           md: '5vw'
         }}>
           <IoIosArrowBack size="24px" color="white" />
-          <IoIosSettings size="24px" color="white" />
+          {/* <IoIosSettings size="24px" color="white" /> */}
+          <GlobalDrawer activeDrawer={activeDrawer}>
+            {renderDrawer()}
+          </GlobalDrawer>
         </Flex>
         <Box position={"relative"} pt={4}>
           <Flex borderRadius={"lg"} justifyContent={"center"}>
@@ -252,6 +287,7 @@ const MyAccountMerchant = () => {
           </TabList>
           <TabPanels>
             <TabPanel>
+              <Flex mx={"auto"} ml={'5vw'}>
               <SimpleGrid columns={{
                 base: 1,
                 md: 3,
@@ -262,6 +298,7 @@ const MyAccountMerchant = () => {
                   <ProductCard key={index} product={product} />
                 ))}
               </SimpleGrid>
+              </Flex>
             </TabPanel>
             <TabPanel>
               <p>two!</p>

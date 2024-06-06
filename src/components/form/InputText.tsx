@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import { FC, forwardRef } from "react"
-import { Heading, Input, InputProps } from "@chakra-ui/react"
+import { Heading, Input, InputProps, VStack, Text } from "@chakra-ui/react"
 import { FieldError } from "@/types/form"
 import { validationError } from "./validation"
 
@@ -15,7 +15,7 @@ const InputText: FC<InputTextProps> = forwardRef<
   const { error, ...rest } = props
 
   return (
-    <>
+    <VStack width={"100%"} alignItems={"flex-start"}>
       <Input
         border={1}
         borderColor={error ? "brands.red.80" : "#E5E1D8"}
@@ -29,11 +29,11 @@ const InputText: FC<InputTextProps> = forwardRef<
         {...rest}
       />
       {error && (
-        <Heading color="brands.red.80" fontSize="12px" marginTop="2">
+        <Text color="brands.red.80" fontSize="12px" marginTop="2">
           {validationError(error)}
-        </Heading>
+        </Text>
       )}
-    </>
+    </VStack>
   )
 })
 
