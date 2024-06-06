@@ -5,6 +5,7 @@ import ChakraUIProvider from "@/providers/ChakraProvider"
 import ReactQueryProvider from "@/providers/ReactQueryProvider"
 import Sidebar from "@/components/sidebar/SideBar"
 import { usePathname } from 'next/navigation'
+import { DrawerProvider } from "@/context/drawerContext"
 
 export default function RootLayout({
   children
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <ChakraUIProvider>
           <ReactQueryProvider>
+            <DrawerProvider>
             <header>
               {/* {
                 path.includes("/merchant") ? null : */}
@@ -25,6 +27,7 @@ export default function RootLayout({
               {/* } */}
               {children}
             </header>
+            </DrawerProvider>
           </ReactQueryProvider>
         </ChakraUIProvider>
       </body>
