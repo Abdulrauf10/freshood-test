@@ -116,7 +116,7 @@ const MyAccountMerchant = () => {
       case "editPersonalInfo":
         return <EditPersonalInfo />;
       default:
-        return <CustomTitle title="Agak Laen" />;
+        return <CustomTitle title="Other Page" />;
     }
   }
 
