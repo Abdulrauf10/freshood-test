@@ -31,8 +31,8 @@ const Sidebar: FC = () => {
   const menus = [
     { icon: RiHome6Line, label: "Home", href: "/" },
     { icon: FaRegHeart, label: "My Favourite", href: "/favourite" },
-    { icon: TbMessage, label: "Message", href: "/message" },
-    { icon: CgProfile, label: "My Account", href: "/account" }
+    { icon: TbMessage, label: "Message", href: "/merchant/message" },
+    { icon: CgProfile, label: "My Account", href: "/merchant/my-account" }
   ]
 
   return (
