@@ -25,6 +25,8 @@ import PersonalInfo from "@/components/drawer/PersonalInformation";
 import CustomTitle from "@/components/Text";
 import { useDrawer } from "@/context/drawerContext";
 import EditPersonalInfo from "@/components/drawer/EditPersonalInformation";
+import AddressesList from "@/components/drawer/AddressesList";
+import AddAddresses from "@/components/drawer/AddAddresses";
 
 const products = [
   {
@@ -115,6 +117,10 @@ const MyAccountMerchant = () => {
         return <PersonalInfo onBackClick={() => handleDrawer("setting")} />;
       case "editPersonalInfo":
         return <EditPersonalInfo />;
+      case "addressList":
+        return <AddressesList />;
+      case "addAddresses":
+        return <AddAddresses />;
       default:
         return <CustomTitle title="Other Page" />;
     }
