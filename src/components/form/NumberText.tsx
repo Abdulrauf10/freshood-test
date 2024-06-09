@@ -28,9 +28,9 @@ const NumberText = ({
       <NumberInputField
         value={props?.value === null ? "" : props?.value}
         border={1}
-        borderColor={error ? "brands.red.80" : "brands.navy.main"}
+        borderColor={error ? "brands.red.80" : "var(--chakra-colors-chakra-border-color)"}
         borderStyle="solid"
-        borderRadius="4px"
+        borderRadius="2xl"
         p={2}
         minW={minW ? minW : "200px"}
         height="auto"

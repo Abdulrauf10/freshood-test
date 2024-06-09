@@ -1,4 +1,4 @@
-import { Box, Heading } from "@chakra-ui/react"
+import { Box, Text } from "@chakra-ui/react"
 import { FC, forwardRef } from "react"
 import ReactSelect, { GroupBase } from "react-select"
 import { AsyncProps } from "react-select/async"
@@ -63,9 +63,9 @@ const Select: FC<SelectProps> = forwardRef<HTMLInputElement, SelectProps>(
           }
         />
         {error && (
-          <Heading color="brands.red.80" fontSize="12px" marginTop="2">
+          <Text color="brands.red.80" fontSize="12px" marginTop="2">
             {validationError(error)}
-          </Heading>
+          </Text>
         )}
       </Box>
     )

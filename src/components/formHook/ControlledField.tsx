@@ -125,8 +125,8 @@ const ControlledField: FC<ControlledField> = ({
   }
 
   return (
-    <Skeleton isLoaded={!isLoading}>
-      <FormControl isRequired={isRequiredField}>
+    <Skeleton isLoaded={!isLoading} width={"100%"}>
+      <FormControl isRequired={isRequiredField} >
         {label && (
           <FormLabel
             fontSize="12px"

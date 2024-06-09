@@ -1,28 +1,33 @@
-import type { Metadata } from "next"
+'use client'
+
 // import "./globals.css"
 import ChakraUIProvider from "@/providers/ChakraProvider"
 import ReactQueryProvider from "@/providers/ReactQueryProvider"
 import Sidebar from "@/components/sidebar/SideBar"
-
-export const metadata: Metadata = {
-  title: "Freshood",
-  description: "All in One Farm to Table Products"
-}
+import { usePathname } from 'next/navigation'
+import { DrawerProvider } from "@/context/drawerContext"
 
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const path = usePathname()
   return (
     <html lang="en">
       <body>
         <ChakraUIProvider>
           <ReactQueryProvider>
+            <DrawerProvider>
             <header>
-              <Sidebar />
+              {/* {
+                path.includes("/merchant") ? null : */}
+                  <Sidebar />
+
+              {/* } */}
               {children}
             </header>
+            </DrawerProvider>
           </ReactQueryProvider>
         </ChakraUIProvider>
       </body>
