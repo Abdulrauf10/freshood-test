@@ -20,7 +20,7 @@ const BaseTextArea: FC<InputTextProps> = forwardRef<
     <>
       <Textarea
         border={1}
-        borderColor={error ? "brands.red.80" : "brands.navy.main"}
+        borderColor={error ? "brands.red.80" : "#E5E1D8"}
         borderStyle="solid"
         borderRadius="4px"
         p={2}

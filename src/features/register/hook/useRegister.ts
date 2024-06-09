@@ -76,6 +76,7 @@ const useRegister = () => {
           duration: 2000,
           isClosable: true
         })
+        replace("/merchant-info")
       },
       onError: (error: any) => {
         toast({
