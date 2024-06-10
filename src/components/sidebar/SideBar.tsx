@@ -49,7 +49,7 @@ const Sidebar: FC = () => {
           boxShadow="md"
           paddingY="2"
           backgroundColor={"white"}
-          zIndex={99}
+          zIndex={9999}
         >
           {menus.map((menu, key) => (
             <VStack key={key} justifyContent="center" alignItems="center">
@@ -94,6 +94,7 @@ const Sidebar: FC = () => {
           display={{ base: "flex", md: "block" }}
           justifyContent={{ base: "space-around", md: "unset" }}
           flexDirection={{ base: "row", md: "column" }}
+          zIndex={9999}
         >
           <Box
             width={"100%"}

@@ -9,24 +9,28 @@ import {
   Text,
   VStack,
   useMediaQuery,
-  Tabs, TabList, TabPanels, Tab, TabPanel,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
   IconButton,
   Grid,
   SimpleGrid,
   Drawer
 } from "@chakra-ui/react"
 
-import { IoIosArrowBack, IoIosSettings } from "react-icons/io";
+import { IoIosArrowBack, IoIosSettings } from "react-icons/io"
 import Image from "next/image"
-import { FaHeart } from "react-icons/fa";
-import GlobalDrawer from "@/components/drawer/GlobalDrawer";
-import Setting from "@/components/drawer/Setting";
-import PersonalInfo from "@/components/drawer/PersonalInformation";
-import CustomTitle from "@/components/Text";
-import { useDrawer } from "@/context/drawerContext";
-import EditPersonalInfo from "@/components/drawer/EditPersonalInformation";
-import AddressesList from "@/components/drawer/AddressesList";
-import AddAddresses from "@/components/drawer/AddAddresses";
+import { FaHeart } from "react-icons/fa"
+import GlobalDrawer from "@/components/drawer/GlobalDrawer"
+import Setting from "@/components/drawer/Setting"
+import PersonalInfo from "@/components/drawer/PersonalInformation"
+import CustomTitle from "@/components/Text"
+import { useDrawer } from "@/context/drawerContext"
+import EditPersonalInfo from "@/components/drawer/EditPersonalInformation"
+import AddressesList from "@/components/drawer/AddressesList"
+import AddAddresses from "@/components/drawer/AddAddresses"
 
 const products = [
   {
@@ -98,55 +102,68 @@ const products = [
     discountPrice: 130,
     realPrice: 260,
     city: "Bandar Lampung"
-  },
-];
+  }
+]
 
 const MyAccountMerchant = () => {
-
-  const { activeDrawer, setActiveDrawer } = useDrawer();
+  const { activeDrawer, setActiveDrawer } = useDrawer()
+  const [isMobile] = useMediaQuery(`(max-width: 768px)`)
 
   const handleDrawer = (drawer: string) => {
-    setActiveDrawer(drawer);
-  };
+    setActiveDrawer(drawer)
+  }
 
   const renderDrawer = () => {
     switch (activeDrawer) {
       case "setting":
-        return <Setting handleDrawer={handleDrawer}/>;
+        return <Setting handleDrawer={handleDrawer} />
       case "personalInfo":
-        return <PersonalInfo onBackClick={() => handleDrawer("setting")} />;
+        return <PersonalInfo onBackClick={() => handleDrawer("setting")} />
       case "editPersonalInfo":
-        return <EditPersonalInfo />;
+        return <EditPersonalInfo />
       case "addressList":
-        return <AddressesList />;
+        return <AddressesList />
       case "addAddresses":
-        return <AddAddresses />;
+        return <AddAddresses />
       default:
-        return <CustomTitle title="Other Page" />;
+        return <CustomTitle title="Other Page" />
     }
   }
 
   interface Product {
-    imageUrl: string;
-    discountPrice: number;
-    realPrice: number;
-    city: string;
-    name: string;
+    imageUrl: string
+    discountPrice: number
+    realPrice: number
+    city: string
+    name: string
   }
 
   interface ProductCardProps {
-    product: Product;
+    product: Product
   }
 
   const ProductCard: FC<ProductCardProps> = ({ product }) => {
     return (
-      <Box borderWidth="1px" borderRadius="lg" overflow="hidden" position="relative" width="283px" height="420px">
-        <Image src={product.imageUrl} alt={product.city} width="283" height="200" style={{
-          minHeight: '300px',
-          minWidth: '300px',
-          maxWidth: '300px',
-          maxHeight: '300px'
-        }} />
+      <Box
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        position="relative"
+        width="283px"
+        height="420px"
+      >
+        <Image
+          src={product.imageUrl}
+          alt={product.city}
+          width="283"
+          height="200"
+          style={{
+            minHeight: "300px",
+            minWidth: "300px",
+            maxWidth: "300px",
+            maxHeight: "300px"
+          }}
+        />
         <IconButton
           aria-label="Add to favorites"
           icon={<FaHeart color="white" />}
@@ -156,40 +173,49 @@ const MyAccountMerchant = () => {
           backgroundColor={"transparent"}
         />
         <Box p="3">
-
           <Box lineHeight="tight">
-            <Text color={'#78716C'}>{
-              product.name
-            }</Text>
+            <Text color={"#78716C"}>{product.name}</Text>
           </Box>
           <HStack>
             <HStack gap={0}>
-              <Text color={'#1B1917'}> $</Text>
-              <Text color={"#1B1917"} fontWeight={"bold"} fontSize={'28px'}>{product.discountPrice}</Text>
+              <Text color={"#1B1917"}> $</Text>
+              <Text color={"#1B1917"} fontWeight={"bold"} fontSize={"28px"}>
+                {product.discountPrice}
+              </Text>
             </HStack>
-            <Text color={"#A8A29D"} textDecoration="line-through"> ${product.realPrice}</Text>
+            <Text color={"#A8A29D"} textDecoration="line-through">
+              {" "}
+              ${product.realPrice}
+            </Text>
           </HStack>
 
-          <Box mt={2} as="span" borderWidth={1} p={1} borderRadius={"lg"} borderColor={"#016748"} color={"#016748"}>{product.city}</Box>
+          <Box
+            mt={2}
+            as="span"
+            borderWidth={1}
+            p={1}
+            borderRadius={"lg"}
+            borderColor={"#016748"}
+            color={"#016748"}
+          >
+            {product.city}
+          </Box>
         </Box>
       </Box>
-    );
-  };
-
+    )
+  }
 
   return (
-    <Box
-    >
+    <Box>
       <Box
         width="full"
         height={{
           base: "45vh",
-          md: "50vh"
+          md: "60vh"
         }}
         backgroundColor={"#016748"}
         position={"absolute"}
         zIndex={-1}
-
       >
         <Box
           id="triangle"
@@ -202,17 +228,27 @@ const MyAccountMerchant = () => {
           left="0"
         />
       </Box>
-      <Box position={"relative"} ml={{
-        base: "20px",
-        md: "50px"
-      }} mr={{
-        base: "20px",
-        md: "0px"
-      }}>
-        <Flex position="relative" justifyContent="space-between" alignItems="center" paddingY="1rem" paddingX={{
-          base: '0',
-          md: '5vw'
-        }}>
+      <Box
+        position={"relative"}
+        ml={{
+          base: "20px",
+          md: "50px"
+        }}
+        mr={{
+          base: "20px",
+          md: "0px"
+        }}
+      >
+        <Flex
+          position="relative"
+          justifyContent="space-between"
+          alignItems="center"
+          paddingY="1rem"
+          paddingX={{
+            base: "0",
+            md: "5vw"
+          }}
+        >
           <IoIosArrowBack size="24px" color="white" />
           {/* <IoIosSettings size="24px" color="white" /> */}
           <GlobalDrawer activeDrawer={activeDrawer}>
@@ -221,35 +257,56 @@ const MyAccountMerchant = () => {
         </Flex>
         <Box position={"relative"} pt={4}>
           <Flex borderRadius={"lg"} justifyContent={"center"}>
-            <Image src="/merchant/banner.svg" width={720} height={100} alt="banner" style={{
-              borderRadius: "16px"
-            }} />
+            <Image
+              src="/merchant/banner.svg"
+              width={isMobile ? 300 : 720}
+              height={isMobile ? 420 : 100}
+              alt="banner"
+              style={{
+                borderRadius: "16px"
+              }}
+            />
           </Flex>
         </Box>
         <VStack alignItems={"start"}>
-          <Flex paddingLeft={'5vw'} pt={'10px'}>
-            <Box w="50px" h="50px" borderRadius={"full"} backgroundColor={'#1abc9c'} mt={'20px'} />
+          <Flex paddingLeft={"5vw"} pt={"10px"}>
+            <Box
+              w="50px"
+              h="50px"
+              borderRadius={"full"}
+              backgroundColor={"#1abc9c"}
+              mt={"20px"}
+            />
             <VStack textAlign={"center"} gap={-2}>
-              <Text color={"white"} as={'h1'} fontSize={'36px'}>BRANDS NAME</Text>
-              <Text color={"white"} pl={4}>United Kingdom | Since 1993</Text>
+              <Text color={"white"} as={"h1"} fontSize={"36px"}>
+                BRANDS NAME
+              </Text>
+              <Text color={"white"} pl={4}>
+                United Kingdom | Since 1993
+              </Text>
             </VStack>
-
           </Flex>
-          <Text pl={{
-            base: "0",
-            md: "5.5vw"
-          }} color={"white"}>
-
-            From a small quantity, to a large batch - you can find the right fit and pricing here.
-          </Text>
+          <Box
+            maxW={isMobile ? "300px" : "full"}
+            wordBreak={"break-word"}
+            paddingLeft={"5vw"}
+          >
+            <Text color={"white"}>
+              From a small quantity, to a large batch - you can find the right
+              fit and pricing here.
+            </Text>
+          </Box>
         </VStack>
-        <HStack mt={{
-          base: "10vh",
-          md: "5vw"
-        }} ml={{
-          base: "20px",
-          md: "5vw"
-        }}>
+        <HStack
+          mt={{
+            base: "10vh",
+            md: "5vw"
+          }}
+          ml={{
+            base: "20px",
+            md: "5vw"
+          }}
+        >
           <Button bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
             New Product
           </Button>
@@ -257,12 +314,23 @@ const MyAccountMerchant = () => {
             Credit
           </Button>
         </HStack>
-        <HStack py={4} pl={{
-          base: "0",
-          md: "6vw"
-        }} gap={{
-          base: 4, md: '20vw'
-        }} color={"#44403C"} w="100%" justifyContent={"start"} alignItems={"center"}>
+        <Box
+          display={"flex"}
+          flexDirection={isMobile ? "column" : "row"}
+          py={4}
+          pl={{
+            base: "0",
+            md: "6vw"
+          }}
+          gap={{
+            base: 4,
+            md: "20vw"
+          }}
+          color={"#44403C"}
+          w="100%"
+          justifyContent={"start"}
+          alignItems={isMobile ? "flex-start" : "center"}
+        >
           <HStack alignItems={"center"}>
             <Image src="/merchant/sea.svg" width={20} height={20} alt="sea" />
             <Text pt={1}>Ships in 14-15 days</Text>
@@ -272,32 +340,39 @@ const MyAccountMerchant = () => {
             <Text pt={1}>$1,224.58 min. first order</Text>
           </HStack>
           <HStack alignItems={"center"}>
-            <Image src="/merchant/reorder.svg" width={20} height={20} alt="sea" />
+            <Image
+              src="/merchant/reorder.svg"
+              width={20}
+              height={20}
+              alt="sea"
+            />
             <Text pt={1}>$1,224.58 min. reorder</Text>
           </HStack>
-        </HStack>
+        </Box>
         <Tabs isFitted mx={4} colorScheme="green">
-          <TabList >
-
+          <TabList>
             <Tab>
               <Text fontWeight={"700"}>Products</Text>
             </Tab>
-            <Tab><Text fontWeight={"700"}>About</Text></Tab>
-
+            <Tab>
+              <Text fontWeight={"700"}>About</Text>
+            </Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
-              <Flex mx={"auto"} ml={'5vw'}>
-              <SimpleGrid columns={{
-                base: 1,
-                md: 3,
-                lg: 4
-
-              }} gap={6}>
-                {products.map((product, index) => (
-                  <ProductCard key={index} product={product} />
-                ))}
-              </SimpleGrid>
+              <Flex mx={"auto"} ml={"5vw"}>
+                <SimpleGrid
+                  columns={{
+                    base: 1,
+                    md: 3,
+                    lg: 4
+                  }}
+                  gap={6}
+                >
+                  {products.map((product, index) => (
+                    <ProductCard key={index} product={product} />
+                  ))}
+                </SimpleGrid>
               </Flex>
             </TabPanel>
             <TabPanel>
@@ -305,7 +380,6 @@ const MyAccountMerchant = () => {
             </TabPanel>
           </TabPanels>
         </Tabs>
-
       </Box>
     </Box>
   )
