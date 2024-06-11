@@ -59,14 +59,14 @@ const MerchantInfo = () => {
   ]
 
   const primaryOptions =
-    dataCategories?.data?.map((data) => ({
+    dataCategories?.data?.map((data: any) => ({
       label: data.name,
       value: data.id
     })) || []
 
   const subCategoryOptions =
-    dataCategories?.data?.flatMap((data) =>
-      data.sub_categories.map((sub) => ({
+    dataCategories?.data?.flatMap((data: any) =>
+      data.sub_categories.map((sub: any) => ({
         label: sub.name,
         value: sub.id
       }))
@@ -180,7 +180,7 @@ const MerchantInfo = () => {
           <CheckboxSelect
             renderPopoverContent={() => (
               <VStack alignItems={"flex-start"}>
-                {primaryOptions.map((option) => (
+                {primaryOptions.map((option: any) => (
                   <Controller
                     key={option.value}
                     name="primary_category_ids"
@@ -225,7 +225,7 @@ const MerchantInfo = () => {
           <CheckboxSelect
             renderPopoverContent={() => (
               <VStack alignItems={"flex-start"}>
-                {subCategoryOptions.map((option) => (
+                {subCategoryOptions.map((option: any) => (
                   <Controller
                     key={option.value}
                     name="sub_category_ids"

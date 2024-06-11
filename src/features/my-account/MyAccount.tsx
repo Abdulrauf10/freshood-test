@@ -1,6 +1,6 @@
 "use client"
 
-import React, { FC } from "react"
+import React, { FC, useRef } from "react"
 import {
   Box,
   Button,
@@ -17,11 +17,13 @@ import {
   IconButton,
   Grid,
   SimpleGrid,
-  Drawer
+  Drawer,
+  Skeleton,
+  Image
 } from "@chakra-ui/react"
 
 import { IoIosArrowBack, IoIosSettings } from "react-icons/io"
-import Image from "next/image"
+// import Image from "next/image"
 import { FaHeart } from "react-icons/fa"
 import GlobalDrawer from "@/components/drawer/GlobalDrawer"
 import Setting from "@/components/drawer/Setting"
@@ -31,83 +33,19 @@ import { useDrawer } from "@/context/drawerContext"
 import EditPersonalInfo from "@/components/drawer/EditPersonalInformation"
 import AddressesList from "@/components/drawer/AddressesList"
 import AddAddresses from "@/components/drawer/AddAddresses"
+import useTrendingProducts from "@/hooks/useTrendingProduct"
+import Slider, { Settings } from "react-slick"
 
-const products = [
-  {
-    name: "Product 1",
-    imageUrl: "https://source.unsplash.com/random/1",
-    discountPrice: 50,
-    realPrice: 100,
-    city: "Jakarta"
-  },
-  {
-    name: "Product 2",
-    imageUrl: "https://source.unsplash.com/random/2",
-    discountPrice: 75,
-    realPrice: 150,
-    city: "Bandung"
-  },
-  {
-    name: "Product 3",
-    imageUrl: "https://source.unsplash.com/random/3",
-    discountPrice: 60,
-    realPrice: 120,
-    city: "Surabaya"
-  },
-  {
-    name: "Product 4",
-    imageUrl: "https://source.unsplash.com/random/4",
-    discountPrice: 70,
-    realPrice: 140,
-    city: "Yogyakarta"
-  },
-  {
-    name: "Product 5",
-    imageUrl: "https://source.unsplash.com/random/5",
-    discountPrice: 80,
-    realPrice: 160,
-    city: "Bali"
-  },
-  {
-    name: "Product 6",
-    imageUrl: "https://source.unsplash.com/random/6",
-    discountPrice: 90,
-    realPrice: 180,
-    city: "Makassar"
-  },
-  {
-    name: "Product 7",
-    imageUrl: "https://source.unsplash.com/random/7",
-    discountPrice: 100,
-    realPrice: 200,
-    city: "Medan"
-  },
-  {
-    name: "Product 8",
-    imageUrl: "https://source.unsplash.com/random/8",
-    discountPrice: 110,
-    realPrice: 220,
-    city: "Semarang"
-  },
-  {
-    name: "Product 9",
-    imageUrl: "https://source.unsplash.com/random/9",
-    discountPrice: 120,
-    realPrice: 240,
-    city: "Palembang"
-  },
-  {
-    name: "Product 10",
-    imageUrl: "https://source.unsplash.com/random/10",
-    discountPrice: 130,
-    realPrice: 260,
-    city: "Bandar Lampung"
-  }
-]
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
+import { ChevronLeftIcon } from "@chakra-ui/icons"
+import useTopBanners from "@/hooks/useTopBanners"
 
 const MyAccountMerchant = () => {
   const { activeDrawer, setActiveDrawer } = useDrawer()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
+  const { dataTrendingProducts, isLoadingProducts } = useTrendingProducts()
+  const { dataTopBanners, isLoadingTopBanners } = useTopBanners()
 
   const handleDrawer = (drawer: string) => {
     setActiveDrawer(drawer)
@@ -131,11 +69,42 @@ const MyAccountMerchant = () => {
   }
 
   interface Product {
-    imageUrl: string
-    discountPrice: number
-    realPrice: number
-    city: string
+    id: number
+    sub_category: {
+      id: number
+      name: string
+      category: {
+        id: number
+        name: string
+      }
+    }
     name: string
+    images: [
+      {
+        id: number
+        url: string
+      }
+    ]
+    store: {
+      id: number
+      name: string
+      image: {
+        id: number
+        url: string
+      }
+    }
+    currency: string
+    price: string
+    case_size: number
+    minimum_order: number
+    popularity_score: number
+    favorites_count: number
+    recommended_retail_price: string
+    description: string
+    weight: number
+    dimension_length: number
+    dimension_width: number
+    dimension_height: number
   }
 
   interface ProductCardProps {
@@ -152,18 +121,20 @@ const MyAccountMerchant = () => {
         width="283px"
         height="420px"
       >
-        <Image
-          src={product.imageUrl}
-          alt={product.city}
-          width="283"
-          height="200"
-          style={{
-            minHeight: "300px",
-            minWidth: "300px",
-            maxWidth: "300px",
-            maxHeight: "300px"
-          }}
-        />
+        <Skeleton isLoaded={!isLoadingProducts}>
+          <Image
+            src={product?.images[0]?.url}
+            alt={product.name}
+            width="283"
+            height="200"
+            style={{
+              minHeight: "300px",
+              minWidth: "300px",
+              maxWidth: "300px",
+              maxHeight: "300px"
+            }}
+          />
+        </Skeleton>
         <IconButton
           aria-label="Add to favorites"
           icon={<FaHeart color="white" />}
@@ -174,34 +145,68 @@ const MyAccountMerchant = () => {
         />
         <Box p="3">
           <Box lineHeight="tight">
-            <Text color={"#78716C"}>{product.name}</Text>
+            <Skeleton isLoaded={!isLoadingProducts}>
+              <Text color={"#78716C"}>{product.name}</Text>
+            </Skeleton>
           </Box>
           <HStack>
             <HStack gap={0}>
-              <Text color={"#1B1917"}> $</Text>
-              <Text color={"#1B1917"} fontWeight={"bold"} fontSize={"28px"}>
-                {product.discountPrice}
-              </Text>
+              <Skeleton isLoaded={!isLoadingProducts}>
+                <Text color={"#1B1917"}> $</Text>
+                <Text color={"#1B1917"} fontWeight={"bold"} fontSize={"28px"}>
+                  {product.recommended_retail_price}
+                </Text>
+              </Skeleton>
             </HStack>
-            <Text color={"#A8A29D"} textDecoration="line-through">
-              {" "}
-              ${product.realPrice}
-            </Text>
+            <Skeleton isLoaded={!isLoadingProducts}>
+              <Text color={"#A8A29D"} textDecoration="line-through">
+                {" "}
+                ${product.price}
+              </Text>
+            </Skeleton>
           </HStack>
 
-          <Box
-            mt={2}
-            as="span"
-            borderWidth={1}
-            p={1}
-            borderRadius={"lg"}
-            borderColor={"#016748"}
-            color={"#016748"}
-          >
-            {product.city}
-          </Box>
+          <Skeleton isLoaded={!isLoadingProducts}>
+            <Box
+              mt={2}
+              as="span"
+              borderWidth={1}
+              p={1}
+              borderRadius={"lg"}
+              borderColor={"#016748"}
+              color={"#016748"}
+            >
+              {product.popularity_score}
+            </Box>
+          </Skeleton>
         </Box>
       </Box>
+    )
+  }
+
+  const sliderRef = useRef<Slider>(null)
+
+  const settings: Settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+    draggable: true,
+    appendDots: (dots) => (
+      <Box mt={4}>
+        <ul style={{ margin: "0px" }}> {dots} </ul>
+      </Box>
+    ),
+    customPaging: (i) => (
+      <Box
+        width="10px"
+        height="10px"
+        bg="gray.400"
+        borderRadius="50%"
+        display="inline-block"
+      ></Box>
     )
   }
 
@@ -255,18 +260,25 @@ const MyAccountMerchant = () => {
             {renderDrawer()}
           </GlobalDrawer>
         </Flex>
-        <Box position={"relative"} pt={4}>
-          <Flex borderRadius={"lg"} justifyContent={"center"}>
-            <Image
-              src="/merchant/banner.svg"
-              width={isMobile ? 300 : 720}
-              height={isMobile ? 420 : 100}
-              alt="banner"
-              style={{
-                borderRadius: "16px"
-              }}
-            />
-          </Flex>
+        <Box
+          position={"relative"}
+          pt={4}
+          pb={isMobile ? "10px" : 0}
+          width={isMobile ? "300px" : "720px"}
+          marginLeft={isMobile ? "10%" : "25%"}
+        >
+          <Skeleton isLoaded={!isLoadingTopBanners}>
+            <Slider ref={sliderRef} {...settings}>
+              {dataTopBanners?.data?.map((data, idx) => (
+                <Image
+                  key={idx}
+                  src={data?.image?.url}
+                  alt="banner"
+                  borderRadius={"20px"}
+                />
+              ))}
+            </Slider>
+          </Skeleton>
         </Box>
         <VStack alignItems={"start"}>
           <Flex paddingLeft={"5vw"} pt={"10px"}>
@@ -332,20 +344,15 @@ const MyAccountMerchant = () => {
           alignItems={isMobile ? "flex-start" : "center"}
         >
           <HStack alignItems={"center"}>
-            <Image src="/merchant/sea.svg" width={20} height={20} alt="sea" />
+            <Image src="/merchant/sea.svg" width={5} height={5} alt="sea" />
             <Text pt={1}>Ships in 14-15 days</Text>
           </HStack>
           <HStack alignItems={"center"}>
-            <Image src="/merchant/coins.svg" width={20} height={20} alt="sea" />
+            <Image src="/merchant/coins.svg" width={5} height={5} alt="sea" />
             <Text pt={1}>$1,224.58 min. first order</Text>
           </HStack>
           <HStack alignItems={"center"}>
-            <Image
-              src="/merchant/reorder.svg"
-              width={20}
-              height={20}
-              alt="sea"
-            />
+            <Image src="/merchant/reorder.svg" width={5} height={5} alt="sea" />
             <Text pt={1}>$1,224.58 min. reorder</Text>
           </HStack>
         </Box>
@@ -369,9 +376,11 @@ const MyAccountMerchant = () => {
                   }}
                   gap={6}
                 >
-                  {products.map((product, index) => (
-                    <ProductCard key={index} product={product} />
-                  ))}
+                  {dataTrendingProducts?.data?.flatMap((data) =>
+                    data?.products?.map((product: any, index) => (
+                      <ProductCard key={index} product={product} />
+                    ))
+                  )}
                 </SimpleGrid>
               </Flex>
             </TabPanel>
