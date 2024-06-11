@@ -16,6 +16,7 @@ import {
   HStack,
   Image,
   Text,
+  VStack,
   useMediaQuery
 } from "@chakra-ui/react"
 
@@ -27,6 +28,7 @@ import { FieldType } from "@/types/form"
 import CustomTitle from "@/components/Text"
 import useLogin from "./hook/useLogin"
 import useSessionStore from "@/store/useSessionStore"
+import Link from "next/link"
 
 const Login = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -44,22 +46,28 @@ const Login = () => {
       justifyContent={"center"}
       flexDirection={"column"}
       alignItems={"center"}
-      width={"100vw"}
-      height={"100vh"}
+      paddingTop={"50px"}
       as="form"
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <CustomTitle title={"Log in"} />
-      <Box
+      <HStack position={"relative"} width={"100%"} justifyContent={"center"}>
+        <CustomTitle title={"LOGIN"} />
+      </HStack>
+
+      <VStack
         display={"flex"}
         flexDirection={"column"}
         gap={"5px"}
-        width={isMobile ? "300px" : "500px"}
-        height={"200px"}
-        mt={4}
+        minWidth={isMobile ? "330px" : "440px"}
+        minH={isMobile ? 0 : "550px"}
+        mt={15}
+        padding={4}
+        backgroundColor={"white"}
+        alignItems={"flex-start"}
       >
         <Text>Email</Text>
+
         <ControlledField
           name="email"
           control={control}
@@ -67,6 +75,7 @@ const Login = () => {
           fieldType={FieldType.textfield}
           borderRadius={"16px"}
           backgroundColor={"white"}
+          width={isMobile ? "330px" : "440px"}
         />
 
         <Text>Password</Text>
@@ -77,27 +86,58 @@ const Login = () => {
           fieldType={FieldType.textfield}
           borderRadius={"16px"}
           backgroundColor={"white"}
+          width={isMobile ? "330px" : "440px"}
         />
+        <Box width={"100%"} display={"flex"} justifyContent={"flex-end"}>
+          <Link href={"forgot-password"}>
+            <Text color={"#016748"}>Forgot Password</Text>
+          </Link>
+        </Box>
+      </VStack>
 
-        <Text textAlign={"right"} color={"#016748"}>
-          Forgot Password
-        </Text>
-
-        <Button
-          color={"white"}
-          backgroundColor={"#016748"}
-          padding={"16px"}
-          borderRadius={"16px"}
-          marginTop={"20px"}
-          type="submit"
-        >
-          Log in
-        </Button>
-        <HStack justifyContent={"center"}>
-          <Text color={"#78716C"}>New to Freshood?</Text>
-          <Text color={'"#016748"'}>Create an Account</Text>
-        </HStack>
-      </Box>
+      {isMobile ? (
+        <>
+          <Button
+            color={"white"}
+            backgroundColor={"#016748"}
+            padding={"16px"}
+            borderRadius={"16px"}
+            marginTop={"20px"}
+            type="submit"
+            width={"300px"}
+          >
+            Log in
+          </Button>
+          <HStack justifyContent={"center"}>
+            <Text color={"#78716C"}>New to Freshood?</Text>
+            <Link href={"/register"}>
+              <Text color={'"#016748"'}>Create an Account</Text>
+            </Link>
+          </HStack>
+        </>
+      ) : (
+        <Box width={"100%"} borderTop={"solid 1px #E5E1D8"}>
+          <Button
+            color={"white"}
+            backgroundColor={"#016748"}
+            padding={"16px"}
+            borderRadius={"16px"}
+            marginTop={"20px"}
+            type="submit"
+            width={"80%"}
+            marginLeft={"200px"}
+            marginBottom={"10px"}
+          >
+            Log in
+          </Button>
+          <HStack justifyContent={"center"}>
+            <Text color={"#78716C"}>New to Freshood?</Text>
+            <Link href={"/register"}>
+              <Text color={'"#016748"'}>Create an Account</Text>
+            </Link>
+          </HStack>
+        </Box>
+      )}
     </Box>
   )
 }

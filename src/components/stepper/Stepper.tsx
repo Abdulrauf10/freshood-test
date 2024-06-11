@@ -48,19 +48,48 @@ const Stepper: React.FC<StepperProps> = ({ steps, initialStep = 0, width }) => {
             <StepIndicator>
               <StepStatus
                 complete={<StepIcon />}
-                incomplete={<StepNumber />}
-                active={<StepNumber />}
+                incomplete={
+                  <StepNumber
+                    style={{
+                      color: `${index === activeStep ? "#016748" : "#A8A29D"}`
+                    }}
+                  />
+                }
+                active={
+                  <StepNumber
+                    style={{
+                      color: `${index === activeStep ? "#016748" : "#A8A29D"}`
+                    }}
+                  />
+                }
               />
             </StepIndicator>
 
             <VStack flexShrink="0" justifyContent="center">
               <StepTitle>
-                <Text
-                  fontSize={isMobile ? "10px" : "14px"}
-                  color={index === activeStep ? "#016748" : "#A8A29D"}
-                >
-                  {step.title}
-                </Text>
+                <StepStatus
+                  complete={
+                    <Text fontSize={isMobile ? "10px" : "14px"} color="#016748">
+                      {step.title}
+                    </Text>
+                  }
+                  incomplete={
+                    <Text
+                      fontSize={isMobile ? "10px" : "14px"}
+                      color={index === activeStep ? "#016748" : "#A8A29D"}
+                    >
+                      {step.title}
+                    </Text>
+                  }
+                  active={
+                    <Text
+                      fontSize={isMobile ? "10px" : "14px"}
+                      color={index === activeStep ? "#016748" : "#A8A29D"}
+                    >
+                      {step.title}
+                    </Text>
+                  }
+                />
               </StepTitle>
               <StepDescription>{step.description}</StepDescription>
             </VStack>

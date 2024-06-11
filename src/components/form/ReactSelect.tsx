@@ -26,10 +26,11 @@ const Select: FC<SelectProps> = forwardRef<HTMLInputElement, SelectProps>(
             fontSize: "12px"
           },
           ".base-select__multi-value__label": {
-            color: "white"
+            color: "white",
+            backgroundColor: "#016748"
           },
           ".base-select__control": {
-            borderColor: error ? "#F96161" : "#5B91AC"
+            borderColor: error ? "#F96161" : "#E5E1D8"
           }
         }}
       >

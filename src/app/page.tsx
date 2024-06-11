@@ -26,7 +26,14 @@ export default function Home() {
     <main>
       <VStack>
         <text>welcome, {dataMe?.data?.first_name}</text>
-        <Button onClick={removeActiveMenu}>Logout</Button>
+        <Button
+          onClick={() => {
+            removeActiveMenu()
+            logout()
+          }}
+        >
+          Logout
+        </Button>
       </VStack>
     </main>
   )

@@ -21,10 +21,15 @@ import ControlledCheckbox from "@/components/formHook/ControlledCheckBox"
 import Stepper from "@/components/stepper/Stepper"
 import { useRouter } from "next/navigation"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
+import PhoneInput from "react-phone-input-2"
+import "react-phone-input-2/lib/bootstrap.css"
+import { Controller } from "react-hook-form"
+import useCountries from "@/hooks/useCountries"
 
 const Register = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const router = useRouter()
+  const { dataCountries } = useCountries()
 
   const {
     formState: { errors },
@@ -35,20 +40,12 @@ const Register = () => {
     setValue
   } = useRegister()
 
-  const cityOptions = [
-    {
-      label: "Alaminos",
-      value: "f4f25815-f39d-488e-a24b-fb81ac7baa32"
-    },
-    {
-      label: "Angeles City",
-      value: "3a008a3f-b03c-40d4-917f-e6b8b85e9605"
-    },
-    {
-      label: "Antipolo",
-      value: "59709ec2-a39e-442f-94ed-3adee16f2f90"
-    }
-  ]
+  const cityOptions = dataCountries?.data?.flatMap((data) =>
+    data.cities.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    }))
+  )
 
   const genderOptions = [
     { label: "Mr.", value: "Mr." },
@@ -56,40 +53,26 @@ const Register = () => {
     { label: "Ms.", value: "Ms." }
   ]
 
-  const codeOptions = [
-    {
-      label: "148",
-      value: "148"
-    },
-    {
-      label: "62",
-      value: "62"
-    }
-  ]
-
-  const countryOptions = [
-    {
-      label: "Philippine",
-      value: "e68a9582-77d5-4dd4-b9c4-3e70fe5a0ee7"
-    }
-  ]
-
-  const typeOptions = [
-    {
-      label: "Buyer",
-      value: "Buyer"
-    },
-    {
-      label: "Seller",
-      value: "Seller"
-    }
-  ]
+  const countryOptions =
+    dataCountries?.data?.map((data) => ({
+      label: data.name,
+      value: data.id
+    })) || []
 
   const steps = [
     { title: "Account registration" },
     { title: "About your bussines" },
     { title: "Verification" }
   ]
+
+  const handlePhoneChange = (value: any, country: any) => {
+    const countryCode = "+" + country.dialCode
+    const phoneNumber = value
+      .replace(new RegExp(`^\\+?${country.dialCode}`), "")
+      .replace(/[^0-9]/g, "")
+    setValue("country_code", countryCode)
+    setValue("phone_number", phoneNumber)
+  }
 
   return (
     <Box
@@ -205,31 +188,27 @@ const Register = () => {
         </Box>
 
         <HStack width={isMobile ? "300px" : "440px"}>
-          <Box width={"20%"}>
-            <ControlledReactSelect
-              name="country_code"
-              nameData="country_code"
-              control={control}
-              errors={errors}
-              options={codeOptions}
-              handleChange={(val) => setValue("country_code", val.value)}
-              value={codeOptions?.find(
-                (val) => val.value == watch("country_code")
-              )}
-              placeholder={""}
-            />
-          </Box>
-          <Box width={"80%"}>
-            <ControlledField
-              name="phone_number"
-              control={control}
-              errors={errors}
-              fieldType={FieldType.textfield}
-              borderRadius={"16px"}
-              backgroundColor={"white"}
-              placeholder="02 2323 232"
-            />
-          </Box>
+          <Controller
+            name="country_code"
+            control={control}
+            defaultValue="1"
+            rules={{ required: "Phone number is required" }}
+            render={({ field }) => (
+              <PhoneInput
+                country={"us"}
+                enableSearch={true}
+                value={field.value}
+                onChange={(value, country) => handlePhoneChange(value, country)}
+                inputStyle={{
+                  color: "#808080",
+                  fontWeight: "400",
+                  width: `${isMobile ? "300px" : "440px"}`,
+                  height: "35px",
+                  borderRadius: "16px"
+                }}
+              />
+            )}
+          />
         </HStack>
 
         <Box width={isMobile ? "300px" : "440px"}>
@@ -244,7 +223,7 @@ const Register = () => {
               setValue("country_id", val.value)
             }}
             value={countryOptions?.find(
-              (val) => val.value == watch("country_id")
+              (val: any) => val.value == watch("country_id")
             )}
           />
         </Box>

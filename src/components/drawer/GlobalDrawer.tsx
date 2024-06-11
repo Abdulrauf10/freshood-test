@@ -1,24 +1,30 @@
-import { Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure, Box } from "@chakra-ui/react";
-import { IoIosSettings } from "react-icons/io";
-import React, { ReactNode, useEffect } from "react";
-import { useDrawer } from "@/context/drawerContext";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  Box
+} from "@chakra-ui/react"
+import { IoIosSettings } from "react-icons/io"
+import React, { ReactNode, useEffect } from "react"
+import { useDrawer } from "@/context/drawerContext"
 
 interface GlobalDrawerProps {
-  children: ReactNode;
-  activeDrawer: string;
+  children: ReactNode
+  activeDrawer: string
 }
 
-const GlobalDrawer: React.FC<GlobalDrawerProps> = ({
-  children,
-}) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { setActiveDrawer } = useDrawer(); 
+const GlobalDrawer: React.FC<GlobalDrawerProps> = ({ children }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { setActiveDrawer } = useDrawer()
 
   useEffect(() => {
     if (!isOpen) {
-      setActiveDrawer("setting");
+      setActiveDrawer("setting")
     }
-  }, [!isOpen]);
+  }, [!isOpen])
 
   return (
     <>
@@ -29,15 +35,13 @@ const GlobalDrawer: React.FC<GlobalDrawerProps> = ({
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"xl"}>
         <DrawerOverlay>
           <DrawerContent>
-                <DrawerCloseButton />
-            <DrawerBody pt={10}>
-              {children}
-            </DrawerBody>
+            <DrawerCloseButton />
+            <DrawerBody pt={10}>{children}</DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
       </Drawer>
     </>
-  );
-};
+  )
+}
 
-export default GlobalDrawer;
+export default GlobalDrawer
