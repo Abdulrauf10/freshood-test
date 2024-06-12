@@ -40,6 +40,7 @@ import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { ChevronLeftIcon } from "@chakra-ui/icons"
 import useTopBanners from "@/hooks/useTopBanners"
+import StoreInformation from "@/components/drawer/StoreInformation"
 
 const MyAccountMerchant = () => {
   const { activeDrawer, setActiveDrawer } = useDrawer()
@@ -59,6 +60,8 @@ const MyAccountMerchant = () => {
         return <PersonalInfo onBackClick={() => handleDrawer("setting")} />
       case "editPersonalInfo":
         return <EditPersonalInfo />
+      case "storeInfo":
+        return <StoreInformation onBackClick={() => handleDrawer("setting")} />
       case "addressList":
         return <AddressesList />
       case "addAddresses":
