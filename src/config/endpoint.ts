@@ -4,6 +4,7 @@ export const LOGIN_API_URL = `${BASE_API_URL}/users/login`
 export const LOGOUT_API_URL = `${BASE_API_URL}/users/logout`
 export const REGISTER_API_URL = `${BASE_API_URL}/users/register/create`
 export const OTP_API_URL = `${BASE_API_URL}/users/register/send-email-otp`
+export const CREATE_PRODUCT_API_URL = `${BASE_API_URL}/products/favorites/collections/create`
 
 export const AUTH = {
   ME: `${BASE_API_URL}/users/me`,
