@@ -42,7 +42,7 @@ const Verification = () => {
     } else {
       setIsTimerActive(false)
     }
-  }, [timer])
+  }, [timer, isTimerActive])
 
   const {
     control,
