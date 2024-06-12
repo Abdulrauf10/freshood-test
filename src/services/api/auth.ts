@@ -52,3 +52,8 @@ export const sendEmailForgotPassword = async (payload: any) => {
   const res = await apiCall.post(AUTH.FORGOT_PASSWOR_SEND_EMAIL, payload)
   return res.data
 }
+
+export const resetPassword = async (payload: any) => {
+  const res = await apiCall.post(AUTH.PASSWORD_RESET, payload)
+  return res.data
+}
