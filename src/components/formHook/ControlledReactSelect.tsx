@@ -37,13 +37,13 @@ const ControlledReactSelect: FC<ControlledReactSelect> = ({
     if (isClearAll) {
       field.onChange(undefined)
     }
-  }, [isClearAll])
+  }, [isClearAll, field])
 
   useEffect(() => {
     if (defaultSelectValue) {
       field.onChange(defaultSelectValue)
     }
-  }, [defaultSelectValue])
+  }, [defaultSelectValue, field])
 
   const handleErrorsIfArray = (errors: any, fieldName: string) => {
     if (fieldName.includes(".")) {

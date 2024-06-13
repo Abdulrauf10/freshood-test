@@ -42,7 +42,7 @@ const Verification = () => {
     } else {
       setIsTimerActive(false)
     }
-  }, [timer])
+  }, [timer, isTimerActive])
 
   const {
     control,
@@ -114,7 +114,7 @@ const Verification = () => {
       >
         <Box marginBottom={"15px"}>
           <Text color={"#78716C"}>
-            We have sent the code verification to jackychan@example.co{" "}
+            We have sent the code verification to your email{" "}
             <span style={{ color: "#016748", cursor: "pointer" }}>
               Change email address
             </span>
