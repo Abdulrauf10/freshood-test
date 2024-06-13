@@ -4,12 +4,14 @@ export const LOGIN_API_URL = `${BASE_API_URL}/users/login`
 export const LOGOUT_API_URL = `${BASE_API_URL}/users/logout`
 export const REGISTER_API_URL = `${BASE_API_URL}/users/register/create`
 export const OTP_API_URL = `${BASE_API_URL}/users/register/send-email-otp`
+export const CREATE_PRODUCT_API_URL = `${BASE_API_URL}/products/favorites/collections/create`
 
 export const AUTH = {
   ME: `${BASE_API_URL}/users/me`,
   COUNTRIES: `${BASE_API_URL}/users/data/countries`,
   VERIFICATION: `${BASE_API_URL}/users/register/verify-email-otp`,
-  FORGOT_PASSWOR_SEND_EMAIL: `${BASE_API_URL}/users/password-reset/send-mail`
+  FORGOT_PASSWOR_SEND_EMAIL: `${BASE_API_URL}/users/password-reset/send-mail`,
+  PASSWORD_RESET: `${BASE_API_URL}/users/password-reset/reset`
 }
 
 export const MERCHANT_INFO = {

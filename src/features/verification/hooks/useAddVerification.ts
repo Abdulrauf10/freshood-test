@@ -41,7 +41,7 @@ const useAddVerification = () => {
           duration: 2000,
           isClosable: true
         })
-        replace("/login")
+        replace("/account-review")
       },
       onError: (error: any) => {
         toast({

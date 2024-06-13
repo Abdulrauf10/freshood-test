@@ -205,7 +205,7 @@ const MessagePage: React.FC = () => {
             </HStack>
             <Text color={"#78716C"}>
               You are reaching quota. You can still receive messages, but unable
-              to view client&apos;s names and profile pictures.
+              to view clients&apos; names and profile pictures.
             </Text>
             <HStack minW="100%" gap={4}>
               <Progress

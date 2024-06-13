@@ -54,7 +54,9 @@ const ControlledField: FC<ControlledField> = ({
               placeholder={placeholder}
               error={errors?.[field?.name]}
               type={
-                field?.name === "password" && !isPasswordVisible
+                (field?.name === "password" ||
+                  field?.name === "new_password") &&
+                !isPasswordVisible
                   ? "password"
                   : "text"
               }
@@ -65,7 +67,7 @@ const ControlledField: FC<ControlledField> = ({
               fontSize={fontSize}
               {...props}
             />
-            {field?.name === "password" && (
+            {(field?.name === "password" || field?.name === "new_password") && (
               <InputRightElement>
                 <Icon
                   as={isPasswordVisible ? EyeOffIcon : EyeIcon}
@@ -126,7 +128,7 @@ const ControlledField: FC<ControlledField> = ({
 
   return (
     <Skeleton isLoaded={!isLoading} width={"100%"}>
-      <FormControl isRequired={isRequiredField} >
+      <FormControl isRequired={isRequiredField}>
         {label && (
           <FormLabel
             fontSize="12px"
