@@ -1,5 +1,6 @@
 import { useQuery } from "react-query"
 import { getProductCategories } from "@/services/api/product"
+import { ProductCategoriesResponse } from "@/types/product"
 
 const useProductCategories = () => {
   const { data: dataCategories, isLoading: isLoadingCategories } = useQuery<

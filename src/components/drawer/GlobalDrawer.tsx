@@ -24,7 +24,7 @@ const GlobalDrawer: React.FC<GlobalDrawerProps> = ({ children }) => {
     if (!isOpen) {
       setActiveDrawer("setting")
     }
-  }, [!isOpen])
+  }, [isOpen, setActiveDrawer])
 
   return (
     <>

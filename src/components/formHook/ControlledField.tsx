@@ -54,7 +54,8 @@ const ControlledField: FC<ControlledField> = ({
               placeholder={placeholder}
               error={errors?.[field?.name]}
               type={
-                (field?.name === "password" || "new_password") &&
+                (field?.name === "password" ||
+                  field?.name === "new_password") &&
                 !isPasswordVisible
                   ? "password"
                   : "text"
@@ -66,7 +67,7 @@ const ControlledField: FC<ControlledField> = ({
               fontSize={fontSize}
               {...props}
             />
-            {field?.name === "password" && (
+            {(field?.name === "password" || field?.name === "new_password") && (
               <InputRightElement>
                 <Icon
                   as={isPasswordVisible ? EyeOffIcon : EyeIcon}
