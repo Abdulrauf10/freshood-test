@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import {
   Accordion,
   AccordionButton,
@@ -23,7 +23,12 @@ import useProductCategories from "@/hooks/useProductCategories"
 import { FaSearch } from "react-icons/fa"
 import { IoIosArrowForward } from "react-icons/io"
 
-const ItemList = ({ category, onClose, setSelectedSubCategory }: any) => {
+const ItemList = ({
+  category,
+  onClose,
+  setSelectedSubCategory,
+  setValue
+}: any) => {
   return (
     <AccordionItem sx={{ padding: " 14px 0" }}>
       <h2>
@@ -50,6 +55,7 @@ const ItemList = ({ category, onClose, setSelectedSubCategory }: any) => {
               key={subcategory.id}
               onClick={() => {
                 setSelectedSubCategory(subcategory)
+                setValue("subCategoryId", subcategory.id)
                 onClose()
               }}
             >
@@ -66,9 +72,30 @@ const CategoryListDrawer = ({
   isOpen,
   onClose,
   setSelectedSubCategory,
-  isMobile
+  isMobile,
+  setValue
 }: any) => {
   const { dataCategories, isLoadingCategories } = useProductCategories()
+
+  const [filteredData, setFilteredData] = useState([]) as any
+  const [isNotFound, setNotFound] = useState(false)
+
+  const onHandleFilterChange = (text: string) => {
+    const filterItem = dataCategories?.data.filter((category) => {
+      return category.name.toUpperCase().includes(text.toUpperCase())
+    })
+    if (!filterItem?.length) {
+      setNotFound(true)
+      setFilteredData(dataCategories?.data)
+    } else {
+      setNotFound(false)
+      setFilteredData(filterItem)
+    }
+  }
+
+  const categoryToShow = filteredData.length
+    ? filteredData
+    : dataCategories?.data
 
   return (
     <Drawer
@@ -92,18 +119,30 @@ const CategoryListDrawer = ({
             <InputLeftElement pointerEvents="none">
               <FaSearch />
             </InputLeftElement>
-            <Input type="text" placeholder="Search category" />
+            <Input
+              type="text"
+              placeholder="Search category"
+              onChange={(e) => {
+                onHandleFilterChange(e.currentTarget.value)
+              }}
+            />
           </InputGroup>
+          {isNotFound && (
+            <Text sx={{ margin: "4px 0 0 10px", color: "red" }}>
+              Category Not Found
+            </Text>
+          )}
           {!isLoadingCategories && (
             <Box sx={{ marginTop: "1rem" }}>
               <Accordion>
-                {dataCategories?.data.map((category) => {
+                {categoryToShow.map((category: any) => {
                   return (
                     <ItemList
                       onClose={onClose}
                       key={category.id}
                       category={category}
                       setSelectedSubCategory={setSelectedSubCategory}
+                      setValue={setValue}
                     />
                   )
                 })}

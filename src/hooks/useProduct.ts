@@ -7,10 +7,10 @@ import { createProductService } from "@/services/api/products"
 
 type ProductFormInput = {
   productName: string
-  categoryAndSubCategory: string
-  price: number
+  subCategoryId: string
+  price: string
   caseSize: string
-  minOrderQty: number
+  minOrderQty: string
   description?: string
   weight?: string
   dimension?: string
@@ -19,10 +19,10 @@ type ProductFormInput = {
 const schema = yup
   .object({
     productName: yup.string().required(),
-    categoryAndSubCategory: yup.string().required(),
-    price: yup.number().required(),
+    subCategoryId: yup.string().required(),
+    price: yup.string().required(),
     caseSize: yup.string().required(),
-    minOrderQty: yup.number().required()
+    minOrderQty: yup.string().required()
   })
   .required()
 
@@ -57,7 +57,7 @@ const useProduct = () => {
   )
 
   const onSubmit = async (data: ProductFormInput) => {
-    console.log("data")
+    console.log(data)
     // mutation.mutate(data)
   }
 

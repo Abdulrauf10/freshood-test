@@ -14,7 +14,13 @@ import { Pagination } from "swiper/modules"
 import { IoIosArrowForward } from "react-icons/io"
 import CategoryListDrawer from "./CategoryListDrawer"
 
-const ProductDetailStep = ({ control, errors, isMobile, images }: any) => {
+const ProductDetailStep = ({
+  control,
+  errors,
+  isMobile,
+  images,
+  setValue
+}: any) => {
   const pagination = {
     clickable: true,
     renderBullet: function (index: string, className: string) {
@@ -266,6 +272,7 @@ const ProductDetailStep = ({ control, errors, isMobile, images }: any) => {
         onClose={() => setIsDrawerOpen(false)}
         setSelectedSubCategory={setSelectedSubCategory}
         isMobile={isMobile}
+        setValue={setValue}
       />
     </Flex>
   )

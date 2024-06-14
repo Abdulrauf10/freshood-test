@@ -2,56 +2,12 @@
 
 import React, { useState } from "react"
 import { Box, Button, Flex, Text, useMediaQuery } from "@chakra-ui/react"
-
-import { IoIosArrowBack } from "react-icons/io"
-import CustomTitle from "@/components/Text"
 import { redirect } from "next/navigation"
 import useSidebarStore from "@/store/sidebarStore"
 import useProduct from "@/hooks/useProduct"
 import ProductDetailStep from "./ProductDetailStep"
 import UploadImageStep from "./UploadImagesStep"
-
-const PageTitle = ({
-  onBackClick,
-  isMobile
-}: {
-  onBackClick: () => void
-  isMobile: Boolean
-}) => {
-  return (
-    <Flex
-      justifyContent="space-between"
-      sx={{
-        marginBottom: "1.5rem"
-      }}
-    >
-      <Flex
-        alignItems="center"
-        sx={{ cursor: "pointer" }}
-        onClick={onBackClick}
-      >
-        <Box sx={{ padding: isMobile ? "0" : "12px 10px" }}>
-          <IoIosArrowBack />
-        </Box>
-        {!isMobile && (
-          <Text
-            sx={{
-              fontWeight: "400",
-              fontSize: "11px",
-              letterSpacing: "-1%"
-            }}
-          >
-            Back
-          </Text>
-        )}
-      </Flex>
-      <Box>
-        <CustomTitle title="New Product" />
-      </Box>
-      <Box sx={{ display: "hidden" }} />
-    </Flex>
-  )
-}
+import PageTitle from "./PageTitle"
 
 const CreateProduct = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -93,7 +49,11 @@ const CreateProduct = () => {
         }}
         minHeight={isMobile ? "110vh" : "80vh"}
       >
-        <PageTitle onBackClick={onBackClick} isMobile={isMobile} />
+        <PageTitle
+          onBackClick={onBackClick}
+          isMobile={isMobile}
+          title="New Product"
+        />
         {step === 1 ? (
           <UploadImageStep
             isMobile={isMobile}
@@ -109,6 +69,7 @@ const CreateProduct = () => {
             errors={errors}
             isMobile={isMobile}
             images={selectedImages}
+            setValue={setValue}
           />
         )}
       </Box>
@@ -134,7 +95,9 @@ const CreateProduct = () => {
               padding: "16px 20px"
             }}
             type="submit"
-            onClick={handleSubmit(onSubmit)}
+            onClick={() => {
+              handleSubmit(onSubmit)
+            }}
           >
             List it
           </Button>
