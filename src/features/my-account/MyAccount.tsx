@@ -41,6 +41,7 @@ import "slick-carousel/slick/slick-theme.css"
 import { ChevronLeftIcon } from "@chakra-ui/icons"
 import useTopBanners from "@/hooks/useTopBanners"
 import StoreInformation from "@/components/drawer/StoreInformation"
+import EditStoreInformation from "@/components/drawer/EditStoreInformation"
 
 const MyAccountMerchant = () => {
   const { activeDrawer, setActiveDrawer } = useDrawer()
@@ -66,6 +67,8 @@ const MyAccountMerchant = () => {
         return <AddressesList />
       case "addAddresses":
         return <AddAddresses />
+      case "editStoreInfo":
+        return <EditStoreInformation />
       default:
         return <CustomTitle title="Other Page" />
     }

@@ -3,15 +3,18 @@ import React, { createContext, useState, useContext } from 'react';
 interface DrawerContextProps {
   activeDrawer: string;
   setActiveDrawer: (value: string) => void;
+  selectedEditStoreInfo: string;
+  setSelectedEditStoreInfo: (value: string) => void;
 }
 
 const DrawerContext = createContext<DrawerContextProps | undefined>(undefined);
 
 export const DrawerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeDrawer, setActiveDrawer] = useState<string>("setting");
+  const [selectedEditStoreInfo, setSelectedEditStoreInfo] = useState<string>("");
 
   return (
-    <DrawerContext.Provider value={{ activeDrawer, setActiveDrawer }}>
+    <DrawerContext.Provider value={{ activeDrawer, setActiveDrawer, selectedEditStoreInfo, setSelectedEditStoreInfo }}>
       {children}
     </DrawerContext.Provider>
   );
