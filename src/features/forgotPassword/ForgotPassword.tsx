@@ -44,7 +44,7 @@ function ForgotPassword() {
         flexDirection={"column"}
         gap={"5px"}
         minWidth={isMobile ? "300px" : "440px"}
-        minH={isMobile ? 0 : "600px"}
+        minH={isMobile ? "550px" : "600px"}
         mt={15}
         padding={4}
         backgroundColor={"white"}
@@ -54,11 +54,16 @@ function ForgotPassword() {
           width={isMobile ? "300px" : "440px"}
           wordBreak={"break-word"}
           textAlign={"left"}
+          fontSize={"14px"}
+          color={"#44403C"}
+          fontWeight={500}
         >
           Enter your email address below to receive a password reset link.
         </Text>
-        <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Email</Text>
+        <Box width={isMobile ? "300px" : "440px"} mt={"10px"}>
+          <Text fontSize={"14px"} color={"#44403C"} fontWeight={500}>
+            Email
+          </Text>
           <ControlledField
             name="email"
             control={control}
@@ -70,7 +75,12 @@ function ForgotPassword() {
         </Box>
       </VStack>
 
-      {isMobile ? (
+      <Box
+        width={"100%"}
+        borderTop={"solid 1px #E5E1D8"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <Button
           color={"white"}
           backgroundColor={"#016748"}
@@ -78,29 +88,13 @@ function ForgotPassword() {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"300px"}
-          marginBottom={"90px"}
+          width={"80%"}
+          marginBottom={isMobile ? "90px" : "10px"}
+          isLoading={mutation.isLoading}
         >
           Send link
         </Button>
-      ) : (
-        <Box width={"100%"} borderTop={"solid 1px #E5E1D8"}>
-          <Button
-            color={"white"}
-            backgroundColor={"#016748"}
-            padding={"16px"}
-            borderRadius={"16px"}
-            marginTop={"20px"}
-            type="submit"
-            width={"80%"}
-            marginLeft={"250px"}
-            marginBottom={"10px"}
-            isLoading={mutation.isLoading}
-          >
-            Send link
-          </Button>
-        </Box>
-      )}
+      </Box>
     </Box>
   )
 }

@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation"
 import useSessionStore from "@/store/useSessionStore"
 import { useMutation } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import Cookies from "js-cookie"
-import { REGISTER_API_URL, OTP_API_URL } from "@/config/endpoint"
 import { registerService } from "@/services/api/auth"
 
 type RegisterFormInput = {
@@ -61,7 +59,8 @@ const useRegister = () => {
   const toast = useToast()
 
   const form = useForm<RegisterFormInput>({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
+    defaultValues: { country_code: "63" }
   })
 
   const mutation = useMutation(
@@ -71,7 +70,7 @@ const useRegister = () => {
         // setSessionId(sessionId)
         toast({
           title: "Success",
-          description: "Registration successful",
+          description: "Registration success",
           status: "success",
           duration: 2000,
           isClosable: true
@@ -91,6 +90,7 @@ const useRegister = () => {
   )
 
   const onSubmit = async (payload: RegisterFormInput) => {
+    console.log("pay :", payload)
     const {
       user_type,
       title,
@@ -107,23 +107,24 @@ const useRegister = () => {
 
     const newPayload: RegisterFormInput = {
       user_type: "Seller",
-      title,
-      first_name,
-      last_name,
-      email,
-      password,
-      country_code,
-      phone_number,
-      country_id,
-      city_id,
-      prefers_marketing_updates
+      title: title,
+      first_name: first_name,
+      last_name: last_name,
+      email: email,
+      password: password,
+      country_code: country_code,
+      phone_number: phone_number,
+      country_id: country_id,
+      city_id: city_id,
+      prefers_marketing_updates: prefers_marketing_updates
     }
     mutation.mutate(newPayload)
   }
 
   return {
     ...form,
-    onSubmit
+    onSubmit,
+    mutation
   }
 }
 

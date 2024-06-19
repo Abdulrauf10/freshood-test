@@ -14,12 +14,15 @@ import React, { useEffect, useState } from "react"
 import useResetPassword from "./hooks/useResetPassword"
 import { ImStopwatch } from "react-icons/im"
 import Link from "next/link"
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
+import { useRouter } from "next/navigation"
 
 function ResetPassword() {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [id, setId] = useState<any>(null)
   const [timer, setTimer] = useState(60)
   const [isTimerActive, setIsTimerActive] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -43,18 +46,42 @@ function ResetPassword() {
     onSubmit,
     mutation
   } = useResetPassword(id)
+
+  const fontStyle = {
+    color: "#44403C",
+    fontSize: "14px",
+    fontWeight: 500
+  }
+
   return (
     <Box
       display={"flex"}
       justifyContent={"center"}
       flexDirection={"column"}
       alignItems={"center"}
-      paddingTop={"50px"}
       as="form"
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <HStack position={"relative"} width={"100%"} justifyContent={"center"}>
+      <HStack
+        position={"relative"}
+        width={"100%"}
+        justifyContent={"center"}
+        mt={"30px"}
+      >
+        {!isMobile && (
+          <HStack
+            position="absolute"
+            left="0"
+            onClick={() => router.back()}
+            cursor="pointer"
+            marginLeft={"200px"}
+          >
+            <MdOutlineKeyboardArrowLeft />
+            <Text>Back</Text>
+          </HStack>
+        )}
+
         <CustomTitle title={"create new password"} />
       </HStack>
 
@@ -63,7 +90,7 @@ function ResetPassword() {
         flexDirection={"column"}
         gap={"5px"}
         minWidth={isMobile ? "300px" : "440px"}
-        minH={isMobile ? 0 : "600px"}
+        minH={isMobile ? "550px" : "600px"}
         mt={15}
         padding={4}
         backgroundColor={"white"}
@@ -73,6 +100,7 @@ function ResetPassword() {
           width={isMobile ? "300px" : "440px"}
           wordBreak={"break-word"}
           textAlign={"left"}
+          {...fontStyle}
         >
           We have sent the reset password link to your email
         </Text>
@@ -111,7 +139,7 @@ function ResetPassword() {
         </HStack>
 
         <Box width={isMobile ? "300px" : "440px"} mt={"15px"}>
-          <Text>New password</Text>
+          <Text {...fontStyle}>New password</Text>
           <ControlledField
             name="new_password"
             control={control}
@@ -126,7 +154,12 @@ function ResetPassword() {
         </Box>
       </VStack>
 
-      {isMobile ? (
+      <Box
+        width={"100%"}
+        borderTop={"solid 1px #E5E1D8"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <Button
           color={"white"}
           backgroundColor={"#016748"}
@@ -134,29 +167,13 @@ function ResetPassword() {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"300px"}
-          marginBottom={"90px"}
+          width={"80%"}
+          marginBottom={isMobile ? "90px" : "10px"}
+          isLoading={mutation.isLoading}
         >
           Reset password
         </Button>
-      ) : (
-        <Box width={"100%"} borderTop={"solid 1px #E5E1D8"}>
-          <Button
-            color={"white"}
-            backgroundColor={"#016748"}
-            padding={"16px"}
-            borderRadius={"16px"}
-            marginTop={"20px"}
-            type="submit"
-            width={"80%"}
-            marginLeft={"250px"}
-            marginBottom={"10px"}
-            isLoading={mutation.isLoading}
-          >
-            Reset password
-          </Button>
-        </Box>
-      )}
+      </Box>
     </Box>
   )
 }

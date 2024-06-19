@@ -10,7 +10,7 @@ const ChakraUIProvider: FC<PropsWithChildren> = ({ children }) => (
   <ChakraProvider theme={defaultTheme}>
     <GlobalStyle />
     {children}
-    </ChakraProvider>
+  </ChakraProvider>
 )
 
 export default ChakraUIProvider

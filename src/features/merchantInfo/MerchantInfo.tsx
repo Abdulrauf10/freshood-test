@@ -86,6 +86,13 @@ const MerchantInfo = () => {
     { title: "Verification" }
   ]
 
+  const fontStyle = {
+    color: "#44403C",
+    fontSize: "14px",
+    fontWeight: 500,
+    marginTop: "7px"
+  }
+
   return (
     <Box
       display={"flex"}
@@ -95,13 +102,13 @@ const MerchantInfo = () => {
       as="form"
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      paddingTop={"50px"}
     >
       <HStack
         position={"relative"}
         width={"100%"}
         justifyContent={"center"}
         marginBottom={"50px"}
+        mt={"30px"}
       >
         {!isMobile && (
           <HStack
@@ -131,7 +138,7 @@ const MerchantInfo = () => {
         backgroundColor={"white"}
       >
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Store Name</Text>
+          <Text {...fontStyle}>Store Name</Text>
           <ControlledField
             name="store_name"
             control={control}
@@ -144,7 +151,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Website URL</Text>
+          <Text {...fontStyle}>Website URL</Text>
           <ControlledField
             name="website_url"
             control={control}
@@ -157,7 +164,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Products Count Range</Text>
+          <Text {...fontStyle}>Products Count Range</Text>
           <ControlledReactSelect
             name="products_count_range"
             nameData="products_count_range"
@@ -175,7 +182,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Primary Category</Text>
+          <Text {...fontStyle}>Primary Category</Text>
 
           <CheckboxSelect
             renderPopoverContent={() => (
@@ -220,7 +227,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Sub Category</Text>
+          <Text {...fontStyle}>Sub Category</Text>
 
           <CheckboxSelect
             renderPopoverContent={() => (
@@ -264,7 +271,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>How did you hear about us?</Text>
+          <Text {...fontStyle}>How did you hear about us?</Text>
           <VStack alignItems={"flex-start"}>
             {heardFromOptions.map((option) => (
               <Controller
@@ -294,7 +301,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>About Your Business</Text>
+          <Text {...fontStyle}>About Your Business</Text>
           <ControlledField
             name="about_your_business"
             control={control}
@@ -307,36 +314,25 @@ const MerchantInfo = () => {
         </Box>
       </VStack>
 
-      {isMobile ? (
+      <Box
+        width={"100%"}
+        borderTop={"solid 1px #E5E1D8"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <Button
+          mb={isMobile ? "90px" : "10px"}
           color={"white"}
           backgroundColor={"#016748"}
           padding={"16px"}
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"300px"}
-          marginBottom={"90px"}
+          width={"80%"}
         >
           Submit
         </Button>
-      ) : (
-        <Box width={"100%"} borderTop={"solid 1px #E5E1D8"}>
-          <Button
-            color={"white"}
-            backgroundColor={"#016748"}
-            padding={"16px"}
-            borderRadius={"16px"}
-            marginTop={"20px"}
-            type="submit"
-            width={"80%"}
-            marginLeft={"250px"}
-            marginBottom={"10px"}
-          >
-            Submit
-          </Button>
-        </Box>
-      )}
+      </Box>
     </Box>
   )
 }

@@ -29,8 +29,8 @@ const Sidebar: FC = () => {
   }
 
   const menus = [
-    { icon: RiHome6Line, label: "Home", href: "/" },
-    { icon: FaRegHeart, label: "My Favourite", href: "/favourite" },
+    // { icon: RiHome6Line, label: "Home", href: "/" },
+    // { icon: FaRegHeart, label: "My Favourite", href: "/favourite" },
     { icon: TbMessage, label: "Message", href: "/merchant/message" },
     { icon: CgProfile, label: "My Account", href: "/merchant/my-account" }
   ]
@@ -39,20 +39,26 @@ const Sidebar: FC = () => {
     <>
       {isMobile ? (
         <HStack
-          spacing="10"
+          // spacing={10}
           position="fixed"
           bottom={0}
           width="100%"
-          justifyContent="space-around"
-          height="58px"
+          justifyContent="space-between"
+          height="68px"
           bg="white"
-          boxShadow="md"
+          boxShadow="xs"
           paddingY="2"
           backgroundColor={"white"}
           zIndex={9999}
         >
           {menus.map((menu, key) => (
-            <VStack key={key} justifyContent="center" alignItems="center">
+            <VStack
+              key={key}
+              justifyContent="center"
+              alignItems="center"
+              width={"80%"}
+              pb={"5px"}
+            >
               <Link href={menu.href}>
                 <IconButton
                   icon={<Icon as={menu.icon} boxSize="6" />}
@@ -96,17 +102,11 @@ const Sidebar: FC = () => {
           flexDirection={{ base: "row", md: "column" }}
           zIndex={9999}
         >
-          <Box
-            width={"100%"}
-            display={"flex"}
-            justifyContent={"flex-start"}
-            paddingLeft={"-5px"}
-          >
+          <Box mt={"30px"} ml={"7px"}>
             <IconButton
               icon={isExpanded ? <IoClose /> : <GiHamburgerMenu />}
               onClick={toggleSidebar}
               aria-label="Toggle Sidebar"
-              m="4"
               background={"none"}
               _hover={{ background: "none" }}
             />

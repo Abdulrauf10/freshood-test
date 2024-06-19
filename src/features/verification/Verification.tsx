@@ -75,13 +75,13 @@ const Verification = () => {
       as="form"
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      paddingTop={"50px"}
     >
       <HStack
         position={"relative"}
         width={"100%"}
         justifyContent={"center"}
         marginBottom={"50px"}
+        marginTop={"30px"}
       >
         {!isMobile && (
           <HStack
@@ -109,11 +109,11 @@ const Verification = () => {
         mt={15}
         padding={4}
         backgroundColor={"white"}
-        minH={isMobile ? 0 : "470px"}
+        minH={"470px"}
         alignItems={isMobile ? "flex-start" : "center"}
       >
         <Box marginBottom={"15px"}>
-          <Text color={"#78716C"}>
+          <Text color={"#78716C"} fontSize={"14px"} fontWeight={500}>
             We have sent the code verification to your email{" "}
             <span style={{ color: "#016748", cursor: "pointer" }}>
               Change email address
@@ -159,7 +159,12 @@ const Verification = () => {
         </HStack>
       </VStack>
 
-      {isMobile ? (
+      <Box
+        width={"100%"}
+        borderTop={"solid 1px #E5E1D8"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <Button
           color={"white"}
           backgroundColor={"#016748"}
@@ -167,28 +172,12 @@ const Verification = () => {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"300px"}
-          marginBottom={"90px"}
+          width={"80%"}
+          marginBottom={isMobile ? "90px" : "10px"}
         >
           Submit
         </Button>
-      ) : (
-        <Box width={"100%"} borderTop={"solid 1px #E5E1D8"}>
-          <Button
-            color={"white"}
-            backgroundColor={"#016748"}
-            padding={"16px"}
-            borderRadius={"16px"}
-            marginTop={"20px"}
-            type="submit"
-            width={"80%"}
-            marginLeft={"250px"}
-            marginBottom={"10px"}
-          >
-            Submit
-          </Button>
-        </Box>
-      )}
+      </Box>
     </Box>
   )
 }

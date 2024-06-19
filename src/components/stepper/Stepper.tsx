@@ -13,7 +13,8 @@ import {
   VStack,
   useSteps,
   Text,
-  useMediaQuery
+  useMediaQuery,
+  Box
 } from "@chakra-ui/react"
 
 interface Step {
@@ -25,6 +26,11 @@ interface StepperProps {
   steps: Step[]
   initialStep?: number
   width: string
+}
+
+function CustomStepNumber({ index }: any) {
+  const formattedIndex = (index + 1).toString().padStart(2, "0")
+  return <Box>{formattedIndex}</Box>
 }
 
 const Stepper: React.FC<StepperProps> = ({ steps, initialStep = 0, width }) => {
@@ -53,14 +59,19 @@ const Stepper: React.FC<StepperProps> = ({ steps, initialStep = 0, width }) => {
                     style={{
                       color: `${index === activeStep ? "#016748" : "#A8A29D"}`
                     }}
-                  />
+                  >
+                    {`0${index + 1}`}
+                  </StepNumber>
                 }
                 active={
                   <StepNumber
                     style={{
                       color: `${index === activeStep ? "#016748" : "#A8A29D"}`
                     }}
-                  />
+                  >
+                    {" "}
+                    {`0${index + 1}`}
+                  </StepNumber>
                 }
               />
             </StepIndicator>

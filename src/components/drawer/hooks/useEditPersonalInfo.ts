@@ -5,45 +5,48 @@ import { useRouter } from "next/navigation"
 import useSessionStore from "@/store/useSessionStore"
 import { useMutation } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import Cookies from "js-cookie"
-import { LOGIN_API_URL } from "@/config/endpoint"
-import { LoginService } from "@/services/api/auth"
-import { useActiveMenu } from "@/store/useActiveMenu"
+import { editPersonal } from "@/services/api/auth"
 
-type LoginFormInput = {
-  email: string
-  password: string
+type PersonalInfoFormInput = {
+  title: string
+  first_name: string
+  last_name: string
 }
 
 const schema = yup
   .object({
-    email: yup.string().email().required(),
-    password: yup.string().required()
+    title: yup.string().required(),
+    first_name: yup.string().required(),
+    last_name: yup.string().required()
   })
   .required()
 
-const useLogin = () => {
+const useEditPersonalInfo = () => {
   const { replace } = useRouter()
   const { setSessionId } = useSessionStore()
   const toast = useToast()
-  const { setActiveMenu } = useActiveMenu()
 
-  const form = useForm<LoginFormInput>({
+  const form = useForm<PersonalInfoFormInput>({
     resolver: yupResolver(schema)
   })
 
   const mutation = useMutation(
-    async (payload: LoginFormInput) => LoginService(payload),
+    async (payload: PersonalInfoFormInput) => editPersonal(payload),
 
     {
-      onSuccess: (sessionId) => {
-        replace("/merchant/my-account")
-        setActiveMenu(1)
+      onSuccess: () => {
+        toast({
+          title: "Success",
+          description: "Data updated",
+          status: "success",
+          duration: 2000,
+          isClosable: true
+        })
       },
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Login failed",
+          description: error.message || "Update failed",
           status: "error",
           duration: 2000,
           isClosable: true
@@ -52,15 +55,14 @@ const useLogin = () => {
     }
   )
 
-  const onSubmit = async (data: LoginFormInput) => {
+  const onSubmit = async (data: PersonalInfoFormInput) => {
     mutation.mutate(data)
   }
 
   return {
     ...form,
-    onSubmit,
-    mutation
+    onSubmit
   }
 }
 
-export default useLogin
+export default useEditPersonalInfo
