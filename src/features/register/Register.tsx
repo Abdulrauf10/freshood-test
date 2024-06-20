@@ -25,6 +25,7 @@ import PhoneInput from "react-phone-input-2"
 import "react-phone-input-2/lib/bootstrap.css"
 import { Controller } from "react-hook-form"
 import useCountries from "@/hooks/useCountries"
+import { registerService } from "@/services/api/auth"
 
 const Register = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -37,7 +38,8 @@ const Register = () => {
     handleSubmit,
     onSubmit,
     watch,
-    setValue
+    setValue,
+    mutation
   } = useRegister()
 
   const cityOptions = dataCountries?.data?.flatMap((data) =>
@@ -66,12 +68,19 @@ const Register = () => {
   ]
 
   const handlePhoneChange = (value: any, country: any) => {
-    const countryCode = "+" + country.dialCode
+    const countryCode = country.dialCode
     const phoneNumber = value
       .replace(new RegExp(`^\\+?${country.dialCode}`), "")
       .replace(/[^0-9]/g, "")
     setValue("country_code", countryCode)
     setValue("phone_number", phoneNumber)
+  }
+
+  const fontStyle = {
+    color: "#44403C",
+    fontSize: "14px",
+    fontWeight: 500,
+    marginTop: "7px"
   }
 
   return (
@@ -80,10 +89,10 @@ const Register = () => {
       justifyContent={"center"}
       flexDirection={"column"}
       alignItems={"center"}
+      paddingTop={"30px"}
       as="form"
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-      paddingTop={"50px"}
+      // onSubmit={handleSubmit(onSubmit)}
     >
       <HStack position={"relative"} width={"100%"} justifyContent={"center"}>
         {!isMobile && (
@@ -125,7 +134,7 @@ const Register = () => {
         backgroundColor={"white"}
       >
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Title</Text>
+          <Text {...fontStyle}>Title</Text>
           <ControlledReactSelect
             name="title"
             nameData="title"
@@ -141,7 +150,7 @@ const Register = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>First name</Text>
+          <Text {...fontStyle}>First name</Text>
           <ControlledField
             name="first_name"
             control={control}
@@ -154,7 +163,7 @@ const Register = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Last name</Text>
+          <Text {...fontStyle}>Last name</Text>
           <ControlledField
             name="last_name"
             control={control}
@@ -167,7 +176,7 @@ const Register = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Email</Text>
+          <Text {...fontStyle}>Email</Text>
           <ControlledField
             name="email"
             control={control}
@@ -184,19 +193,19 @@ const Register = () => {
           display={"flex"}
           justifyContent={"flex-start"}
         >
-          <Text>Phone number</Text>
+          <Text {...fontStyle}>Phone number</Text>
         </Box>
 
         <HStack width={isMobile ? "300px" : "440px"}>
           <Controller
             name="country_code"
             control={control}
-            defaultValue="1"
             rules={{ required: "Phone number is required" }}
             render={({ field }) => (
               <PhoneInput
-                country={"us"}
-                enableSearch={true}
+                country={"ph"}
+                onlyCountries={["ph"]}
+                enableSearch={false}
                 value={field.value}
                 onChange={(value, country) => handlePhoneChange(value, country)}
                 inputStyle={{
@@ -210,9 +219,12 @@ const Register = () => {
             )}
           />
         </HStack>
+        {errors.phone_number && (
+          <Text color="red.500">{errors.phone_number?.message}</Text>
+        )}
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Country</Text>
+          <Text {...fontStyle}>Country</Text>
           <ControlledReactSelect
             name="country_id"
             nameData="country_id"
@@ -227,9 +239,12 @@ const Register = () => {
             )}
           />
         </Box>
+        {errors.phone_number && (
+          <Text color="red.500">{errors.country_id?.message}</Text>
+        )}
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>City</Text>
+          <Text {...fontStyle}>City</Text>
           <ControlledReactSelect
             name="city_id"
             nameData="city_id"
@@ -241,9 +256,12 @@ const Register = () => {
             value={cityOptions?.find((val) => val.value == watch("city_id"))}
           />
         </Box>
+        {errors.phone_number && (
+          <Text color="red.500">{errors.city_id?.message}</Text>
+        )}
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text>Password</Text>
+          <Text {...fontStyle}>Password</Text>
           <ControlledField
             name="password"
             control={control}
@@ -262,45 +280,51 @@ const Register = () => {
             watch={watch}
           />
 
-          <Text ml={2}>
+          <Text ml={2} {...fontStyle}>
             To ensure you receive important product and marketing updates from
             Freshood&apos;s email, You can opt out anytime.
           </Text>
         </Flex>
       </VStack>
 
-      {isMobile ? (
+      <Box
+        width={"100%"}
+        borderTop={"solid 1px #E5E1D8"}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <Button
+          marginBottom={isMobile ? "90px" : "10px"}
           color={"white"}
           backgroundColor={"#016748"}
+          fontSize={"16px"}
+          fontWeight={500}
           padding={"16px"}
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
+          width={"80%"}
+          isLoading={mutation.isLoading}
           isDisabled={!watch("prefers_marketing_updates")}
-          width={"300px"}
-          marginBottom={"90px"}
+          onClick={() =>
+            onSubmit({
+              user_type: "Seller",
+              title: watch("title"),
+              first_name: watch("first_name"),
+              last_name: watch("last_name"),
+              email: watch("email"),
+              password: watch("password"),
+              country_code: watch("country_code"),
+              phone_number: watch("phone_number"),
+              country_id: watch("country_id"),
+              city_id: watch("city_id"),
+              prefers_marketing_updates: watch("prefers_marketing_updates")
+            })
+          }
         >
           Get started
         </Button>
-      ) : (
-        <Box width={"100%"} borderTop={"solid 1px #E5E1D8"}>
-          <Button
-            color={"white"}
-            backgroundColor={"#016748"}
-            padding={"16px"}
-            borderRadius={"16px"}
-            marginTop={"20px"}
-            type="submit"
-            isDisabled={!watch("prefers_marketing_updates")}
-            width={"80%"}
-            marginLeft={"250px"}
-            marginBottom={"10px"}
-          >
-            Get started
-          </Button>
-        </Box>
-      )}
+      </Box>
     </Box>
   )
 }

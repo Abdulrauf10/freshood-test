@@ -18,5 +18,6 @@ export const MERCHANT_INFO = {
   ABOUT: `${BASE_API_URL}/users/register/merchant-info`,
   PRODUCT_CATEGORIES: `${BASE_API_URL}/products/categories`,
   TREND_PRODUCTS: `${BASE_API_URL}/products/promo/trending-products`,
-  TOP_BANNERS: `${BASE_API_URL}/products/promo/top-banners`
+  TOP_BANNERS: `${BASE_API_URL}/products/promo/top-banners`,
+  PERSONAL_INFO: `${BASE_API_URL}/users/profile/basic/update`
 }

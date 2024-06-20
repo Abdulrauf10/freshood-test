@@ -1,20 +1,14 @@
 "use client"
 
 import React, { useRef, useState } from "react"
-import { Box, Button, Flex, Grid, GridItem, Text } from "@chakra-ui/react"
+import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react"
 import Image from "next/image"
 import { FaChevronDown } from "react-icons/fa"
 import { CiCamera } from "react-icons/ci"
 import "react-image-crop/dist/ReactCrop.css"
-import CropModal from "./CropModal"
+// import CropModal from "./CropModal"
 
-const SelectedImage = ({
-  largeImage,
-  isMobile
-}: {
-  largeImage: string
-  isMobile: Boolean
-}) => {
+const SelectedImage = ({ largeImage }: { largeImage: string }) => {
   return (
     <Image
       alt={largeImage}
@@ -116,7 +110,7 @@ const UploadImageStep = ({
           }}
         >
           {largeImage ? (
-            <SelectedImage largeImage={largeImage} isMobile={isMobile} />
+            <SelectedImage largeImage={largeImage} />
           ) : (
             <Box
               sx={{
