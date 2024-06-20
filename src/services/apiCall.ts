@@ -62,7 +62,7 @@
 
 // export default apiCall
 
-import { BASE_API_URL } from "@/config/endpoint"
+import { BASE_API_URL, AWS_S3_API_URL } from "@/config/endpoint"
 import useSessionStore from "@/store/useSessionStore"
 import axios, { AxiosInstance } from "axios"
 import cookie from "cookie"
@@ -73,6 +73,14 @@ export const apiClient: AxiosInstance = axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json"
+  }
+})
+
+export const apiAws: AxiosInstance = axios.create({
+  baseURL: AWS_S3_API_URL,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "multipart/form-data"
   }
 })
 
@@ -107,6 +115,9 @@ const apiCall = {
   },
   post(resource: string, params: any, config?: any) {
     return apiClient.post(resource, params, config)
+  },
+  postAws(resource: string, params: any, config?: any) {
+    return apiAws.post(resource, params, config)
   },
   put(resource: string, params: any) {
     return apiClient.put(resource, params)

@@ -8,6 +8,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Skeleton,
   Text,
   useMediaQuery
 } from "@chakra-ui/react"
@@ -26,6 +27,7 @@ import { HiOutlineShare } from "react-icons/hi"
 import { IoChevronForward } from "react-icons/io5"
 import ProductDetailDescription from "./ProductDetailDescription"
 import ProductDetailCarousel from "./ProductDetailCarousel"
+import { Product } from "@/types/product"
 
 const images = [
   "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -55,8 +57,14 @@ const OptionComponent = ({ isMobile }: { isMobile: boolean }) => {
   )
 }
 
-const ProductDetail = () => {
-  const { isExpanded } = useSidebarStore()
+const ProductDetail = ({
+  product,
+  isLoading
+}: {
+  product: Product
+  isLoading: boolean
+}) => {
+  const { isExpanded }: { isExpanded: boolean } = useSidebarStore()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const sideBarWidth = isExpanded ? "200px" : "60px"
 
@@ -77,7 +85,11 @@ const ProductDetail = () => {
           optionComponent={<OptionComponent isMobile={isMobile} />}
         />
         <Flex flexDirection="column">
-          <ProductDetailCarousel isMobile={isMobile} images={images} />
+          <ProductDetailCarousel
+            isLoading={isLoading}
+            isMobile={isMobile}
+            images={product?.images}
+          />
           <Box>
             <Flex
               sx={{
@@ -100,38 +112,43 @@ const ProductDetail = () => {
                     color: "#44403C"
                   }}
                 >
-                  Lili Lemons
+                  <Skeleton isLoaded={!isLoading}>{product?.name}</Skeleton>
                 </Box>
                 <Box>
-                  <Flex alignItems="center">
+                  <Skeleton isLoaded={!isLoading}>
+                    <Flex alignItems="center">
+                      <Text
+                        sx={{
+                          fontSize: isMobile ? "11px" : "14px",
+                          fontWeight: "400",
+                          color: "#1B1917"
+                        }}
+                      >
+                        $
+                      </Text>
+                      <Text
+                        sx={{
+                          fontSize: isMobile ? "20px" : "24px",
+                          fontWeight: "600",
+                          color: "#1B1917"
+                        }}
+                      >
+                        {product?.price}
+                      </Text>
+                    </Flex>
+                  </Skeleton>
+                  <Skeleton isLoaded={!isLoading}>
                     <Text
                       sx={{
-                        fontSize: isMobile ? "11px" : "14px",
+                        fontSize: isMobile ? "14px" : "16px",
                         fontWeight: "400",
-                        color: "#1B1917"
+                        color: "#78716C"
                       }}
                     >
-                      $
+                      Recommended Retail Price {isMobile && <br />} $
+                      {product?.recommended_retail_price}
                     </Text>
-                    <Text
-                      sx={{
-                        fontSize: isMobile ? "20px" : "24px",
-                        fontWeight: "600",
-                        color: "#1B1917"
-                      }}
-                    >
-                      20.00
-                    </Text>
-                  </Flex>
-                  <Text
-                    sx={{
-                      fontSize: isMobile ? "14px" : "16px",
-                      fontWeight: "400",
-                      color: "#78716C"
-                    }}
-                  >
-                    Recommended Retail Price {isMobile && <br />} $39.70
-                  </Text>
+                  </Skeleton>
                 </Box>
               </GridItem>
               <GridItem
@@ -162,7 +179,12 @@ const ProductDetail = () => {
                           color: "#44403C"
                         }}
                       >
-                        $1,323.42
+                        <Skeleton isLoaded={!isLoading}>
+                          $
+                          {product?.minimum_order *
+                            Number(product?.price) *
+                            product?.case_size}
+                        </Skeleton>
                       </Box>
                     </GridItem>
                     <GridItem colSpan={2}>
@@ -237,7 +259,12 @@ const ProductDetail = () => {
         </Flex>
       </Flex>
       <Box sx={{ width: "100%", backgroundColor: "#F5F5F4", height: "12px" }} />
-      <ProductDetailDescription isExpanded={isExpanded} isMobile={isMobile} />
+      <ProductDetailDescription
+        isExpanded={isExpanded}
+        isMobile={isMobile}
+        product={product}
+        isLoading={isLoading}
+      />
     </>
   )
 }

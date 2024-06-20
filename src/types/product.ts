@@ -84,3 +84,44 @@ export type TopBanners = {
 export type TopBannersResponse = {
   data: TopBanners[]
 }
+
+export type Image = {
+  id: number
+  url: string
+}
+export type Store = {
+  id: number
+  name: string
+  image: Image
+}
+
+export type Product = {
+  id: number
+  sub_category: {
+    id: number
+    name: string
+    category: {
+      id: number
+      name: string
+    }
+  }
+  name: string
+  images: Image[]
+  store: Store
+  currency: string
+  price: string
+  case_size: number
+  minimum_order: number
+  popularity_score: number
+  favorites_count: number
+  recommended_retail_price: string
+  description: string
+  weight: number
+  dimension_length: number
+  dimension_width: number
+  dimension_height: number
+}
+
+export type ProductResponse = {
+  data: Product
+}

@@ -28,7 +28,9 @@ const UploadImageStep = ({
   setImgsSrc,
   selectedImages,
   setSelectedImages,
-  setValue
+  setValue,
+  handleSubmit,
+  onSubmit
 }: {
   isMobile: Boolean
   imgsSrc: any
@@ -36,6 +38,8 @@ const UploadImageStep = ({
   selectedImages: string[]
   setSelectedImages: (temp: string[]) => void
   setValue: any
+  handleSubmit: any
+  onSubmit: any
 }) => {
   const onChange = (e: any) => {
     let uniqueArr: string[] = []
@@ -52,6 +56,8 @@ const UploadImageStep = ({
     if (!largeImage) {
       setLargeImage(defaultValue)
     }
+
+    handleSubmit(onSubmit({ folder: "product", file: e.target.files[0] }))
   }
 
   const [largeImage, setLargeImage] = useState("")
@@ -67,11 +73,11 @@ const UploadImageStep = ({
       const index = temp.indexOf(link)
       if (index === -1) {
         temp.push(link)
-        setSelectedImages(temp)
       } else {
         temp.splice(index, 1)
-        setSelectedImages(temp)
       }
+      setSelectedImages(temp)
+      setValue("files", temp)
     }
   }
 
@@ -224,7 +230,6 @@ const UploadImageStep = ({
         onChange={onChange}
         type="file"
         name="file"
-        multiple
         ref={inputImage}
         style={{ display: "none" }}
         accept="image/*"
