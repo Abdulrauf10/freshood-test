@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Box } from "@chakra-ui/react"
+import { Box, Skeleton } from "@chakra-ui/react"
 import Image from "next/image"
 import "react-image-crop/dist/ReactCrop.css"
 import { Swiper, SwiperSlide } from "swiper/react"
@@ -9,6 +9,7 @@ import "swiper/css"
 import "swiper/css/pagination"
 import "./styles.css"
 import { Pagination } from "swiper/modules"
+import { Image as ImageType } from "@/types/product"
 
 const pagination = {
   clickable: true,
@@ -19,10 +20,12 @@ const pagination = {
 
 const ProductDetailCarousel = ({
   isMobile,
-  images
+  images,
+  isLoading
 }: {
+  isLoading: boolean
   isMobile: boolean
-  images: string[]
+  images: ImageType[]
 }) => {
   return (
     <Box sx={{ width: "100%" }}>
@@ -34,28 +37,30 @@ const ProductDetailCarousel = ({
           modules={[Pagination]}
           className="mySwiper"
         >
-          {images.map((link: string) => {
+          {images?.map((image: ImageType) => {
             return (
-              <SwiperSlide key={link}>
-                <Box
-                  sx={{
-                    height: isMobile ? "335px" : "233px",
-                    width: isMobile ? "335px" : "233px",
-                    marginBottom: "32px",
-                    position: "relative",
-                    borderRadius: "24px"
-                  }}
-                >
-                  <Image
-                    alt={link}
-                    src={link}
-                    fill={true}
-                    style={{
-                      objectFit: "cover",
+              <SwiperSlide key={image?.id}>
+                <Skeleton isLoaded={!isLoading}>
+                  <Box
+                    sx={{
+                      height: isMobile ? "335px" : "233px",
+                      width: isMobile ? "335px" : "233px",
+                      marginBottom: "32px",
+                      position: "relative",
                       borderRadius: "24px"
                     }}
-                  />
-                </Box>
+                  >
+                    <Image
+                      alt={image?.url}
+                      src={image?.url}
+                      fill={true}
+                      style={{
+                        objectFit: "contain",
+                        borderRadius: "24px"
+                      }}
+                    />
+                  </Box>
+                </Skeleton>
               </SwiperSlide>
             )
           })}

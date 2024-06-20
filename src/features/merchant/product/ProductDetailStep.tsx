@@ -51,7 +51,7 @@ const ProductDetailStep = ({
               modules={[Pagination]}
               className="mySwiper"
             >
-              {images.map((link: string) => {
+              {images.map((link: any) => {
                 return (
                   <SwiperSlide key={link}>
                     <Box
@@ -64,8 +64,8 @@ const ProductDetailStep = ({
                       }}
                     >
                       <Image
-                        alt={link}
-                        src={link}
+                        alt={link.url}
+                        src={link.url}
                         fill={true}
                         style={{
                           objectFit: "contain",
@@ -111,7 +111,8 @@ const ProductDetailStep = ({
               Product Name
             </Text>
             <ControlledField
-              name="productName"
+              placeholder="Subject"
+              name="name"
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}
@@ -162,6 +163,7 @@ const ProductDetailStep = ({
               Price
             </Text>
             <ControlledField
+              placeholder="$"
               name="price"
               control={control}
               errors={errors}
@@ -181,7 +183,8 @@ const ProductDetailStep = ({
               Case Size
             </Text>
             <ControlledField
-              name="caseSize"
+              name="case_size"
+              placeholder="e.g 5"
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}
@@ -200,13 +203,23 @@ const ProductDetailStep = ({
               Minimum order quantity
             </Text>
             <ControlledField
-              name="minOrderQty"
+              placeholder="e.g 4"
+              name="minimum_order"
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
               backgroundColor={"white"}
             />
+            <Text
+              sx={{
+                color: "#A8A29D",
+                fontSize: isMobile ? "12px" : "14px",
+                fontWeight: "500"
+              }}
+            >
+              minimum order price = $
+            </Text>
           </Box>
           <Box sx={{ width: "100%" }}>
             <Text
@@ -220,6 +233,7 @@ const ProductDetailStep = ({
             </Text>
             <ControlledField
               name="description"
+              placeholder="Enter your message"
               control={control}
               errors={errors}
               fieldType={isMobile ? FieldType.textarea : FieldType.textfield}
@@ -239,6 +253,7 @@ const ProductDetailStep = ({
             </Text>
             <ControlledField
               name="weight"
+              placeholder="Subject"
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}
@@ -256,14 +271,46 @@ const ProductDetailStep = ({
             >
               Product Dimensions (LxWxH) (Optional)
             </Text>
-            <ControlledField
-              name="dimension"
-              control={control}
-              errors={errors}
-              fieldType={FieldType.textfield}
-              borderRadius={"16px"}
-              backgroundColor={"white"}
-            />
+            <Flex gap={2} justifyContent="space-between" alignItems="center">
+              <Box>
+                <ControlledField
+                  fontSize={isMobile ? "14px" : "16px"}
+                  name="dimension_length"
+                  minW="10px"
+                  control={control}
+                  errors={errors}
+                  fieldType={FieldType.textfield}
+                  borderRadius={"16px"}
+                  backgroundColor={"white"}
+                />
+              </Box>
+              x
+              <Box>
+                <ControlledField
+                  fontSize={isMobile ? "14px" : "16px"}
+                  name="dimension_width"
+                  minW="10px"
+                  control={control}
+                  errors={errors}
+                  fieldType={FieldType.textfield}
+                  borderRadius={"16px"}
+                  backgroundColor={"white"}
+                />
+              </Box>
+              x
+              <Box>
+                <ControlledField
+                  fontSize={isMobile ? "14px" : "16px"}
+                  minW="10px"
+                  name="dimension_height"
+                  control={control}
+                  errors={errors}
+                  fieldType={FieldType.textfield}
+                  borderRadius={"16px"}
+                  backgroundColor={"white"}
+                />
+              </Box>
+            </Flex>
           </Box>
         </Flex>
       </Box>

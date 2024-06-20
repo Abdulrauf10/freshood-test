@@ -1,16 +1,29 @@
 "use client"
 
 import React from "react"
-import { Box, Divider, Flex, Grid, GridItem, Text } from "@chakra-ui/react"
+import {
+  Box,
+  Divider,
+  Flex,
+  Grid,
+  GridItem,
+  Skeleton,
+  Text
+} from "@chakra-ui/react"
 import "react-image-crop/dist/ReactCrop.css"
 import { IoChevronForward } from "react-icons/io5"
+import { Product } from "@/types/product"
 
 const ProductDetailDescription = ({
   isExpanded,
-  isMobile
+  isMobile,
+  product,
+  isLoading
 }: {
   isExpanded: boolean
   isMobile: boolean
+  product: Product
+  isLoading: boolean
 }) => {
   const sideBarWidth = isExpanded ? "200px" : "60px"
 
@@ -106,7 +119,10 @@ const ProductDetailDescription = ({
                 </GridItem>
               </Grid>
             </GridItem>
-            <GridItem colSpan={isMobile ? 4 : 2}>
+            <GridItem
+              colSpan={isMobile ? 4 : 2}
+              sx={{ marginLeft: isMobile ? "0" : "1rem" }}
+            >
               <Box
                 sx={{
                   fontWeight: "600",
@@ -123,11 +139,7 @@ const ProductDetailDescription = ({
                   color: "#78716C"
                 }}
               >
-                Fresh and zesty, our lemons are bursting with flavor and perfect
-                for adding a citrusy kick to your favorite dishes and
-                beverages.Grown under the sun in lush orchards, our lemons are
-                hand-picked at peak ripeness to ensure optimal taste and
-                juiciness.
+                {product?.description}
               </Text>
             </GridItem>
           </Grid>

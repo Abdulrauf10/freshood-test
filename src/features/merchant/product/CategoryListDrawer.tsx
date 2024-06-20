@@ -55,7 +55,7 @@ const ItemList = ({
               key={subcategory.id}
               onClick={() => {
                 setSelectedSubCategory(subcategory)
-                setValue("subCategoryId", subcategory.id)
+                setValue("sub_category_id", subcategory.id)
                 onClose()
               }}
             >

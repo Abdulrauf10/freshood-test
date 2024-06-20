@@ -6,30 +6,36 @@ import { useToast } from "@chakra-ui/react"
 import { createProductService } from "@/services/api/products"
 
 type ProductFormInput = {
-  productName: string
-  subCategoryId: string
+  name: string
+  sub_category_id: string
+  currency: string
   price: string
-  caseSize: string
-  minOrderQty: string
+  case_size: string
+  minimum_order: string
+  recommended_retail_price: string
   description?: string
   weight?: string
-  dimension?: string
+  dimension_length?: string
+  dimension_width?: string
+  dimension_height?: string
+  image_ids: number[]
 }
 
 const schema = yup
   .object({
-    productName: yup.string().required(),
-    subCategoryId: yup.string().required(),
+    name: yup.string().required(),
+    sub_category_id: yup.string().required(),
     price: yup.string().required(),
-    caseSize: yup.string().required(),
-    minOrderQty: yup.string().required()
+    case_size: yup.string().required(),
+    minimum_order: yup.string().required(),
+    image_ids: yup.array().of(yup.number().required()).required().min(1)
   })
   .required()
 
 const useProduct = () => {
   const toast = useToast()
 
-  const form = useForm<ProductFormInput>({
+  const form = useForm<any>({
     resolver: yupResolver(schema)
   })
 
@@ -58,7 +64,7 @@ const useProduct = () => {
 
   const onSubmit = async (data: ProductFormInput) => {
     console.log(data)
-    // mutation.mutate(data)
+    mutation.mutate(data)
   }
 
   return {

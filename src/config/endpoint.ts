@@ -4,7 +4,9 @@ export const LOGIN_API_URL = `${BASE_API_URL}/users/login`
 export const LOGOUT_API_URL = `${BASE_API_URL}/users/logout`
 export const REGISTER_API_URL = `${BASE_API_URL}/users/register/create`
 export const OTP_API_URL = `${BASE_API_URL}/users/register/send-email-otp`
-export const CREATE_PRODUCT_API_URL = `${BASE_API_URL}/products/favorites/collections/create`
+export const CREATE_PRODUCT_API_URL = `${BASE_API_URL}/products/stores/mine/create-product`
+export const UPLOAD_IMAGE_API_URL = `${BASE_API_URL}/products/medias/create`
+export const AWS_S3_API_URL = `${process.env.NEXT_PUBLIC_AWS_S3_URL}`
 
 export const AUTH = {
   ME: `${BASE_API_URL}/users/me`,
@@ -19,5 +21,6 @@ export const MERCHANT_INFO = {
   PRODUCT_CATEGORIES: `${BASE_API_URL}/products/categories`,
   TREND_PRODUCTS: `${BASE_API_URL}/products/promo/trending-products`,
   TOP_BANNERS: `${BASE_API_URL}/products/promo/top-banners`,
-  PERSONAL_INFO: `${BASE_API_URL}/users/profile/basic/update`
+  PERSONAL_INFO: `${BASE_API_URL}/users/profile/basic/update`,
+  PRODUCT_DETAIL: `${BASE_API_URL}/products/products`
 }

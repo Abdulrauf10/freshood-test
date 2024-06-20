@@ -5,9 +5,21 @@ import { Box, Button, Flex, Text, useMediaQuery } from "@chakra-ui/react"
 import { redirect } from "next/navigation"
 import useSidebarStore from "@/store/sidebarStore"
 import useProduct from "@/hooks/useProduct"
+import useUploadImage from "@/hooks/useUploadImage"
 import ProductDetailStep from "./ProductDetailStep"
 import UploadImageStep from "./UploadImagesStep"
 import PageTitle from "./PageTitle"
+
+const imagesTemp = [
+  {
+    id: 33,
+    url: "https://freshood-media.s3.ap-southeast-1.amazonaws.com/product/9ab351a2-854d-46a3-84bf-e9167eb3b2a4"
+  },
+  {
+    id: 35,
+    url: "https://freshood-media.s3.ap-southeast-1.amazonaws.com/product/553db39d-351e-4e64-88df-3b24308a6dc7"
+  }
+]
 
 const CreateProduct = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -23,6 +35,14 @@ const CreateProduct = () => {
     onSubmit,
     setValue
   } = useProduct()
+
+  const {
+    formState: { errors: errorsImage },
+    control: controlsImage,
+    handleSubmit: handleSubmitImage,
+    onSubmit: onSubmitImage,
+    setValue: setValueImage
+  } = useUploadImage()
 
   const onBackClick = () => {
     if (step === 2) setStep(1)
@@ -62,13 +82,15 @@ const CreateProduct = () => {
             selectedImages={selectedImages}
             setSelectedImages={setSelectedImages}
             setValue={setValue}
+            handleSubmit={handleSubmitImage}
+            onSubmit={onSubmitImage}
           />
         ) : (
           <ProductDetailStep
             control={control}
             errors={errors}
             isMobile={isMobile}
-            images={selectedImages}
+            images={imagesTemp}
             setValue={setValue}
           />
         )}
@@ -96,6 +118,10 @@ const CreateProduct = () => {
             }}
             type="submit"
             onClick={() => {
+              const imageIds = imagesTemp.map((img) => img.id)
+              setValue("image_ids", imageIds)
+              setValue("currency", "USD")
+              setValue("recommended_retail_price", "10")
               handleSubmit(onSubmit)
             }}
           >
@@ -114,7 +140,7 @@ const CreateProduct = () => {
               padding: "8px",
               cursor: selectedImages.length ? "pointer" : "not-allowed"
             }}
-            onClick={() => (selectedImages.length ? setStep(2) : null)}
+            onClick={() => setStep(2)}
           >
             Next
           </Flex>
