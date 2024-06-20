@@ -57,3 +57,8 @@ export const resetPassword = async (payload: any) => {
   const res = await apiCall.post(AUTH.PASSWORD_RESET, payload)
   return res.data
 }
+
+export const editPersonal = async (payload: any) => {
+  const res = await apiCall.post(MERCHANT_INFO.PERSONAL_INFO, payload)
+  return res.data
+}
