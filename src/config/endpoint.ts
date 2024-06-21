@@ -22,5 +22,6 @@ export const MERCHANT_INFO = {
   TREND_PRODUCTS: `${BASE_API_URL}/products/promo/trending-products`,
   TOP_BANNERS: `${BASE_API_URL}/products/promo/top-banners`,
   PERSONAL_INFO: `${BASE_API_URL}/users/profile/basic/update`,
-  PRODUCT_DETAIL: `${BASE_API_URL}/products/products`
+  PRODUCT_DETAIL: `${BASE_API_URL}/products/products`,
+  PRODUCT_MINE: `${BASE_API_URL}/products/stores/mine`
 }

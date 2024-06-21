@@ -125,3 +125,18 @@ export type Product = {
 export type ProductResponse = {
   data: Product
 }
+
+export type ProductMine = {
+  data: {
+    id: number
+    name: string
+    image: {
+      id: number
+      url: string
+    }
+  }
+}
+
+export type ProductMineResponse = {
+  data: ProductMine[]
+}
