@@ -165,7 +165,11 @@ const MessagePage: React.FC = () => {
   // ...rest of the code
 
   return (
-    <Flex mx={4}>
+    <Flex mx={{
+      base: 4,
+      md: '30vw',
+      lg: '30vw'
+    }}>
       <Flex direction={"column"} gap={4}>
         <HStack>
           <IoIosArrowBack />

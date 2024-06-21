@@ -99,7 +99,7 @@ const CreateProduct = () => {
         justifyContent="center"
         sx={{
           position: "fixed",
-          bottom: isMobile ? "10%" : "0",
+          bottom: isMobile ? "9%" : "0",
           padding: "16px",
           borderTop: "1px solid #E5E1D8",
           width: isMobile ? "100%" : `calc(100% - ${sideBarWidth})`
