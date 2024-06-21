@@ -36,6 +36,9 @@ const ProductDetailStep = ({
       flexDirection={isMobile ? "column" : "row"}
       justifyContent={isMobile ? "center" : "space-between"}
       gap={isMobile ? 4 : 12}
+      sx={{
+        paddingBottom: isMobile ? "18vh" : "10vh"
+      }}
     >
       <Box
         sx={{
