@@ -42,12 +42,18 @@ import { ChevronLeftIcon } from "@chakra-ui/icons"
 import useTopBanners from "@/hooks/useTopBanners"
 import StoreInformation from "@/components/drawer/StoreInformation"
 import EditStoreInformation from "@/components/drawer/EditStoreInformation"
+import useSidebarStore from "@/store/sidebarStore"
+import { useRouter } from "next/navigation"
 
 const MyAccountMerchant = () => {
+  const {
+    isExpanded
+  } = useSidebarStore()
   const { activeDrawer, setActiveDrawer } = useDrawer()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const { dataTrendingProducts, isLoadingProducts } = useTrendingProducts()
   const { dataTopBanners, isLoadingTopBanners } = useTopBanners()
+  const router = useRouter()
 
   const handleDrawer = (drawer: string) => {
     setActiveDrawer(drawer)
@@ -217,12 +223,16 @@ const MyAccountMerchant = () => {
   }
 
   return (
-    <Box>
+    <Box marginLeft={{
+      base: "0",
+      md: isExpanded ? "7.5vw" : "0"
+    
+    }}>
       <Box
         width="full"
         height={{
           base: "45vh",
-          md: "60vh"
+          md: "75%"
         }}
         backgroundColor={"#016748"}
         position={"absolute"}
@@ -271,9 +281,9 @@ const MyAccountMerchant = () => {
           pt={4}
           pb={isMobile ? "10px" : 0}
           width={isMobile ? "300px" : "720px"}
-          marginLeft={isMobile ? "10%" : "25%"}
+          marginLeft={isMobile ? "10%" : "6%"}
         >
-          <Skeleton isLoaded={!isLoadingTopBanners}>
+          <Skeleton isLoaded={!isLoadingTopBanners} minW={'85vw'}>
             <Slider ref={sliderRef} {...settings}>
               {dataTopBanners?.data?.map((data, idx) => (
                 <Image
@@ -316,16 +326,18 @@ const MyAccountMerchant = () => {
           </Box>
         </VStack>
         <HStack
-          mt={{
+          pt={{
             base: "10vh",
-            md: "5vw"
+            md: "10vw"
           }}
           ml={{
             base: "20px",
             md: "5vw"
           }}
         >
-          <Button bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
+          <Button onClick={
+            () => router.push("/merchant/product/create")
+          } bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
             New Product
           </Button>
           <Button bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
@@ -362,7 +374,11 @@ const MyAccountMerchant = () => {
             <Text pt={1}>$1,224.58 min. reorder</Text>
           </HStack>
         </Box>
-        <Tabs isFitted mx={4} colorScheme="green">
+        <Tabs isFitted mx={{
+          base: "0",
+          md: "5vw"
+        
+        }} colorScheme="green">
           <TabList>
             <Tab>
               <Text fontWeight={"700"}>Products</Text>
