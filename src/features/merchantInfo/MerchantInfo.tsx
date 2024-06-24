@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import {
   Box,
   Button,
@@ -27,18 +27,19 @@ import { Controller } from "react-hook-form"
 import CheckboxSelect from "@/components/formHook/CheckBoxSelect"
 import ControlledMultiSelect from "@/components/formHook/ControlledMultiSelect"
 import useProductCategories from "@/hooks/useProductCategories"
+import useSidebarStore from "@/store/sidebarStore"
 
 const MerchantInfo = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [link, setLink] = useState(null)
   const router = useRouter()
-
-  const [stateEmploymentStatus, setStateEmploymentStatus] = useState({
-    checkedOptions: [],
-    checkedAll: false,
-    isOpen: false,
-    searchKey: ""
-  })
+  const { isExpanded } = useSidebarStore()
+  const [value1, setValue1] = useState([])
+  const [value2, setValue2] = useState([])
+  const [value3, setValue3] = useState([])
+  const [value4, setValue4] = useState([])
+  const [value5, setValue5] = useState([])
+  const [value6, setValue6] = useState([])
 
   const {
     formState: { errors },
@@ -53,9 +54,10 @@ const MerchantInfo = () => {
 
   const productCountOptions = [
     { label: "1-10", value: "1_10" },
-    { label: "11-50", value: "11_50" },
+    { label: "11-25", value: "11_25" },
+    { label: "26-50", value: "26_50" },
     { label: "51-100", value: "51_100" },
-    { label: "101-500", value: "101_500" }
+    { label: "More than 100", value: "100_up" }
   ]
 
   const primaryOptions =
@@ -71,6 +73,42 @@ const MerchantInfo = () => {
         value: sub.id
       }))
     ) || []
+
+  const subCategoryOptions1 =
+    dataCategories?.data[0]?.sub_categories?.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    })) || []
+
+  const subCategoryOptions2 =
+    dataCategories?.data[1]?.sub_categories?.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    })) || []
+
+  const subCategoryOptions3 =
+    dataCategories?.data[2]?.sub_categories?.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    })) || []
+
+  const subCategoryOptions4 =
+    dataCategories?.data[3]?.sub_categories?.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    })) || []
+
+  const subCategoryOptions5 =
+    dataCategories?.data[4]?.sub_categories?.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    })) || []
+
+  const subCategoryOptions6 =
+    dataCategories?.data[5]?.sub_categories?.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    })) || []
 
   const heardFromOptions = [
     { label: "Social Media", value: "social_media" },
@@ -203,8 +241,13 @@ const MerchantInfo = () => {
                                 (val) => val !== option.value
                               )
                             : [...(field.value || []), option.value]
+
                           setValue("primary_category_ids", newValue)
                         }}
+                        isDisabled={
+                          watch("primary_category_ids")?.length === 3 &&
+                          !(field.value || []).includes(option.value)
+                        }
                       >
                         {option.label}
                       </Checkbox>
@@ -214,8 +257,7 @@ const MerchantInfo = () => {
               </VStack>
             )}
             select={
-              watch("primary_category_ids")?.length ===
-              subCategoryOptions?.length
+              watch("primary_category_ids")?.length === 3
                 ? "All selected"
                 : `${
                     watch("primary_category_ids")?.length
@@ -226,49 +268,315 @@ const MerchantInfo = () => {
           />
         </Box>
 
-        <Box width={isMobile ? "300px" : "440px"}>
-          <Text {...fontStyle}>Sub Category</Text>
+        <VStack>
+          {watch("primary_category_ids")?.includes(1) && (
+            <Box width={isMobile ? "300px" : "440px"}>
+              <Text {...fontStyle}>Sub Category GranCrops and Cereals</Text>
 
-          <CheckboxSelect
-            renderPopoverContent={() => (
-              <VStack alignItems={"flex-start"}>
-                {subCategoryOptions.map((option: any) => (
-                  <Controller
-                    key={option.value}
-                    name="sub_category_ids"
-                    control={control}
-                    render={({ field }) => (
-                      <Checkbox
-                        isChecked={(field.value || []).includes(option.value)}
-                        onChange={() => {
-                          const newValue = (field.value || []).includes(
-                            option.value
-                          )
-                            ? (field.value || []).filter(
-                                (val) => val !== option.value
-                              )
-                            : [...(field.value || []), option.value]
-                          setValue("sub_category_ids", newValue)
-                        }}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    )}
-                  />
-                ))}
-              </VStack>
-            )}
-            select={
-              watch("sub_category_ids")?.length === subCategoryOptions?.length
-                ? "All selected"
-                : `${
-                    watch("sub_category_ids")?.length
-                      ? watch("sub_category_ids")?.length
-                      : 0
-                  } selected`
-            }
-          />
-        </Box>
+              <CheckboxSelect
+                renderPopoverContent={() => (
+                  <VStack alignItems={"flex-start"}>
+                    {subCategoryOptions1.map((option: any) => (
+                      <Controller
+                        key={option.value}
+                        name="sub_category_ids"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            isChecked={(field.value || []).includes(
+                              option.value
+                            )}
+                            onChange={() => {
+                              const newValue: any = (
+                                field.value || []
+                              ).includes(option.value)
+                                ? (field.value || []).filter(
+                                    (val) => val !== option.value
+                                  )
+                                : [...(field.value || []), option.value]
+
+                              setValue1(newValue)
+
+                              setValue("sub_category_ids", newValue)
+                            }}
+                            // isDisabled={
+                            //   watch("sub_category_ids")?.length === 3 &&
+                            //   !(field.value || []).includes(option.value)
+                            // }
+                          >
+                            {option.label}
+                          </Checkbox>
+                        )}
+                      />
+                    ))}
+                  </VStack>
+                )}
+                select={
+                  watch("sub_category_ids")?.length ===
+                  subCategoryOptions1?.length
+                    ? "All selected"
+                    : `${value1?.length ? value1?.length : 0} selected`
+                }
+              />
+            </Box>
+          )}
+
+          {watch("primary_category_ids")?.includes(2) && (
+            <Box width={isMobile ? "300px" : "440px"}>
+              <Text {...fontStyle}>
+                Sub Category Leafy and Steam Vegetables{" "}
+              </Text>
+
+              <CheckboxSelect
+                renderPopoverContent={() => (
+                  <VStack alignItems={"flex-start"}>
+                    {subCategoryOptions2.map((option: any) => (
+                      <Controller
+                        key={option.value}
+                        name="sub_category_ids"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            isChecked={(field.value || []).includes(
+                              option.value
+                            )}
+                            onChange={() => {
+                              const newValue: any = (
+                                field.value || []
+                              ).includes(option.value)
+                                ? (field.value || []).filter(
+                                    (val) => val !== option.value
+                                  )
+                                : [...(field.value || []), option.value]
+                              setValue2(newValue)
+                              setValue("sub_category_ids", newValue)
+                            }}
+                            // isDisabled={
+                            //   watch("sub_category_ids")?.length === 3 &&
+                            //   !(field.value || []).includes(option.value)
+                            // }
+                          >
+                            {option.label}
+                          </Checkbox>
+                        )}
+                      />
+                    ))}
+                  </VStack>
+                )}
+                select={
+                  watch("sub_category_ids")?.length ===
+                  subCategoryOptions2?.length
+                    ? "All selected"
+                    : `${value2?.length ? value2 : 0} selected`
+                }
+              />
+            </Box>
+          )}
+
+          {watch("primary_category_ids")?.includes(3) && (
+            <Box width={isMobile ? "300px" : "440px"}>
+              <Text {...fontStyle}>Sub Category Fruit Bearing Vegetables</Text>
+
+              <CheckboxSelect
+                renderPopoverContent={() => (
+                  <VStack alignItems={"flex-start"}>
+                    {subCategoryOptions3.map((option: any) => (
+                      <Controller
+                        key={option.value}
+                        name="sub_category_ids"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            isChecked={(field.value || []).includes(
+                              option.value
+                            )}
+                            onChange={() => {
+                              const newValue: any = (
+                                field.value || []
+                              ).includes(option.value)
+                                ? (field.value || []).filter(
+                                    (val) => val !== option.value
+                                  )
+                                : [...(field.value || []), option.value]
+                              setValue3(newValue)
+                              setValue("sub_category_ids", newValue)
+                            }}
+                            // isDisabled={
+                            //   watch("sub_category_ids")?.length === 3 &&
+                            //   !(field.value || []).includes(option.value)
+                            // }
+                          >
+                            {option.label}
+                          </Checkbox>
+                        )}
+                      />
+                    ))}
+                  </VStack>
+                )}
+                select={
+                  watch("sub_category_ids")?.length ===
+                  subCategoryOptions3?.length
+                    ? "All selected"
+                    : `${value3?.length ? value3 : 0} selected`
+                }
+              />
+            </Box>
+          )}
+
+          {watch("primary_category_ids")?.includes(4) && (
+            <Box width={isMobile ? "300px" : "440px"}>
+              <Text {...fontStyle}>
+                Sub Category Root, bulb or tuberous Vegetables
+              </Text>
+
+              <CheckboxSelect
+                renderPopoverContent={() => (
+                  <VStack alignItems={"flex-start"}>
+                    {subCategoryOptions4.map((option: any) => (
+                      <Controller
+                        key={option.value}
+                        name="sub_category_ids"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            isChecked={(field.value || []).includes(
+                              option.value
+                            )}
+                            onChange={() => {
+                              const newValue: any = (
+                                field.value || []
+                              ).includes(option.value)
+                                ? (field.value || []).filter(
+                                    (val) => val !== option.value
+                                  )
+                                : [...(field.value || []), option.value]
+                              setValue4(newValue)
+                              setValue("sub_category_ids", newValue)
+                            }}
+                            // isDisabled={
+                            //   watch("sub_category_ids")?.length === 3 &&
+                            //   !(field.value || []).includes(option.value)
+                            // }
+                          >
+                            {option.label}
+                          </Checkbox>
+                        )}
+                      />
+                    ))}
+                  </VStack>
+                )}
+                select={
+                  watch("sub_category_ids")?.length ===
+                  subCategoryOptions4?.length
+                    ? "All selected"
+                    : `${value4?.length ? value4 : 0} selected`
+                }
+              />
+            </Box>
+          )}
+
+          {watch("primary_category_ids")?.includes(5) && (
+            <Box width={isMobile ? "300px" : "440px"}>
+              <Text {...fontStyle}>
+                Sub Category Tropical and Subtropical Fruits
+              </Text>
+
+              <CheckboxSelect
+                renderPopoverContent={() => (
+                  <VStack alignItems={"flex-start"}>
+                    {subCategoryOptions5.map((option: any) => (
+                      <Controller
+                        key={option.value}
+                        name="sub_category_ids"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            isChecked={(field.value || []).includes(
+                              option.value
+                            )}
+                            onChange={() => {
+                              const newValue: any = (
+                                field.value || []
+                              ).includes(option.value)
+                                ? (field.value || []).filter(
+                                    (val) => val !== option.value
+                                  )
+                                : [...(field.value || []), option.value]
+                              setValue5(newValue)
+                              setValue("sub_category_ids", newValue)
+                            }}
+                            // isDisabled={
+                            //   watch("sub_category_ids")?.length === 3 &&
+                            //   !(field.value || []).includes(option.value)
+                            // }
+                          >
+                            {option.label}
+                          </Checkbox>
+                        )}
+                      />
+                    ))}
+                  </VStack>
+                )}
+                select={
+                  watch("sub_category_ids")?.length ===
+                  subCategoryOptions5?.length
+                    ? "All selected"
+                    : `${value5?.length ? value5 : 0} selected`
+                }
+              />
+            </Box>
+          )}
+
+          {watch("primary_category_ids")?.includes(6) && (
+            <Box width={isMobile ? "300px" : "440px"}>
+              <Text {...fontStyle}>Sub Category Citrus Fruits</Text>
+
+              <CheckboxSelect
+                renderPopoverContent={() => (
+                  <VStack alignItems={"flex-start"}>
+                    {subCategoryOptions6.map((option: any) => (
+                      <Controller
+                        key={option.value}
+                        name="sub_category_ids"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            isChecked={(field.value || []).includes(
+                              option.value
+                            )}
+                            onChange={() => {
+                              const newValue: any = (
+                                field.value || []
+                              ).includes(option.value)
+                                ? (field.value || []).filter(
+                                    (val) => val !== option.value
+                                  )
+                                : [...(field.value || []), option.value]
+                              setValue6(newValue)
+                              setValue("sub_category_ids", newValue)
+                            }}
+                            // isDisabled={
+                            //   watch("sub_category_ids")?.length === 3 &&
+                            //   !(field.value || []).includes(option.value)
+                            // }
+                          >
+                            {option.label}
+                          </Checkbox>
+                        )}
+                      />
+                    ))}
+                  </VStack>
+                )}
+                select={
+                  watch("sub_category_ids")?.length ===
+                  subCategoryOptions6?.length
+                    ? "All selected"
+                    : `${value6?.length ? value6 : 0} selected`
+                }
+              />
+            </Box>
+          )}
+        </VStack>
 
         <Box width={isMobile ? "300px" : "440px"}>
           <Text {...fontStyle}>How did you hear about us?</Text>
@@ -328,7 +636,7 @@ const MerchantInfo = () => {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"80%"}
+          width={isExpanded ? "65%" : "80%"}
         >
           Submit
         </Button>

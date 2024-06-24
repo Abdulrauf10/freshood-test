@@ -26,11 +26,13 @@ import "react-phone-input-2/lib/bootstrap.css"
 import { Controller } from "react-hook-form"
 import useCountries from "@/hooks/useCountries"
 import { registerService } from "@/services/api/auth"
+import useSidebarStore from "@/store/sidebarStore"
 
 const Register = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const router = useRouter()
   const { dataCountries } = useCountries()
+  const { isExpanded } = useSidebarStore()
 
   const {
     formState: { errors },
@@ -303,7 +305,7 @@ const Register = () => {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"80%"}
+          width={isExpanded ? "65%" : "80%"}
           isLoading={mutation.isLoading}
           isDisabled={!watch("prefers_marketing_updates")}
           onClick={() =>

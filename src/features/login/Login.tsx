@@ -31,11 +31,13 @@ import useSessionStore from "@/store/useSessionStore"
 import Link from "next/link"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { useRouter } from "next/navigation"
+import useSidebarStore from "@/store/sidebarStore"
 
 const Login = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const { sessionId } = useSessionStore()
   const router = useRouter()
+  const { isExpanded } = useSidebarStore()
 
   const {
     formState: { errors },
@@ -55,6 +57,7 @@ const Login = () => {
     fontSize: "14px",
     fontWeight: 400
   }
+
   return (
     <Box
       display={"flex"}
@@ -149,7 +152,7 @@ const Login = () => {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"80%"}
+          width={isExpanded ? "65%" : "80%"}
           marginBottom={"10px"}
           isLoading={mutation.isLoading}
         >

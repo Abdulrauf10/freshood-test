@@ -5,6 +5,8 @@ import CustomTitle from "../Text"
 import { IoIosArrowBack } from "react-icons/io"
 import DetailTextElement from "../Text/DetailTextElement"
 import { useDrawer } from "@/context/drawerContext"
+import useGetMe from "@/hooks/useGetMe"
+import useCountries from "@/hooks/useCountries"
 
 interface PersonalInfoProps {
   onBackClick: () => void
@@ -12,6 +14,29 @@ interface PersonalInfoProps {
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ onBackClick }) => {
   const { activeDrawer, setActiveDrawer } = useDrawer()
+  const { dataMe } = useGetMe()
+  const { dataCountries } = useCountries()
+
+  const countryOptions =
+    dataCountries?.data?.map((data) => ({
+      label: data.name,
+      value: data.id
+    })) || []
+
+  const cityOptions = dataCountries?.data?.flatMap((data) =>
+    data.cities.map((sub) => ({
+      label: sub.name,
+      value: sub.id
+    }))
+  )
+
+  const country =
+    countryOptions?.find((data) => data?.value === dataMe?.data?.country)
+      ?.label || " - "
+
+  const city =
+    cityOptions?.find((data) => data?.value === dataMe?.data?.city)?.label ||
+    " - "
   return (
     <>
       <HStack
@@ -32,17 +57,19 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onBackClick }) => {
         <DetailTextElement
           onClick={() => setActiveDrawer("editPersonalInfo")}
           topText="Personal Name"
-          bottomText="Mr. Jacky Chan"
+          bottomText={`${dataMe?.data?.first_name} ${
+            dataMe?.data?.last_name || "-"
+          }`}
         />
-        <DetailTextElement topText="Country" bottomText="Philippine" />
-        <DetailTextElement topText="City" bottomText="Manila" />
+        <DetailTextElement topText="Country" bottomText={country} />
+        <DetailTextElement topText="City" bottomText={city} />
         <DetailTextElement
           topText="Phone Number"
-          bottomText="+63 02 4567 890"
+          bottomText={dataMe?.data?.phone_number || "-"}
         />
         <DetailTextElement
           topText="Email Address"
-          bottomText="jackychan@example.co"
+          bottomText={dataMe?.data?.email || "-"}
         />
         <Text fontSize="12px" color="#78716C">
           The information is used for delivery and customer inquiry purposes.

@@ -24,7 +24,8 @@ const EditPersonalInfo: React.FC<any> = () => {
     onSubmit,
     handleSubmit,
     setValue,
-    watch
+    watch,
+    mutation
   } = useEditPersonalInfo()
 
   const options = [
@@ -101,6 +102,7 @@ const EditPersonalInfo: React.FC<any> = () => {
             marginTop={"20px"}
             type="submit"
             width={"100%"}
+            isLoading={mutation?.isLoading}
           >
             Save
           </Button>
