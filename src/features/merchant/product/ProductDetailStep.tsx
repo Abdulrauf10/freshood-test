@@ -19,7 +19,8 @@ const ProductDetailStep = ({
   errors,
   isMobile,
   images,
-  setValue
+  setValue,
+  defaultValue
 }: any) => {
   const pagination = {
     clickable: true,
@@ -29,7 +30,9 @@ const ProductDetailStep = ({
   }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [selectedSubCategory, setSelectedSubCategory] = useState({}) as any
+  const [selectedSubCategory, setSelectedSubCategory] = useState(
+    defaultValue?.sub_category || {}
+  ) as any
 
   return (
     <Flex
@@ -54,9 +57,9 @@ const ProductDetailStep = ({
               modules={[Pagination]}
               className="mySwiper"
             >
-              {images.map((link: any) => {
+              {images.map((link: any, index: number) => {
                 return (
-                  <SwiperSlide key={link}>
+                  <SwiperSlide key={index}>
                     <Box
                       sx={{
                         height: isMobile ? "80px" : "456px",
@@ -116,6 +119,7 @@ const ProductDetailStep = ({
             <ControlledField
               placeholder="Subject"
               name="name"
+              defaultValue={defaultValue?.name || ""}
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}
@@ -168,6 +172,7 @@ const ProductDetailStep = ({
             <ControlledField
               placeholder="$"
               name="price"
+              defaultValue={defaultValue?.price}
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}
@@ -187,6 +192,7 @@ const ProductDetailStep = ({
             </Text>
             <ControlledField
               name="case_size"
+              defaultValue={defaultValue?.case_size}
               placeholder="e.g 5"
               control={control}
               errors={errors}
@@ -207,6 +213,7 @@ const ProductDetailStep = ({
             </Text>
             <ControlledField
               placeholder="e.g 4"
+              defaultValue={defaultValue?.minimum_order}
               name="minimum_order"
               control={control}
               errors={errors}
@@ -235,6 +242,7 @@ const ProductDetailStep = ({
               Description (Optional)
             </Text>
             <ControlledField
+              defaultValue={defaultValue?.description}
               name="description"
               placeholder="Enter your message"
               control={control}
@@ -255,6 +263,7 @@ const ProductDetailStep = ({
               Weight (Optional)
             </Text>
             <ControlledField
+              defaultValue={defaultValue?.weight}
               name="weight"
               placeholder="Subject"
               control={control}
@@ -277,6 +286,7 @@ const ProductDetailStep = ({
             <Flex gap={2} justifyContent="space-between" alignItems="center">
               <Box>
                 <ControlledField
+                  defaultValue={defaultValue?.dimension_length}
                   fontSize={isMobile ? "14px" : "16px"}
                   name="dimension_length"
                   minW="10px"
@@ -290,6 +300,7 @@ const ProductDetailStep = ({
               x
               <Box>
                 <ControlledField
+                  defaultValue={defaultValue?.dimension_width}
                   fontSize={isMobile ? "14px" : "16px"}
                   name="dimension_width"
                   minW="10px"
@@ -303,6 +314,7 @@ const ProductDetailStep = ({
               x
               <Box>
                 <ControlledField
+                  defaultValue={defaultValue?.dimension_height}
                   fontSize={isMobile ? "14px" : "16px"}
                   minW="10px"
                   name="dimension_height"

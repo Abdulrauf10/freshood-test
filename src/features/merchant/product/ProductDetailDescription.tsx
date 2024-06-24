@@ -123,24 +123,29 @@ const ProductDetailDescription = ({
               colSpan={isMobile ? 4 : 2}
               sx={{ marginLeft: isMobile ? "0" : "1rem" }}
             >
-              <Box
-                sx={{
-                  fontWeight: "600",
-                  fontSize: isMobile ? "14px" : "16px",
-                  color: "#44403C"
-                }}
+              <Skeleton
+                isLoaded={!isLoading}
+                height={isLoading ? "10vh" : "auto"}
               >
-                Description
-              </Box>
-              <Text
-                sx={{
-                  fontWeight: "400",
-                  fontSize: isMobile ? "14px" : "16px",
-                  color: "#78716C"
-                }}
-              >
-                {product?.description}
-              </Text>
+                <Box
+                  sx={{
+                    fontWeight: "600",
+                    fontSize: isMobile ? "14px" : "16px",
+                    color: "#44403C"
+                  }}
+                >
+                  Description
+                </Box>
+                <Text
+                  sx={{
+                    fontWeight: "400",
+                    fontSize: isMobile ? "14px" : "16px",
+                    color: "#78716C"
+                  }}
+                >
+                  {product?.description}
+                </Text>
+              </Skeleton>
             </GridItem>
           </Grid>
           <Flex

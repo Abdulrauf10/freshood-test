@@ -2,13 +2,13 @@
 
 import React, { useState } from "react"
 import { Box, Button, Flex, Text, useMediaQuery } from "@chakra-ui/react"
-import { redirect } from "next/navigation"
 import useSidebarStore from "@/store/sidebarStore"
 import useProduct from "@/hooks/useProduct"
 import useUploadImage from "@/hooks/useUploadImage"
 import ProductDetailStep from "./ProductDetailStep"
 import UploadImageStep from "./UploadImagesStep"
 import PageTitle from "./PageTitle"
+import { useRouter } from "next/navigation"
 
 const imagesTemp = [
   {
@@ -27,6 +27,7 @@ const CreateProduct = () => {
   const [selectedImages, setSelectedImages] = useState([] as string[])
   const [step, setStep] = useState(1)
   const { isExpanded } = useSidebarStore()
+  const { push } = useRouter()
 
   const {
     formState: { errors },
@@ -47,7 +48,7 @@ const CreateProduct = () => {
   const onBackClick = () => {
     if (step === 2) setStep(1)
     else {
-      redirect("/merchant/product/")
+      push("/merchant/my-account")
     }
   }
 
