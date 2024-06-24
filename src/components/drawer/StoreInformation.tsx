@@ -18,6 +18,7 @@ import { IoIosArrowBack } from "react-icons/io"
 import { useDrawer } from "@/context/drawerContext"
 import CustomTitle from "../Text"
 import DetailTextElement from "../Text/DetailTextElement"
+import useGetProductMine from "@/hooks/useGetProductMine"
 
 interface StoreInformationProps {
   onBackClick: () => void
@@ -36,6 +37,8 @@ const StoreInformation: React.FC<StoreInformationProps> = ({ onBackClick }) => {
     setActiveDrawer("editStoreInfo")
     setSelectedEditStoreInfo(selectedField)
   }
+
+  const { dataProductMine } = useGetProductMine()
 
   return (
     <>
@@ -75,39 +78,39 @@ const StoreInformation: React.FC<StoreInformationProps> = ({ onBackClick }) => {
               </HStack>
               <VStack alignItems="start" gap={4} width={"100%"}>
                 <DetailTextElement
-                  onClick={() => handleToEditStore('storeName')}
+                  onClick={() => handleToEditStore("storeName")}
                   topText="Store Name"
-                  bottomText="Example Shop"
+                  bottomText={dataProductMine?.data?.name || "-"}
                 />
                 <DetailTextElement
                   topText="Established Since"
                   bottomText="Opening Soon"
-                  onClick={() => handleToEditStore('establishedSince')}
+                  onClick={() => handleToEditStore("establishedSince")}
                 />
                 <DetailTextElement
                   topText="Physical Stores"
                   bottomText="-"
-                  onClick={() => handleToEditStore('physicalStores')}
+                  onClick={() => handleToEditStore("physicalStores")}
                 />
                 <DetailTextElement
                   topText="Annual Sales"
                   bottomText="HKD 0 - HKD 100,000"
-                  onClick={() => handleToEditStore('annualSales')}
+                  onClick={() => handleToEditStore("annualSales")}
                 />
                 <DetailTextElement
                   topText="Website"
                   bottomText="-"
-                  onClick={() => handleToEditStore('website')}
+                  onClick={() => handleToEditStore("website")}
                 />
                 <DetailTextElement
                   topText="Phones Number"
                   bottomText="-"
-                  onClick={() => handleToEditStore('phoneNumber')}
+                  onClick={() => handleToEditStore("phoneNumber")}
                 />
                 <DetailTextElement
                   topText="Job Title"
                   bottomText="-"
-                  onClick={() => handleToEditStore('jobTitle')}
+                  onClick={() => handleToEditStore("jobTitle")}
                 />
               </VStack>
 
@@ -129,22 +132,22 @@ const StoreInformation: React.FC<StoreInformationProps> = ({ onBackClick }) => {
                 <DetailTextElement
                   topText="Website"
                   bottomText="-"
-                  onClick={() => handleToEditStore('websiteSocial')}
+                  onClick={() => handleToEditStore("websiteSocial")}
                 />
                 <DetailTextElement
                   topText="Instagram"
                   bottomText="-"
-                  onClick={() => handleToEditStore('instagram')}
+                  onClick={() => handleToEditStore("instagram")}
                 />
                 <DetailTextElement
                   topText="Wechat"
                   bottomText="-"
-                  onClick={() => handleToEditStore('wechat')}
+                  onClick={() => handleToEditStore("wechat")}
                 />
                 <DetailTextElement
                   topText="Facebook"
                   bottomText="-"
-                  onClick={() => handleToEditStore('facebook')}
+                  onClick={() => handleToEditStore("facebook")}
                 />
               </VStack>
               <HStack width={"100%"}>
@@ -165,12 +168,12 @@ const StoreInformation: React.FC<StoreInformationProps> = ({ onBackClick }) => {
                 <DetailTextElement
                   topText="How would you categorise your store?"
                   bottomText="-"
-                  onClick={() => handleToEditStore('storeCategory')}
+                  onClick={() => handleToEditStore("storeCategory")}
                 />
                 <DetailTextElement
                   topText="What types of products are your best-sellers?"
                   bottomText="-"
-                  onClick={() => handleToEditStore('bestSellers')}
+                  onClick={() => handleToEditStore("bestSellers")}
                 />
               </VStack>
             </VStack>

@@ -19,3 +19,13 @@ export const getProductDetail = async (id: string) => {
   const res = await apiCall.get(`${MERCHANT_INFO.PRODUCT_DETAIL}/${id}`)
   return res.data
 }
+
+export const getProductMine = async () => {
+  const res = await apiCall.get(MERCHANT_INFO.PRODUCT_MINE)
+  return res.data
+}
+
+export const postProductMine = async (payload: any) => {
+  const res = await apiCall.post(MERCHANT_INFO.PRODUCT_MINE, payload)
+  return res.data
+}

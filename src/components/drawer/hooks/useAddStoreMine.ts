@@ -3,50 +3,50 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useRouter } from "next/navigation"
 import useSessionStore from "@/store/useSessionStore"
-import { useMutation } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import { postVerification } from "@/services/api/auth"
+import { postProductMine } from "@/services/api/product"
 
-type OTPFormInput = {
-  otp: string
+type StoreFormInput = {
+  name: string
+  image_id: number
 }
 
 const schema = yup
   .object({
-    otp: yup
-      .string()
-      .length(6, "OTP must be 6 digits")
-      .required("OTP is required")
+    name: yup.string().required(),
+    image_id: yup.number().required()
   })
   .required()
 
-const useAddVerification = () => {
+const useAddStoreMine = (imageId: any) => {
   const { replace } = useRouter()
   const { setSessionId } = useSessionStore()
   const toast = useToast()
+  const queryCLient = useQueryClient()
 
-  const form = useForm<OTPFormInput>({
+  const form = useForm<StoreFormInput>({
     resolver: yupResolver(schema)
   })
 
   const mutation = useMutation(
-    async (payload: OTPFormInput) => postVerification(payload),
+    async (payload: StoreFormInput) => postProductMine(payload),
 
     {
       onSuccess: () => {
         toast({
-          title: "Successr",
-          description: "Email has been verified",
+          title: "Success",
+          description: "Data saved",
           status: "success",
           duration: 2000,
           isClosable: true
         })
-        replace("/account-review")
+        queryCLient.removeQueries("product-mine")
       },
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: "Wrong OTP",
+          description: error.message || "Login failed",
           status: "error",
           duration: 2000,
           isClosable: true
@@ -55,14 +55,17 @@ const useAddVerification = () => {
     }
   )
 
-  const onSubmit = async (data: OTPFormInput) => {
-    mutation.mutate(data)
+  const onSubmit = async (data: StoreFormInput) => {
+    const { name, image_id } = data
+    const newPayload: StoreFormInput = { name: name, image_id: imageId }
+    mutation.mutate(newPayload)
   }
 
   return {
     ...form,
-    onSubmit
+    onSubmit,
+    mutation
   }
 }
 
-export default useAddVerification
+export default useAddStoreMine

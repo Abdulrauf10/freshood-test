@@ -21,6 +21,7 @@ import ControlledBoxesInput from "@/components/formHook/ControlledBoxesInput"
 import { ImStopwatch } from "react-icons/im"
 import useAddVerification from "./hooks/useAddVerification"
 import { sendOtp } from "@/services/api/auth"
+import useSidebarStore from "@/store/sidebarStore"
 
 const Verification = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -28,6 +29,7 @@ const Verification = () => {
   const [timer, setTimer] = useState(60)
   const [isTimerActive, setIsTimerActive] = useState(true)
   const toast = useToast()
+  const { isExpanded } = useSidebarStore()
 
   const steps = [
     { title: "Account registration" },
@@ -172,7 +174,7 @@ const Verification = () => {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"80%"}
+          width={isExpanded ? "65%" : "80%"}
           marginBottom={isMobile ? "90px" : "10px"}
         >
           Submit

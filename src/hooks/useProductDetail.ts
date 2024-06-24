@@ -4,11 +4,10 @@ import { ProductResponse } from "@/types/product"
 
 const useProductDetail = (id: string) => {
   const { data, isLoading } = useQuery<ProductResponse, Error>(
-    ["product"],
+    ["product", id],
     () => getProductDetail(id),
     {
       onSuccess: (data) => {
-        console.log(data)
         return data
       }
     }

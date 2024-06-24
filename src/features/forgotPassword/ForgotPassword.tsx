@@ -13,9 +13,11 @@ import {
 import React from "react"
 import { useForm } from "react-hook-form"
 import useSendEmail from "./hooks/useSendEmail"
+import useSidebarStore from "@/store/sidebarStore"
 
 function ForgotPassword() {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
+  const { isExpanded } = useSidebarStore()
 
   const {
     control,
@@ -88,7 +90,7 @@ function ForgotPassword() {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"80%"}
+          width={isExpanded ? "65%" : "80%"}
           marginBottom={isMobile ? "90px" : "10px"}
           isLoading={mutation.isLoading}
         >
