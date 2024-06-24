@@ -46,7 +46,7 @@ const useAddVerification = () => {
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Verification failed",
+          description: "Wrong OTP",
           status: "error",
           duration: 2000,
           isClosable: true

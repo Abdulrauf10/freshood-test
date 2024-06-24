@@ -9,7 +9,7 @@ import { postMerchantInfo, sendOtp } from "@/services/api/auth"
 
 type MerchantFormInput = {
   store_name: string
-  website_url: string
+  website_url?: string | null
   products_count_range: string
   primary_category_ids: number[]
   sub_category_ids: number[]
@@ -20,7 +20,7 @@ type MerchantFormInput = {
 const schema = yup
   .object({
     store_name: yup.string().required(),
-    website_url: yup.string().url().required(),
+    website_url: yup.string().url().notRequired().nullable(),
     products_count_range: yup.string().required(),
     primary_category_ids: yup.array().of(yup.number().required()).required(),
     sub_category_ids: yup.array().of(yup.number().required()).required(),
