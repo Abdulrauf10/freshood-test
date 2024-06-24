@@ -22,12 +22,13 @@ const EditProduct = ({ productId }: { productId: string }) => {
   }
 
   const {
-    formState: { errors, isLoading: isLoadingEdit },
+    formState: { errors },
     control,
     handleSubmit,
     onSubmit,
-    setValue
-  } = useEditProduct(() => replace(`/merchant/product/${productId}`), productId)
+    setValue,
+    mutation
+  } = useEditProduct(productId)
 
   const { data, isLoading } = useProductDetail(productId)
   const product: Product = data?.data as Product
@@ -119,7 +120,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
             setValue("id", productId)
             handleSubmit(onSubmit)
           }}
-          isLoading={isLoadingEdit}
+          isLoading={mutation.isLoading}
         >
           Save
         </Button>
