@@ -1,69 +1,71 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import React from "react"
 import {
   Box,
-  Center,
-  Divider,
   Flex,
   Grid,
   GridItem,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Skeleton,
   Text,
   useMediaQuery
 } from "@chakra-ui/react"
-import Image from "next/image"
 import "react-image-crop/dist/ReactCrop.css"
 import useSidebarStore from "@/store/sidebarStore"
 import PageTitle from "./PageTitle"
-import { Swiper, SwiperSlide } from "swiper/react"
-import "swiper/css"
-import "swiper/css/pagination"
-import "./styles.css"
-import { Pagination } from "swiper/modules"
 import { LuUpload } from "react-icons/lu"
 import { BsThreeDots } from "react-icons/bs"
 import { HiOutlineShare } from "react-icons/hi"
-import { IoChevronForward } from "react-icons/io5"
 import ProductDetailDescription from "./ProductDetailDescription"
 import ProductDetailCarousel from "./ProductDetailCarousel"
-import { Product } from "@/types/product"
+import { Image as ImageType, Product } from "@/types/product"
+import useProductDetail from "@/hooks/useProductDetail"
+import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
-const images = [
-  "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-]
-
-const pagination = {
-  clickable: true,
-  renderBullet: function (index: string, className: string) {
-    return '<span class="' + className + '"></span>'
-  }
-}
-
-const OptionComponent = ({ isMobile }: { isMobile: boolean }) => {
+const OptionComponent = ({
+  isMobile,
+  onClick
+}: {
+  isMobile: boolean
+  onClick: () => void
+}) => {
   return (
-    <Flex alignItems="center" gap={8} justifyContent="center" sx={{}}>
+    <Flex alignItems="center" gap={8} justifyContent="center">
       {isMobile && (
         <>
           <LuUpload style={{ cursor: "pointer" }} />
-          <BsThreeDots style={{ cursor: "pointer" }} />
+          <Menu>
+            <MenuButton>
+              <BsThreeDots style={{ cursor: "pointer" }} />
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={onClick}>Edit</MenuItem>
+            </MenuList>
+          </Menu>
         </>
       )}
     </Flex>
   )
 }
 
-const ProductDetail = ({
-  product,
-  isLoading
-}: {
-  product: Product
-  isLoading: boolean
-}) => {
+const ProductDetail = ({ productId }: { productId: string }) => {
+  const { data, isLoading } = useProductDetail(productId)
+  const product: Product = data?.data as Product
+  const router = useRouter()
+
+  const onBackClick = () => {
+    router.push(`/merchant/my-account`)
+  }
+
+  if (!data && !isLoading) {
+    redirect("/not-found")
+  }
   const { isExpanded }: { isExpanded: boolean } = useSidebarStore()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const sideBarWidth = isExpanded ? "200px" : "60px"
@@ -80,15 +82,22 @@ const ProductDetail = ({
         }}
       >
         <PageTitle
-          onBackClick={() => null}
+          onBackClick={onBackClick}
           isMobile={isMobile}
-          optionComponent={<OptionComponent isMobile={isMobile} />}
+          optionComponent={
+            <OptionComponent
+              isMobile={isMobile}
+              onClick={() =>
+                router.push(`/merchant/edit-product/${product?.id}`)
+              }
+            />
+          }
         />
         <Flex flexDirection="column">
           <ProductDetailCarousel
             isLoading={isLoading}
             isMobile={isMobile}
-            images={product?.images}
+            images={product?.images as ImageType[]}
           />
           <Box>
             <Flex
@@ -101,7 +110,18 @@ const ProductDetail = ({
               gap={8}
             >
               <HiOutlineShare style={{ cursor: "pointer", fontSize: "22px" }} />
-              <BsThreeDots style={{ cursor: "pointer", fontSize: "22px" }} />
+              <Menu>
+                <MenuButton>
+                  <BsThreeDots
+                    style={{ cursor: "pointer", fontSize: "22px" }}
+                  />
+                </MenuButton>
+                <MenuList>
+                  <Link href={`/merchant/edit-product/${product?.id}`}>
+                    <MenuItem>Edit</MenuItem>
+                  </Link>
+                </MenuList>
+              </Menu>
             </Flex>
             <Grid templateColumns="repeat(4, 1fr)" gap={6}>
               <GridItem colSpan={isMobile ? 4 : 2}>

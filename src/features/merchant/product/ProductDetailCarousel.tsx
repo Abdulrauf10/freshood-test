@@ -18,6 +18,40 @@ const pagination = {
   }
 }
 
+const CardSwiper = ({
+  image,
+  isLoading,
+  isMobile
+}: {
+  image: ImageType
+  isMobile: boolean
+  isLoading: boolean
+}) => {
+  return (
+    <Skeleton isLoaded={!isLoading}>
+      <Box
+        sx={{
+          height: isMobile ? "335px" : "233px",
+          width: isMobile ? "335px" : "233px",
+          marginBottom: "32px",
+          position: "relative",
+          borderRadius: "24px"
+        }}
+      >
+        <Image
+          alt={image?.url}
+          src={image?.url}
+          fill={true}
+          style={{
+            objectFit: "contain",
+            borderRadius: "24px"
+          }}
+        />
+      </Box>
+    </Skeleton>
+  )
+}
+
 const ProductDetailCarousel = ({
   isMobile,
   images,
@@ -29,43 +63,29 @@ const ProductDetailCarousel = ({
 }) => {
   return (
     <Box sx={{ width: "100%" }}>
-      <Box sx={{ width: "100%" }}>
-        <Swiper
-          slidesPerView={isMobile ? 1 : 4}
-          pagination={pagination as any}
-          spaceBetween={isMobile ? 8 : 0}
-          modules={[Pagination]}
-          className="mySwiper"
-        >
-          {images?.map((image: ImageType) => {
-            return (
-              <SwiperSlide key={image?.id}>
-                <Skeleton isLoaded={!isLoading}>
-                  <Box
-                    sx={{
-                      height: isMobile ? "335px" : "233px",
-                      width: isMobile ? "335px" : "233px",
-                      marginBottom: "32px",
-                      position: "relative",
-                      borderRadius: "24px"
-                    }}
-                  >
-                    <Image
-                      alt={image?.url}
-                      src={image?.url}
-                      fill={true}
-                      style={{
-                        objectFit: "contain",
-                        borderRadius: "24px"
-                      }}
-                    />
-                  </Box>
-                </Skeleton>
-              </SwiperSlide>
-            )
-          })}
-        </Swiper>
-      </Box>
+      <Skeleton height={isLoading ? "20vh" : "auto"} isLoaded={!isLoading}>
+        <Box sx={{ width: "100%" }}>
+          <Swiper
+            slidesPerView={isMobile ? 1 : 4}
+            pagination={pagination as any}
+            spaceBetween={isMobile ? 8 : 0}
+            modules={[Pagination]}
+            className="mySwiper"
+          >
+            {images?.map((image: ImageType, index: number) => {
+              return (
+                <SwiperSlide key={index}>
+                  <CardSwiper
+                    image={image}
+                    isLoading={isLoading}
+                    isMobile={isMobile}
+                  />
+                </SwiperSlide>
+              )
+            })}
+          </Swiper>
+        </Box>
+      </Skeleton>
     </Box>
   )
 }

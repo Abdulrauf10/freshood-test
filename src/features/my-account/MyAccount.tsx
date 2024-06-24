@@ -44,11 +44,10 @@ import StoreInformation from "@/components/drawer/StoreInformation"
 import EditStoreInformation from "@/components/drawer/EditStoreInformation"
 import useSidebarStore from "@/store/sidebarStore"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 const MyAccountMerchant = () => {
-  const {
-    isExpanded
-  } = useSidebarStore()
+  const { isExpanded } = useSidebarStore()
   const { activeDrawer, setActiveDrawer } = useDrawer()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const { dataTrendingProducts, isLoadingProducts } = useTrendingProducts()
@@ -223,11 +222,12 @@ const MyAccountMerchant = () => {
   }
 
   return (
-    <Box marginLeft={{
-      base: "0",
-      md: isExpanded ? "7.5vw" : "0"
-    
-    }}>
+    <Box
+      marginLeft={{
+        base: "0",
+        md: isExpanded ? "7.5vw" : "0"
+      }}
+    >
       <Box
         width="full"
         height={{
@@ -283,7 +283,7 @@ const MyAccountMerchant = () => {
           width={isMobile ? "300px" : "720px"}
           marginLeft={isMobile ? "10%" : "6%"}
         >
-          <Skeleton isLoaded={!isLoadingTopBanners} minW={'85vw'}>
+          <Skeleton isLoaded={!isLoadingTopBanners} minW={"85vw"}>
             <Slider ref={sliderRef} {...settings}>
               {dataTopBanners?.data?.map((data, idx) => (
                 <Image
@@ -335,11 +335,11 @@ const MyAccountMerchant = () => {
             md: "5vw"
           }}
         >
-          <Button onClick={
-            () => router.push("/merchant/product/create")
-          } bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
-            New Product
-          </Button>
+          <Link href="/merchant/create-product">
+            <Button bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
+              New Product
+            </Button>
+          </Link>
           <Button bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
             Credit
           </Button>
@@ -374,11 +374,14 @@ const MyAccountMerchant = () => {
             <Text pt={1}>$1,224.58 min. reorder</Text>
           </HStack>
         </Box>
-        <Tabs isFitted mx={{
-          base: "0",
-          md: "5vw"
-        
-        }} colorScheme="green">
+        <Tabs
+          isFitted
+          mx={{
+            base: "0",
+            md: "5vw"
+          }}
+          colorScheme="green"
+        >
           <TabList>
             <Tab>
               <Text fontWeight={"700"}>Products</Text>
