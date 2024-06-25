@@ -6,7 +6,9 @@ const nextConfig = {
       "source.unsplash.com",
       "images.unsplash.com",
       "kappa.lol",
-      "freshood-media.s3.ap-southeast-1.amazonaws.com"
+      "freshood-media.s3.ap-southeast-1.amazonaws.com",
+      "static.sendbird.com",
+      "app.capacitor.software"
     ]
   }
 }

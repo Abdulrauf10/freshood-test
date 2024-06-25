@@ -31,6 +31,17 @@ const USER_ID = process.env.NEXT_PUBLIC_SENDBIRD_USER_ID as string
 const defaultProfileUrl =
   "https://atech-capacitor.s3.ap-southeast-1.amazonaws.com/dev/c1d7c2f4-aaa3-4ff1-bb9d-6363a1556264%20-%20cropped-image"
 
+interface Message {
+  id: string;
+  timestamp: number; // Unix timestamp
+  message?: string;
+  url?: string;
+  name?: string;
+  type?: string;
+  isFileMessage: () => boolean;
+}
+
+
 const MessagePage: React.FC = () => {
   const [sb, setSb] = useState<SendBird.SendBirdInstance | null>(null)
   const [channels, setChannels] = useState<any[]>([])
@@ -70,23 +81,32 @@ const MessagePage: React.FC = () => {
     })
   }, [])
 
+
   useEffect(() => {
     if (sb) {
-      channels.forEach((channel: any) => {
-        channel.onMessageReceived = (channel: any, message: any) => {
-          setUnreadMessages((prevCount) => prevCount + 1)
-        }
-      })
-    }
+      // Create a unique identifier for the handler
+      const handlerId = new Date().getTime().toString();
 
-    return () => {
-      if (sb) {
-        channels.forEach((channel) => {
-          channel.onMessageReceived = null
-        })
-      }
+      // Create a new ChannelHandler
+      const channelHandler = new sb.ChannelHandler();
+
+      // Define what happens when a new message is received
+      channelHandler.onMessageReceived = (channel, message) => {
+        if (activeChannel?.url === channel.url) {
+          setMessages((prevMessages: any) => [...prevMessages, message]);
+        }
+        setUnreadMessages((prevCount) => prevCount + 1);
+      };
+
+      // Register the ChannelHandler with the SendBird instance
+      sb.addChannelHandler(handlerId, channelHandler);
+
+      // Cleanup function to unregister the ChannelHandler
+      return () => {
+        sb.removeChannelHandler(handlerId);
+      };
     }
-  }, [sb, channels])
+  }, [sb, channels, activeChannel]); // Re-run this effect if `sb` changes
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -102,7 +122,6 @@ const MessagePage: React.FC = () => {
         })
       } else {
         // Handle file upload
-        console.log(file)
         const channel = channels.find(
           (channel) => channel.url === activeChannel?.url
         )
@@ -162,17 +181,179 @@ const MessagePage: React.FC = () => {
   }
 
   const typeChat = ["All", "Buying", "Selling", "Unread", "Archived"]
-  // ...rest of the code
+
+  function groupMessagesByTime(messages: Message[]): Map<string, Message[]> {
+    const groupedMessages = new Map<string, Message[]>();
+
+    messages.forEach((message: any) => {
+      const date = new Date(message.createdAt);
+      const timeKey = date.toLocaleString('en-US', {
+        day: '2-digit', // 2 digit day
+        month: '2-digit', // 2 digit month
+        hour: '2-digit', // 2 digit hour
+        minute: '2-digit', // 2 digit minute
+        hour12: true // Menggunakan format 12 jam dengan AM/PM
+      });
+
+      if (!groupedMessages.has(timeKey)) {
+        groupedMessages.set(timeKey, []);
+      }
+
+      groupedMessages.get(timeKey)?.push(message);
+    });
+
+    return groupedMessages;
+  }
+
+  const groupedMessages = groupMessagesByTime(messages);
+
+  if (activeChannel) {
+    return (
+      <Flex gap={4} direction={"column"} mx={{
+        base: 4,
+        md: '200px',
+        lg: '200px'
+      }}>
+        <Flex direction={"column"} gap={4}>
+          <HStack width={"full"} justifyContent={"space-between"}>
+            <IoIosArrowBack cursor={"pointer"} onClick={() => {
+              setActiveChannel(null)
+            }} />
+            <Flex w={"full"} justifyContent={"center"}>
+              <CustomTitle title="Messages" />
+            </Flex>
+          </HStack>
+          <HStack width={"full"}>
+            {/* <Image
+              src={activeChannel?.members.find(
+                (member: any) => member.userId !== USER_ID
+              )?.plainProfileUrl || defaultProfileUrl}
+              alt="Profile Picture"
+              width={50}
+              height={50}
+              style={{
+                borderRadius: "50%",
+                overflow: "hidden",
+                width: "50px",
+                height: "50px"
+              }}
+            /> */}
+            <Flex pl={4} justifyContent={"center"} w={"full"}>
+              <Text color={"#1B1917"} fontWeight={"600"}>
+                {
+                  activeChannel?.members.find(
+                    (member: any) => member.userId !== USER_ID
+                  )?.nickname
+                }
+
+              </Text>
+            </Flex>
+          </HStack>
+          <Flex direction={"column"} gap={2} minHeight={{
+            base: '65vh',
+            md: '70vh',
+            lg: '70vh'
+          }} maxHeight={{
+            base: '65vh',
+            md: '70vh',
+            lg: '70vh'
+          }} px={4} overflow={"auto"} css={{
+            '&::-webkit-scrollbar': {
+              display: 'none', // Untuk Chrome, Safari, dan Opera
+            },
+            '-ms-overflow-style': 'none',  // Untuk IE dan Edge
+            'scrollbarWidth': 'none', // Untuk Firefox
+          }}>
+            {Array.from(groupedMessages.entries()).map(([time, groupedMessages]) => (
+              <Flex direction={"column"} key={time}>
+                <Flex justifyContent={"center"}>
+                <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>{time}</div>
+                </Flex>
+                {groupedMessages.map((message: any, index: number) => {
+                  const isOutgoingMessage = message.sender.userId === USER_ID; // Contoh: bandingkan userId dari pengirim dengan userId pengguna saat ini
+
+                  // Style untuk pesan keluar (pesan yang Anda kirim)
+                  const outgoingMessageStyle = {
+                    backgroundColor: "#DCF8C6", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
+                    color: "black", // Warna teks
+                    padding: "8px 12px", // Padding di dalam balon pesan
+                    borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
+                    maxWidth: "60%", // Maksimal lebar pesan
+                    margin: "4px 0", // Margin antar pesan
+                    alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
+                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                  };
+
+                  // Style untuk pesan masuk (pesan dari orang lain)
+                  const incomingMessageStyle = {
+                    backgroundColor: "#FFFFFF", // Warna latar putih untuk pesan masuk
+                    color: "black", // Warna teks
+                    padding: "8px 12px", // Padding di dalam balon pesan
+                    borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
+                    maxWidth: "60%", // Maksimal lebar pesan
+                    margin: "4px 0", // Margin antar pesan
+                    alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
+                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                  };
+
+                  const messageStyle: any = isOutgoingMessage ? outgoingMessageStyle : incomingMessageStyle
+                  if (message.isFileMessage()) {
+                    const fileMessage = message as SendBird.FileMessage;
+                    if (fileMessage.type && fileMessage.type.startsWith('image/')) {
+                      return (
+                        <div key={index} style={messageStyle}>
+                          <a href={fileMessage.url} target="_blank" rel="noopener noreferrer">
+                            <img src={fileMessage.url} alt={fileMessage.name} style={{ maxWidth: '100%', height: 'auto' }} />
+                          </a>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div key={index} style={messageStyle}>
+                          <a href={fileMessage.url} download>
+                            {fileMessage.name}
+                          </a>
+                        </div>
+                      );
+                    }
+                  } else {
+                    return (
+                      <p key={index} style={messageStyle}>{message.message}</p>
+                    );
+                  }
+                })}
+              </Flex>))}
+
+          </Flex>
+        </Flex>
+        <Divider />
+        <HStack>
+
+          <Input value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              sendMessage(activeChannel?.url as string);
+              setMessage(''); // Opsional: Bersihkan input setelah mengirim
+            }
+          }} />
+          <Box position="relative">
+            <Input cursor={"pointer"} type="file" onChange={handleFileChange} opacity="0" position="absolute" zIndex="1" />
+            <IconButton aria-label="Upload file" icon={<AttachmentIcon />} />
+          </Box>
+        </HStack>
+        <Button disabled={!message} onClick={() => sendMessage(activeChannel?.url as string)}>Send</Button>
+      </Flex>
+    )
+  }
 
   return (
     <Flex mx={{
       base: 4,
-      md: '30vw',
-      lg: '30vw'
+      md: '200px',
+      lg: '200px'
     }}>
-      <Flex direction={"column"} gap={4}>
+      <Flex w={"full"} direction={"column"} gap={4}>
         <HStack>
-          <IoIosArrowBack />
+          {/* <IoIosArrowBack /> */}
           <Flex w={"full"} justifyContent={"center"}>
             <CustomTitle title="Messages" />
           </Flex>
@@ -183,7 +364,7 @@ const MessagePage: React.FC = () => {
           </InputLeftElement>
           <Input borderRadius={"xl"} placeholder="Search" />
         </InputGroup>
-        <Flex maxW={"768px"} flexWrap={"wrap"} gap={2}>
+        <Flex flexWrap={"wrap"} gap={2}>
           {typeChat.map((type, index) => (
             <Button
               borderWidth={1}
@@ -220,6 +401,7 @@ const MessagePage: React.FC = () => {
               />
               <Text color={"#78716C"}>25/30 Used</Text>
             </HStack>
+            <Text color={"#016748"}>Learn More</Text>
           </VStack>
         </Flex>
         {/* {userProfile?.profileUrl && (
@@ -229,6 +411,9 @@ const MessagePage: React.FC = () => {
                     )} */}
         <VStack alignItems={"start"} gap={4}>
           {channels.map((channel, index) => {
+            const user = channel.members.find(
+              (member: any) => member.userId !== USER_ID
+            )
             const flatColors = [
               "#1abc9c",
               "#2ecc71",
@@ -248,17 +433,29 @@ const MessagePage: React.FC = () => {
                   cursor={"pointer"}
                   justifyContent={"space-between"}
                   onClick={() => selectChannel(channel)}
+                  width={"full"}
                 >
                   <HStack>
-                    <Box
-                      w="50px"
-                      h="50px"
-                      borderRadius={"full"}
-                      backgroundColor={flatColors[index]}
+                    <Image
+                      src={user?.plainProfileUrl || defaultProfileUrl}
+                      alt="Profile Picture"
+                      width={50}
+                      height={50}
+                      // borderRadius={"50%"}
+                      style={{
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                        width: "50px",
+                        height: "50px"
+                      }}
                     />
                     <VStack pl={4} alignItems={"start"}>
                       <Text color={"#78716C"} fontSize={"11px"}>
-                        Brand Name
+                        {
+                          channel.members.find(
+                            (member: any) => member.userId !== USER_ID
+                          )?.nickname
+                        }
                       </Text>
                       <Text>
                         {channel.lastMessage
@@ -271,20 +468,23 @@ const MessagePage: React.FC = () => {
                     <Text>
                       {channel.lastMessage
                         ? new Date(
-                            channel.lastMessage.createdAt
-                          ).toLocaleDateString()
+                          channel.lastMessage.createdAt
+                        ).toLocaleDateString()
                         : ""}
                     </Text>
-                    <Box
-                      w="30px"
-                      h="30px"
-                      borderRadius={"full"}
-                      backgroundColor={"#016748"}
-                    >
-                      <Text color={"white"} textAlign="center" pt={1}>
-                        {unreadMessages}
-                      </Text>
-                    </Box>
+                    {unreadMessages && unreadMessages > 0 && (
+                      <Box
+                        w="30px"
+                        h="30px"
+                        borderRadius={"full"}
+                        backgroundColor={"#016748"}
+                      >
+                        <Text color={"white"} textAlign="center" pt={1}>
+                          {unreadMessages}
+                        </Text>
+                      </Box>
+                    )}
+
                   </VStack>
                   {/* <Heading as="h2">{channel.name}</Heading>
                             <Heading as="h3">Members</Heading>
