@@ -4,6 +4,8 @@ import * as yup from "yup"
 import { useMutation, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import { editProductService } from "@/services/api/products"
+import { ProductResponse } from "@/types/product"
+import { useRouter } from "next/navigation"
 
 type EditProductFormInput = {
   id: string
@@ -33,21 +35,32 @@ const schema = yup
   })
   .required()
 
-const useEditProduct = (redirect: () => void, productId: string) => {
+const useEditProduct = (productId: string) => {
   const queryClient = useQueryClient()
   const toast = useToast()
-
+  const { push } = useRouter()
   const form = useForm<any>({
     resolver: yupResolver(schema)
   })
+  let result: ProductResponse
 
   const mutation = useMutation(
     async (payload: EditProductFormInput) =>
-      editProductService(payload).then((data) => {}),
+      editProductService(payload).then((data) => {
+        result = data
+      }),
     {
       onSuccess: (sessionId) => {
+        console.log(result.data.id)
         queryClient.invalidateQueries(["product", productId])
-        redirect()
+        push(`/merchant/product/${result.data.id}`)
+        toast({
+          title: "Success",
+          description: "Update Product",
+          status: "success",
+          duration: 2000,
+          isClosable: true
+        })
       },
       onError: (error: any) => {
         toast({
@@ -67,7 +80,8 @@ const useEditProduct = (redirect: () => void, productId: string) => {
 
   return {
     ...form,
-    onSubmit
+    onSubmit,
+    mutation
   }
 }
 

@@ -34,7 +34,8 @@ const CreateProduct = () => {
     control,
     handleSubmit,
     onSubmit,
-    setValue
+    setValue,
+    mutation
   } = useProduct()
 
   const {
@@ -125,6 +126,7 @@ const CreateProduct = () => {
               setValue("recommended_retail_price", "10")
               handleSubmit(onSubmit)
             }}
+            isLoading={mutation.isLoading}
           >
             List it
           </Button>
