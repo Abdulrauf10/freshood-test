@@ -4,6 +4,8 @@ import * as yup from "yup"
 import { useMutation } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import { createProductService } from "@/services/api/products"
+import { useRouter } from "next/navigation"
+import { ProductResponse } from "@/types/product"
 
 type ProductFormInput = {
   name: string
@@ -34,23 +36,31 @@ const schema = yup
 
 const useProduct = () => {
   const toast = useToast()
+  const { push } = useRouter()
 
   const form = useForm<any>({
     resolver: yupResolver(schema)
   })
 
+  let result: ProductResponse
+
   const mutation = useMutation(
     async (payload: ProductFormInput) =>
       createProductService(payload).then((data) => {
-        console.log(payload)
-        console.log("resp: ", data)
+        result = data
       }),
     {
       onSuccess: (sessionId) => {
-        console.log("sess :", sessionId)
+        push(`/merchant/product/${result.data.id}`)
+        toast({
+          title: "Success",
+          description: "Create Product",
+          status: "success",
+          duration: 2000,
+          isClosable: true
+        })
       },
       onError: (error: any) => {
-        console.log(error)
         toast({
           title: "Error",
           description: error.message || "Create Product failed",
@@ -63,13 +73,13 @@ const useProduct = () => {
   )
 
   const onSubmit = async (data: ProductFormInput) => {
-    console.log(data)
     mutation.mutate(data)
   }
 
   return {
     ...form,
-    onSubmit
+    onSubmit,
+    mutation
   }
 }
 

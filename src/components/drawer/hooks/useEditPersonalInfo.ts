@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useRouter } from "next/navigation"
 import useSessionStore from "@/store/useSessionStore"
-import { useMutation } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import { editPersonal } from "@/services/api/auth"
 
@@ -25,6 +25,7 @@ const useEditPersonalInfo = () => {
   const { replace } = useRouter()
   const { setSessionId } = useSessionStore()
   const toast = useToast()
+  const queryClient = useQueryClient()
 
   const form = useForm<PersonalInfoFormInput>({
     resolver: yupResolver(schema)
@@ -35,6 +36,7 @@ const useEditPersonalInfo = () => {
 
     {
       onSuccess: () => {
+        queryClient.removeQueries("data-me")
         toast({
           title: "Success",
           description: "Data updated",
@@ -61,7 +63,8 @@ const useEditPersonalInfo = () => {
 
   return {
     ...form,
-    onSubmit
+    onSubmit,
+    mutation
   }
 }
 

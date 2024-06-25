@@ -16,6 +16,7 @@ import { ImStopwatch } from "react-icons/im"
 import Link from "next/link"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { useRouter } from "next/navigation"
+import useSidebarStore from "@/store/sidebarStore"
 
 function ResetPassword() {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -23,6 +24,7 @@ function ResetPassword() {
   const [timer, setTimer] = useState(60)
   const [isTimerActive, setIsTimerActive] = useState(true)
   const router = useRouter()
+  const { isExpanded } = useSidebarStore()
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -167,7 +169,7 @@ function ResetPassword() {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
-          width={"80%"}
+          width={isExpanded ? "65%" : "80%"}
           marginBottom={isMobile ? "90px" : "10px"}
           isLoading={mutation.isLoading}
         >
