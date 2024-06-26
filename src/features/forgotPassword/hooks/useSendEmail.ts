@@ -46,8 +46,7 @@ const useSendEmail = () => {
     async (payload: EmailFormInput) => sendEmailForgotPassword(payload),
 
     {
-      onSuccess: (sessionId) => {
-        // replace("/")
+      onSuccess: () => {
         toast({
           title: "Success",
           description: "Check your email",
@@ -55,6 +54,7 @@ const useSendEmail = () => {
           duration: 2000,
           isClosable: true
         })
+        replace("/resend-email")
       },
       onError: (error: any) => {
         console.log(error)

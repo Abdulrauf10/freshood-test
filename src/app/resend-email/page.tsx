@@ -1,7 +1,5 @@
 "use client"
 import CustomTitle from "@/components/Text"
-import ControlledField from "@/components/formHook/ControlledField"
-import { FieldType } from "@/types/form"
 import {
   Box,
   Button,
@@ -11,26 +9,21 @@ import {
   useMediaQuery
 } from "@chakra-ui/react"
 import React, { useEffect, useState } from "react"
-import useResetPassword from "./hooks/useResetPassword"
 import { ImStopwatch } from "react-icons/im"
 import Link from "next/link"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { useRouter } from "next/navigation"
 import useSidebarStore from "@/store/sidebarStore"
+import useGetMe from "@/hooks/useGetMe"
 
-function ResetPassword() {
+function ResendPassword() {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [id, setId] = useState<any>(null)
   const [timer, setTimer] = useState(60)
   const [isTimerActive, setIsTimerActive] = useState(true)
   const router = useRouter()
   const { isExpanded } = useSidebarStore()
-
-  useEffect(() => {
-    const url = new URL(window.location.href)
-    const idParam = url.pathname.split("/").pop()
-    setId(idParam || null)
-  }, [])
+  const { dataMe } = useGetMe()
 
   useEffect(() => {
     if (timer > 0 && isTimerActive) {
@@ -40,14 +33,6 @@ function ResetPassword() {
       setIsTimerActive(false)
     }
   }, [timer, isTimerActive])
-
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    onSubmit,
-    mutation
-  } = useResetPassword(id)
 
   const fontStyle = {
     color: "#44403C",
@@ -61,9 +46,6 @@ function ResetPassword() {
       justifyContent={"center"}
       flexDirection={"column"}
       alignItems={"center"}
-      as="form"
-      method="POST"
-      onSubmit={handleSubmit(onSubmit)}
     >
       <HStack
         position={"relative"}
@@ -84,7 +66,7 @@ function ResetPassword() {
           </HStack>
         )}
 
-        <CustomTitle title={"create new password"} />
+        <CustomTitle title={"forgot password"} />
       </HStack>
 
       <VStack
@@ -93,21 +75,39 @@ function ResetPassword() {
         gap={"5px"}
         minWidth={isMobile ? "300px" : "440px"}
         minH={isMobile ? "550px" : "600px"}
-        mt={15}
+        mt={"70px"}
         padding={4}
         backgroundColor={"white"}
-        alignItems={isMobile ? "flex-start" : "center"}
+        alignItems={"center"}
       >
-        {/* <Text
-          width={isMobile ? "300px" : "440px"}
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
           wordBreak={"break-word"}
-          textAlign={"left"}
-          {...fontStyle}
+          width={isMobile ? "300px" : "440px"}
         >
-          We have sent the reset password link to your email
-        </Text>
+          <Text {...fontStyle} textAlign={"center"}>
+            We have sent the reset password link to your email{" "}
+            <span>
+              <Link href={"/forgot-password"}>
+                <Button
+                  color={"#016748"}
+                  fontSize={"14px"}
+                  border={"none"}
+                  background={"none"}
+                  _hover={{ backgroundColor: "none" }}
+                  // isDisabled={isTimerActive === true ? true : false}
+                  fontWeight={500}
+                >
+                  Change email address
+                </Button>
+              </Link>
+            </span>
+          </Text>
+        </Box>
+
         <HStack
-          justifyContent={"flex-start"}
+          justifyContent={"center"}
           wordBreak={"break-word"}
           width={isMobile ? "300px" : "440px"}
         >
@@ -130,54 +130,19 @@ function ResetPassword() {
         </HStack>
 
         <HStack
-          justifyContent={"flex-start"}
+          justifyContent={"center"}
           wordBreak={"break-word"}
           width={isMobile ? "300px" : "440px"}
+          mt={"-10px"}
         >
           <ImStopwatch />
           <Text color={"#78716C"} cursor={"pointer"} fontSize={"12px"}>
             Send code again in 00:{timer < 10 ? `0${timer}` : timer}
           </Text>
-        </HStack> */}
-
-        <Box width={isMobile ? "300px" : "440px"} mt={"40px"}>
-          <Text {...fontStyle}>New password</Text>
-          <ControlledField
-            name="new_password"
-            control={control}
-            errors={errors}
-            fieldType={FieldType.textfield}
-            borderRadius={"16px"}
-            backgroundColor={"white"}
-          />
-          <Text fontSize={"11px"} fontWeight={500} color={"#A8A29D"}>
-            Password must be at least 6 characters.
-          </Text>
-        </Box>
+        </HStack>
       </VStack>
-
-      <Box
-        width={"100%"}
-        borderTop={"solid 1px #E5E1D8"}
-        display={"flex"}
-        justifyContent={"center"}
-      >
-        <Button
-          color={"white"}
-          backgroundColor={"#016748"}
-          padding={"16px"}
-          borderRadius={"16px"}
-          marginTop={"20px"}
-          type="submit"
-          width={isExpanded ? "65%" : "80%"}
-          marginBottom={isMobile ? "90px" : "10px"}
-          isLoading={mutation.isLoading}
-        >
-          Reset password
-        </Button>
-      </Box>
     </Box>
   )
 }
 
-export default ResetPassword
+export default ResendPassword
