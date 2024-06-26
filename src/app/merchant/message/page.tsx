@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import SendBird from "sendbird"
 import {
   Box,
@@ -15,7 +15,11 @@ import {
   InputGroup,
   InputLeftElement,
   Progress,
-  Divider
+  Divider,
+  useDisclosure,
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
+  Tooltip,
+  Center
 } from "@chakra-ui/react"
 import { AttachmentIcon } from "@chakra-ui/icons"
 import Image from "next/image"
@@ -41,6 +45,7 @@ interface Message {
   isFileMessage: () => boolean;
 }
 
+type MessageType = 'buying' | 'selling' | 'unread' | 'archived';
 
 const MessagePage: React.FC = () => {
   const [sb, setSb] = useState<SendBird.SendBirdInstance | null>(null)
@@ -52,6 +57,8 @@ const MessagePage: React.FC = () => {
   const [messages, setMessages] = useState<any>([])
   const [selectedTypeChat, setSelectedTypeChat] = useState<string>("All")
   const [unreadMessages, setUnreadMessages] = useState(0)
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toast = useToast()
   const form = useForm<any>()
@@ -150,9 +157,20 @@ const MessagePage: React.FC = () => {
 
   const sendMessage = (channelUrl: string) => {
     const channel = channels.find((channel) => channel.url === channelUrl)
+    const params: any = new sb!.UserMessageParams();
+    params.message = message;
+    // params.customType = 'buying';
+    // params.data = JSON.stringify({   // A pair of key-value
+    //   'productName': 'Golden Kiwi',
+    //   'totalProductPrice': 2143.80,
+    //   'unitPrice': 23.82,
+    //   'quantity': 90,
+    //   'productImage':
+    //     'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Kiwifruit_%27Gold%27_cross_section.jpg/1200px-Kiwifruit_%27Gold%27_cross_section.jpg'
+    // });
     if (channel) {
       channel.sendUserMessage(
-        message,
+        params,
         "",
         "",
         function (message: any, error: any) {
@@ -163,10 +181,17 @@ const MessagePage: React.FC = () => {
           console.log("Message sent")
           setMessage("") // Mengosongkan input
           selectChannel(channel) // Memperbarui daftar pesan
+          scrollToBottom();
         }
       )
     }
   }
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const selectChannel = (channel: any) => {
     setActiveChannel(channel)
@@ -206,6 +231,106 @@ const MessagePage: React.FC = () => {
   }
 
   const groupedMessages = groupMessagesByTime(messages);
+
+  useEffect(() => {
+    if (activeChannel && sb) {
+      // Asumsikan activeChannel adalah ID atau instance dari saluran yang aktif
+      // Dan sb.groupChannel.getChannel() adalah cara untuk mendapatkan instance saluran
+      // Berikut adalah contoh menggunakan instance method
+      const markMessagesAsRead = async () => {
+        const channel = await sb.GroupChannel.getChannel(activeChannel.url);
+        await channel.markAsRead(); // Menandai semua pesan di saluran sebagai dibaca
+      };
+
+      markMessagesAsRead().catch(console.error);
+    }
+  }, [activeChannel, sb]);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const RenderModal = () => {
+    let messageStyle = {
+      backgroundColor: "#F5F5F4", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
+      color: "black", // Warna teks
+      padding: "12px 18px", // Padding di dalam balon pesan
+      borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
+      maxWidth: "60%", // Maksimal lebar pesan
+      margin: "4px 0", // Margin antar pesan
+      alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
+      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+    }
+
+
+    return (
+      <Modal  size={'xl'} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent borderRadius={'2xl'}>
+          <ModalCloseButton />
+          <ModalBody mt={10}>
+            {/* Modal Body Content Here */}
+            <VStack w={"full"}>
+              <HStack w={"full"} alignItems={"flex-end"}>
+                <Box h={'40px'} w={'40px'} borderRadius={'full'} bgColor={"black"} />
+                <Flex style={messageStyle} alignItems="center">
+                  <Image src={'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Kiwifruit_%27Gold%27_cross_section.jpg/1200px-Kiwifruit_%27Gold%27_cross_section.jpg'} alt="Product Image" width={100} height={100} style={{
+                    borderRadius: '12px',
+                    overflow: 'hidden'
+
+                  }} />
+                  <VStack gap={0} alignItems="start" pl={4}>
+                    <Text color={'#44403C'} fontSize={"14px"} fontWeight={"600"}>{'Golden Kiwi'}</Text>
+                    <Text color={"#016748"} fontSize={"20px"} fontWeight={"600"}>$2143.80</Text>
+                    <Text color={"#78716C"} fontSize={"14px"}>Unit Price: {`$23.82 Qty: 90`}</Text>
+                  </VStack>
+                </Flex>
+              </HStack>
+              <Box style={{...messageStyle, backgroundColor:'#1B1917', color:'white',  borderRadius:'50px'}}>
+              <Text>Sure!</Text>
+              </Box>
+            </VStack>
+              <VStack>
+              <Text color={'#44403C'} fontSize={'16px'} fontWeight={'600'}>Unlock Chat</Text>
+              <Text color={'#44403C'} maxW={'335px'} textAlign={"center"}>Unlock chat with your client by 
+              subscribing now! Start growing your business with Freshood today!</Text>
+            </VStack>
+
+          </ModalBody>
+
+          <ModalFooter justifyContent={'center'}>
+          <Button borderRadius={"16px"} bgColor={"#016748"} color={"white"} w="full">Learn more</Button>
+
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    )
+  }
+
+  interface ChatBubbleProps {
+    message: string;
+    direction: 'incoming' | 'outgoing';
+  }
+  
+  const ChatBubble: React.FC<ChatBubbleProps> = ({ message, direction }) => {
+    return (
+      <Tooltip label={direction === 'incoming' ? "Incoming" : "Outgoing"} placement={direction === 'incoming' ? "right" : "left"} hasArrow>
+        <Box
+          bg={direction === 'incoming' ? "blue.100" : "green.100"}
+          p={3}
+          borderRadius="lg"
+          maxWidth="60%"
+          ml={direction === 'incoming' ? "0" : "auto"}
+          mr={direction === 'outgoing' ? "0" : "auto"}
+          boxShadow="md"
+        >
+          {message}
+        </Box>
+      </Tooltip>
+    );
+  };
 
   if (activeChannel) {
     return (
@@ -267,18 +392,20 @@ const MessagePage: React.FC = () => {
             {Array.from(groupedMessages.entries()).map(([time, groupedMessages]) => (
               <Flex direction={"column"} key={time}>
                 <Flex justifyContent={"center"}>
-                <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>{time}</div>
+                  <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>{time}</div>
                 </Flex>
                 {groupedMessages.map((message: any, index: number) => {
+                  const lastGroup: any = groupedMessages[groupedMessages.length - 1];
+                  const isLastMessage = message.messageId === lastGroup.messageId;
                   const isOutgoingMessage = message.sender.userId === USER_ID; // Contoh: bandingkan userId dari pengirim dengan userId pengguna saat ini
 
                   // Style untuk pesan keluar (pesan yang Anda kirim)
                   const outgoingMessageStyle = {
-                    backgroundColor: "#DCF8C6", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
+                    backgroundColor: "#F5F5F4", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
                     color: "black", // Warna teks
                     padding: "8px 12px", // Padding di dalam balon pesan
                     borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
-                    maxWidth: "60%", // Maksimal lebar pesan
+                    maxWidth: "70%", // Maksimal lebar pesan
                     margin: "4px 0", // Margin antar pesan
                     alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
                     boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
@@ -286,7 +413,7 @@ const MessagePage: React.FC = () => {
 
                   // Style untuk pesan masuk (pesan dari orang lain)
                   const incomingMessageStyle = {
-                    backgroundColor: "#FFFFFF", // Warna latar putih untuk pesan masuk
+                    backgroundColor: "#F5F5F4", // Warna latar putih untuk pesan masuk
                     color: "black", // Warna teks
                     padding: "8px 12px", // Padding di dalam balon pesan
                     borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
@@ -296,12 +423,13 @@ const MessagePage: React.FC = () => {
                     boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
                   };
 
+
                   const messageStyle: any = isOutgoingMessage ? outgoingMessageStyle : incomingMessageStyle
                   if (message.isFileMessage()) {
                     const fileMessage = message as SendBird.FileMessage;
                     if (fileMessage.type && fileMessage.type.startsWith('image/')) {
                       return (
-                        <div key={index} style={messageStyle}>
+                        <div ref={isLastMessage ? messagesEndRef : null} key={index} style={messageStyle}>
                           <a href={fileMessage.url} target="_blank" rel="noopener noreferrer">
                             <img src={fileMessage.url} alt={fileMessage.name} style={{ maxWidth: '100%', height: 'auto' }} />
                           </a>
@@ -309,7 +437,7 @@ const MessagePage: React.FC = () => {
                       );
                     } else {
                       return (
-                        <div key={index} style={messageStyle}>
+                        <div ref={isLastMessage ? messagesEndRef : null} key={index} style={messageStyle}>
                           <a href={fileMessage.url} download>
                             {fileMessage.name}
                           </a>
@@ -317,13 +445,29 @@ const MessagePage: React.FC = () => {
                       );
                     }
                   } else {
+                    if (message.customType === 'buying' && message.data) {
+                      const data = JSON.parse(message.data);
+                      return (
+                        <Flex onClick={onOpen} cursor={"pointer"} ref={isLastMessage ? messagesEndRef : null} key={index} style={messageStyle} alignItems="center">
+                          <Image src={data.productImage} alt="Product Image" width={100} height={100} style={{
+                            borderRadius: '12px',
+                            overflow: 'hidden'
+
+                          }} />
+                          <VStack gap={0} alignItems="start" pl={4}>
+                            <Text color={'#44403C'} fontSize={"14px"} fontWeight={"600"}>{data.productName}</Text>
+                            <Text color={"#016748"} fontSize={"20px"} fontWeight={"600"}>{'$' + data.totalProductPrice}</Text>
+                            <Text color={"#78716C"} fontSize={"14px"}>Unit Price: {`$${data.unitPrice} Qty: ${data.quantity}`}</Text>
+                          </VStack>
+                        </Flex>
+                      );
+                    }
                     return (
-                      <p key={index} style={messageStyle}>{message.message}</p>
+                      <p ref={isLastMessage ? messagesEndRef : null} key={index} style={messageStyle}>{message.message}</p>
                     );
                   }
                 })}
               </Flex>))}
-
           </Flex>
         </Flex>
         <Divider />
@@ -341,6 +485,8 @@ const MessagePage: React.FC = () => {
           </Box>
         </HStack>
         <Button disabled={!message} onClick={() => sendMessage(activeChannel?.url as string)}>Send</Button>
+        <RenderModal />
+
       </Flex>
     )
   }
@@ -472,7 +618,7 @@ const MessagePage: React.FC = () => {
                         ).toLocaleDateString()
                         : ""}
                     </Text>
-                    {unreadMessages && unreadMessages > 0 && (
+                    {channel?.unreadMessageCount && channel?.unreadMessageCount > 0 && (
                       <Box
                         w="30px"
                         h="30px"
@@ -480,7 +626,7 @@ const MessagePage: React.FC = () => {
                         backgroundColor={"#016748"}
                       >
                         <Text color={"white"} textAlign="center" pt={1}>
-                          {unreadMessages}
+                          {channel?.unreadMessageCount}
                         </Text>
                       </Box>
                     )}
