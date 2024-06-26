@@ -8,7 +8,8 @@ const nextConfig = {
       "kappa.lol",
       "freshood-media.s3.ap-southeast-1.amazonaws.com",
       "static.sendbird.com",
-      "app.capacitor.software"
+      "app.capacitor.software",
+      'upload.wikimedia.org'
     ]
   }
 }
