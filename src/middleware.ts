@@ -4,7 +4,7 @@ import { NextRequest } from "next/server"
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   const userToken = request.cookies.get("sessionid")
-  console.log("token", request.cookies)
+  console.log("token", userToken)
   // if (path === "/login" && userToken) {
   //   // If user is already logged in and tries to access login page, redirect to home
   //   return NextResponse.redirect(new URL("/", request.url))

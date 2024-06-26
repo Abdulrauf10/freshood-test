@@ -9,10 +9,16 @@ import { postMerchantInfo, sendOtp } from "@/services/api/auth"
 
 type MerchantFormInput = {
   store_name: string
-  website_url?: string | null
+  website_url: string
   products_count_range: string
   primary_category_ids: number[]
   sub_category_ids: number[]
+  sub_category_ids1?: any[] | null
+  sub_category_ids2?: any[] | null
+  sub_category_ids3?: any[] | null
+  sub_category_ids4?: any[] | null
+  sub_category_ids5?: any[] | null
+  sub_category_ids6?: any[] | null
   heard_from: string[]
   about_your_business: string
 }
@@ -20,10 +26,16 @@ type MerchantFormInput = {
 const schema = yup
   .object({
     store_name: yup.string().required(),
-    website_url: yup.string().url().notRequired().nullable(),
+    website_url: yup.string().url().required(),
     products_count_range: yup.string().required(),
     primary_category_ids: yup.array().of(yup.number().required()).required(),
     sub_category_ids: yup.array().of(yup.number().required()).required(),
+    sub_category_ids1: yup.array().notRequired().nullable(),
+    sub_category_ids2: yup.array().notRequired().nullable(),
+    sub_category_ids3: yup.array().notRequired().nullable(),
+    sub_category_ids4: yup.array().notRequired().nullable(),
+    sub_category_ids5: yup.array().notRequired().nullable(),
+    sub_category_ids6: yup.array().notRequired().nullable(),
     heard_from: yup.array().of(yup.string().required()).required(),
     about_your_business: yup.string().required()
   })
@@ -55,7 +67,7 @@ const useMerchantInfo = () => {
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Submission failed",
+          description: error.error || "Submission failed",
           status: "error",
           duration: 2000,
           isClosable: true
@@ -70,7 +82,8 @@ const useMerchantInfo = () => {
 
   return {
     ...form,
-    onSubmit
+    onSubmit,
+    mutation
   }
 }
 
