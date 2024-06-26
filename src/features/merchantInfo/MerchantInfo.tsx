@@ -47,7 +47,8 @@ const MerchantInfo = () => {
     handleSubmit,
     onSubmit,
     watch,
-    setValue
+    setValue,
+    mutation
   } = useMerchantInfo()
 
   const { dataCategories } = useProductCategories()
@@ -129,6 +130,17 @@ const MerchantInfo = () => {
     fontSize: "14px",
     fontWeight: 500,
     marginTop: "7px"
+  }
+
+  const updateValueId = () => {
+    setValue("sub_category_ids", [
+      ...value1,
+      ...value2,
+      ...value3,
+      ...value4,
+      ...value5,
+      ...value6
+    ])
   }
 
   return (
@@ -279,7 +291,7 @@ const MerchantInfo = () => {
                     {subCategoryOptions1.map((option: any) => (
                       <Controller
                         key={option.value}
-                        name="sub_category_ids"
+                        name="sub_category_ids1"
                         control={control}
                         render={({ field }) => (
                           <Checkbox
@@ -297,7 +309,8 @@ const MerchantInfo = () => {
 
                               setValue1(newValue)
 
-                              setValue("sub_category_ids", newValue)
+                              updateValueId()
+                              setValue("sub_category_ids1", newValue)
                             }}
                             // isDisabled={
                             //   watch("sub_category_ids")?.length === 3 &&
@@ -312,8 +325,7 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  watch("sub_category_ids")?.length ===
-                  subCategoryOptions1?.length
+                  value1?.length === subCategoryOptions1?.length
                     ? "All selected"
                     : `${value1?.length ? value1?.length : 0} selected`
                 }
@@ -333,7 +345,7 @@ const MerchantInfo = () => {
                     {subCategoryOptions2.map((option: any) => (
                       <Controller
                         key={option.value}
-                        name="sub_category_ids"
+                        name="sub_category_ids2"
                         control={control}
                         render={({ field }) => (
                           <Checkbox
@@ -348,8 +360,11 @@ const MerchantInfo = () => {
                                     (val) => val !== option.value
                                   )
                                 : [...(field.value || []), option.value]
+
                               setValue2(newValue)
-                              setValue("sub_category_ids", newValue)
+                              updateValueId()
+
+                              setValue("sub_category_ids2", newValue)
                             }}
                             // isDisabled={
                             //   watch("sub_category_ids")?.length === 3 &&
@@ -364,10 +379,9 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  watch("sub_category_ids")?.length ===
-                  subCategoryOptions2?.length
+                  value2?.length === subCategoryOptions2?.length
                     ? "All selected"
-                    : `${value2?.length ? value2 : 0} selected`
+                    : `${value2?.length ? value2?.length : 0} selected`
                 }
               />
             </Box>
@@ -383,7 +397,7 @@ const MerchantInfo = () => {
                     {subCategoryOptions3.map((option: any) => (
                       <Controller
                         key={option.value}
-                        name="sub_category_ids"
+                        name="sub_category_ids3"
                         control={control}
                         render={({ field }) => (
                           <Checkbox
@@ -399,7 +413,9 @@ const MerchantInfo = () => {
                                   )
                                 : [...(field.value || []), option.value]
                               setValue3(newValue)
-                              setValue("sub_category_ids", newValue)
+
+                              updateValueId()
+                              setValue("sub_category_ids3", newValue)
                             }}
                             // isDisabled={
                             //   watch("sub_category_ids")?.length === 3 &&
@@ -414,10 +430,9 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  watch("sub_category_ids")?.length ===
-                  subCategoryOptions3?.length
+                  value3?.length === subCategoryOptions3?.length
                     ? "All selected"
-                    : `${value3?.length ? value3 : 0} selected`
+                    : `${value3?.length ? value3?.length : 0} selected`
                 }
               />
             </Box>
@@ -435,7 +450,7 @@ const MerchantInfo = () => {
                     {subCategoryOptions4.map((option: any) => (
                       <Controller
                         key={option.value}
-                        name="sub_category_ids"
+                        name="sub_category_ids4"
                         control={control}
                         render={({ field }) => (
                           <Checkbox
@@ -451,7 +466,9 @@ const MerchantInfo = () => {
                                   )
                                 : [...(field.value || []), option.value]
                               setValue4(newValue)
-                              setValue("sub_category_ids", newValue)
+                              updateValueId()
+
+                              setValue("sub_category_ids4", newValue)
                             }}
                             // isDisabled={
                             //   watch("sub_category_ids")?.length === 3 &&
@@ -466,10 +483,9 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  watch("sub_category_ids")?.length ===
-                  subCategoryOptions4?.length
+                  value4?.length === subCategoryOptions4?.length
                     ? "All selected"
-                    : `${value4?.length ? value4 : 0} selected`
+                    : `${value4?.length ? value4?.length : 0} selected`
                 }
               />
             </Box>
@@ -487,7 +503,7 @@ const MerchantInfo = () => {
                     {subCategoryOptions5.map((option: any) => (
                       <Controller
                         key={option.value}
-                        name="sub_category_ids"
+                        name="sub_category_ids5"
                         control={control}
                         render={({ field }) => (
                           <Checkbox
@@ -503,7 +519,9 @@ const MerchantInfo = () => {
                                   )
                                 : [...(field.value || []), option.value]
                               setValue5(newValue)
-                              setValue("sub_category_ids", newValue)
+                              updateValueId()
+
+                              setValue("sub_category_ids5", newValue)
                             }}
                             // isDisabled={
                             //   watch("sub_category_ids")?.length === 3 &&
@@ -518,10 +536,9 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  watch("sub_category_ids")?.length ===
-                  subCategoryOptions5?.length
+                  value5?.length === subCategoryOptions5?.length
                     ? "All selected"
-                    : `${value5?.length ? value5 : 0} selected`
+                    : `${value5?.length ? value5?.length : 0} selected`
                 }
               />
             </Box>
@@ -537,7 +554,7 @@ const MerchantInfo = () => {
                     {subCategoryOptions6.map((option: any) => (
                       <Controller
                         key={option.value}
-                        name="sub_category_ids"
+                        name="sub_category_ids6"
                         control={control}
                         render={({ field }) => (
                           <Checkbox
@@ -553,7 +570,9 @@ const MerchantInfo = () => {
                                   )
                                 : [...(field.value || []), option.value]
                               setValue6(newValue)
-                              setValue("sub_category_ids", newValue)
+                              updateValueId()
+
+                              setValue("sub_category_ids6", newValue)
                             }}
                             // isDisabled={
                             //   watch("sub_category_ids")?.length === 3 &&
@@ -568,10 +587,9 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  watch("sub_category_ids")?.length ===
-                  subCategoryOptions6?.length
+                  value6?.length === subCategoryOptions6?.length
                     ? "All selected"
-                    : `${value6?.length ? value6 : 0} selected`
+                    : `${value6?.length ? value6?.length : 0} selected`
                 }
               />
             </Box>
@@ -636,6 +654,7 @@ const MerchantInfo = () => {
           borderRadius={"16px"}
           marginTop={"20px"}
           type="submit"
+          isLoading={mutation?.isLoading}
           width={isExpanded ? "65%" : "80%"}
         >
           Submit
