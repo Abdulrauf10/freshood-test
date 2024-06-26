@@ -80,10 +80,31 @@ const CategoryListDrawer = ({
   const [filteredData, setFilteredData] = useState([]) as any
   const [isNotFound, setNotFound] = useState(false)
 
+  const filterData = (data: any, keyword: string) => {
+    keyword = keyword.toLowerCase()
+    return data.reduce((acc: any, category: any) => {
+      if (category.name.toLowerCase().includes(keyword)) {
+        acc.push(category)
+        return acc
+      }
+
+      const matchingSubCategories = category.sub_categories.filter((sub: any) =>
+        sub.name.toLowerCase().includes(keyword)
+      )
+      if (matchingSubCategories.length > 0) {
+        acc.push({
+          ...category,
+          sub_categories: matchingSubCategories
+        })
+      }
+
+      return acc
+    }, [])
+  }
+
   const onHandleFilterChange = (text: string) => {
-    const filterItem = dataCategories?.data.filter((category) => {
-      return category.name.toUpperCase().includes(text.toUpperCase())
-    })
+    const filterItem = filterData(dataCategories?.data, text)
+
     if (!filterItem?.length) {
       setNotFound(true)
       setFilteredData(dataCategories?.data)
