@@ -45,6 +45,7 @@ import EditStoreInformation from "@/components/drawer/EditStoreInformation"
 import useSidebarStore from "@/store/sidebarStore"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import HelpCenter from "@/components/drawer/HelpCenter"
 
 const MyAccountMerchant = () => {
   const { isExpanded } = useSidebarStore()
@@ -74,6 +75,8 @@ const MyAccountMerchant = () => {
         return <AddAddresses />
       case "editStoreInfo":
         return <EditStoreInformation />
+      case "helpCenter":
+        return <HelpCenter onBackClick={() => handleDrawer("setting")} />
       default:
         return <CustomTitle title="Other Page" />
     }
