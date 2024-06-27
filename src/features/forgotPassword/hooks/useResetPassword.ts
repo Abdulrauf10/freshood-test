@@ -9,7 +9,7 @@ import { useToast } from "@chakra-ui/react"
 import { resetPassword } from "@/services/api/auth"
 
 type EmailFormInput = {
-  token: string
+  token?: string | null
   new_password: string
 }
 
@@ -26,7 +26,7 @@ const handlePasswordLength = (val: string | undefined) => {
 
 const schema = yup
   .object({
-    token: yup.string().required(),
+    token: yup.string().notRequired().nullable(),
     new_password: yup
       .string()
       .required()
@@ -50,7 +50,6 @@ const useResetPassword = (tokenId: string) => {
 
     {
       onSuccess: (sessionId) => {
-        replace("/password-confirmation")
         toast({
           title: "Success",
           description: "Password reset successfully",
@@ -58,11 +57,12 @@ const useResetPassword = (tokenId: string) => {
           duration: 2000,
           isClosable: true
         })
+        replace("/password-confirmation")
       },
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Email sending failed",
+          description: error?.response?.data?.message || "Token is invalid",
           status: "error",
           duration: 2000,
           isClosable: true
