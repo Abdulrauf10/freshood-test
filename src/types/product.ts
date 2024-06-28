@@ -126,6 +126,10 @@ export type ProductResponse = {
   data: Product
 }
 
+export type ProductResponses = {
+  data: Product[]
+}
+
 export type ProductMine = {
   data: {
     id: number
@@ -139,4 +143,18 @@ export type ProductMine = {
 
 export type ProductMineResponse = {
   data: ProductMine[]
+}
+
+export type ListProductParam = {
+  name?: string
+  sort?: string
+  store_ids?: string[]
+  category_ids?: string[]
+  sub_category_ids?: string[]
+  city_ids?: string[]
+  listing_id?: string
+  price_min?: number
+  price_max?: number
+  page_number?: number | 1
+  page_size?: number | 20
 }
