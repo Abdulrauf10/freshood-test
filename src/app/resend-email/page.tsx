@@ -6,7 +6,8 @@ import {
   HStack,
   Text,
   VStack,
-  useMediaQuery
+  useMediaQuery,
+  useToast
 } from "@chakra-ui/react"
 import React, { useEffect, useState } from "react"
 import { ImStopwatch } from "react-icons/im"
@@ -15,6 +16,8 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { useRouter } from "next/navigation"
 import useSidebarStore from "@/store/sidebarStore"
 import useGetMe from "@/hooks/useGetMe"
+import { useEmailStore } from "@/store/useEmailStore"
+import useSendEmail from "@/features/forgotPassword/hooks/useSendEmail"
 
 function ResendPassword() {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -24,6 +27,9 @@ function ResendPassword() {
   const router = useRouter()
   const { isExpanded } = useSidebarStore()
   const { dataMe } = useGetMe()
+  const { emailStore } = useEmailStore()
+
+  const toast = useToast()
 
   useEffect(() => {
     if (timer > 0 && isTimerActive) {
@@ -38,6 +44,17 @@ function ResendPassword() {
     color: "#44403C",
     fontSize: "14px",
     fontWeight: 500
+  }
+
+  const { onSubmit, mutation } = useSendEmail()
+
+  const handleResendEmail = async () => {
+    if (!isTimerActive) {
+      await onSubmit({ email: emailStore || "" })
+
+      setTimer(60)
+      setIsTimerActive(true)
+    }
   }
 
   return (
@@ -82,28 +99,33 @@ function ResendPassword() {
       >
         <Box
           display={"flex"}
+          flexDirection={"column"}
           justifyContent={"center"}
           wordBreak={"break-word"}
           width={isMobile ? "300px" : "440px"}
         >
           <Text {...fontStyle} textAlign={"center"}>
-            We have sent the reset password link to your email{" "}
-            <span>
-              <Link href={"/forgot-password"}>
-                <Button
-                  color={"#016748"}
-                  fontSize={"14px"}
-                  border={"none"}
-                  background={"none"}
-                  _hover={{ backgroundColor: "none" }}
-                  // isDisabled={isTimerActive === true ? true : false}
-                  fontWeight={500}
-                >
-                  Change email address
-                </Button>
-              </Link>
-            </span>
+            We have sent the reset password link to
           </Text>
+          <HStack justifyContent={"center"}>
+            <Text {...fontStyle} textAlign={"center"} ml={"8px"}>
+              {emailStore || "your email"}
+            </Text>
+            <Link href={"/forgot-password"}>
+              <Button
+                color={"#016748"}
+                fontSize={"14px"}
+                border={"none"}
+                background={"none"}
+                _hover={{ backgroundColor: "none" }}
+                ml={"-8px"}
+                // isDisabled={isTimerActive === true ? true : false}
+                fontWeight={500}
+              >
+                Change email address
+              </Button>
+            </Link>
+          </HStack>
         </Box>
 
         <HStack
@@ -114,19 +136,20 @@ function ResendPassword() {
           <Text color={"#78716C"} fontSize={"12px"}>
             Didn&apos;t receive the email?
           </Text>
-          <Link href={"/forgot-password"}>
-            <Button
-              color={isTimerActive ? "#D5D3D1" : "#016748"}
-              fontSize={"12px"}
-              border={"none"}
-              background={"none"}
-              _hover={{ backgroundColor: "none" }}
-              marginLeft={"-20px"}
-              isDisabled={isTimerActive === true ? true : false}
-            >
-              Send link again
-            </Button>
-          </Link>
+
+          <Button
+            color={isTimerActive ? "#D5D3D1" : "#016748"}
+            fontSize={"12px"}
+            border={"none"}
+            background={"none"}
+            _hover={{ backgroundColor: "none" }}
+            marginLeft={"-20px"}
+            isDisabled={isTimerActive === true ? true : false}
+            isLoading={mutation?.isLoading}
+            onClick={handleResendEmail}
+          >
+            Send link again
+          </Button>
         </HStack>
 
         <HStack

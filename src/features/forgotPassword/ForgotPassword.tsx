@@ -10,22 +10,33 @@ import {
   VStack,
   useMediaQuery
 } from "@chakra-ui/react"
-import React from "react"
+import React, { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import useSendEmail from "./hooks/useSendEmail"
 import useSidebarStore from "@/store/sidebarStore"
+import { useEmailStore } from "@/store/useEmailStore"
 
 function ForgotPassword() {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const { isExpanded } = useSidebarStore()
+  const { setEmailStore } = useEmailStore()
 
   const {
     control,
     formState: { errors },
     handleSubmit,
     onSubmit,
-    mutation
+    mutation,
+    watch
   } = useSendEmail()
+
+  const email = watch("email")
+
+  useEffect(() => {
+    if (email) {
+      setEmailStore(email)
+    }
+  }, [email, setEmailStore])
   return (
     <Box
       display={"flex"}
