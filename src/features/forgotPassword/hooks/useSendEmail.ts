@@ -49,7 +49,7 @@ const useSendEmail = () => {
       onSuccess: () => {
         toast({
           title: "Success",
-          description: "Check your email",
+          description: "Email sent. Please check your email",
           status: "success",
           duration: 2000,
           isClosable: true
