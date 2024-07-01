@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import {
   Box,
   Button,
@@ -9,14 +9,10 @@ import {
   Text,
   VStack,
   useMediaQuery,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  SimpleGrid,
   Skeleton,
-  Image
+  Image,
+  Grid,
+  GridItem
 } from "@chakra-ui/react"
 
 import { IoIosArrowBack } from "react-icons/io"
@@ -40,15 +36,16 @@ import HelpCenter from "@/components/drawer/HelpCenter"
 import useListProduct from "@/hooks/useListProduct"
 import { Product } from "@/types/product"
 import ProductCard from "./ProductCard"
+import TabWrapper from "./TabWrapper"
 
 const MyAccountMerchant = () => {
   const { isExpanded } = useSidebarStore()
   const { activeDrawer, setActiveDrawer } = useDrawer()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
-  let initPage = 1
-  const { data, isLoading, fetchNextPage } = useListProduct({ initPage })
-
+  const { data, isLoading, fetchNextPage, hasNextPage } = useListProduct()
   const { dataTopBanners, isLoadingTopBanners } = useTopBanners()
+
+  const sideBarWidth = isExpanded ? "200px" : "60px"
 
   const handleDrawer = (drawer: string) => {
     setActiveDrawer(drawer)
@@ -103,84 +100,56 @@ const MyAccountMerchant = () => {
     )
   }
 
-  const renderProducts = () => {
-    const products: Product[] = data?.pages[0]?.data
-
-    return products?.map((product: Product, index: number) => {
-      return (
-        <ProductCard
-          key={index}
-          product={product}
-          isLoading={isLoading}
-          isMobile={isMobile}
-        />
-      )
-    })
-  }
-
   return (
     <Box
-      marginLeft={{
-        base: "0",
-        md: isExpanded ? "7.5vw" : "0"
+      sx={{
+        position: "relative",
+        paddingLeft: isMobile ? "0" : sideBarWidth
       }}
     >
       <Box
         width="full"
-        sx={{ height: isMobile ? "55vh" : "75vh" }}
-        backgroundColor={"#016748"}
-        position={"absolute"}
-        zIndex={-1}
+        sx={{
+          marginBottom: isMobile ? "1rem" : "2.5rem",
+          height: isMobile ? "45vh" : "70vh",
+          backgroundImage: "url(/merchant/BG.png)",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "top",
+          backgroundSize: isMobile ? "100vw 45vh" : "100vw 70vh",
+          padding: isMobile ? "0 14px" : "0 48px"
+        }}
       >
         <Box
-          id="triangle"
-          height="5px"
-          width="full"
-          borderBottom="30px solid white"
-          borderLeft="100vw solid transparent"
-          position="absolute"
-          bottom="0"
-          left="0"
-        />
-      </Box>
-      <Box
-        position={"relative"}
-        ml={{
-          base: "20px",
-          md: "50px"
-        }}
-        mr={{
-          base: "20px",
-          md: "0px"
-        }}
-      >
-        <Flex
-          position="relative"
-          justifyContent="space-between"
-          alignItems="center"
-          paddingY="1rem"
-          paddingX={{
-            base: "0",
-            md: "5vw"
+          sx={{
+            padding: isMobile ? "12px 0" : "26px 0",
+            marginBottom: "1rem"
           }}
         >
-          <IoIosArrowBack size="24px" color="white" />
-          {/* <IoIosSettings size="24px" color="white" /> */}
-          <GlobalDrawer activeDrawer={activeDrawer}>
-            {renderDrawer()}
-          </GlobalDrawer>
-        </Flex>
+          <Flex
+            justifyContent="space-between"
+            sx={{
+              paddingTop: isMobile ? "1rem" : "0"
+            }}
+            alignItems="center"
+          >
+            <Box sx={{ padding: isMobile ? "0" : "12px 10px" }}>
+              <IoIosArrowBack fontSize="24" color="#FFF" />
+            </Box>
+            <GlobalDrawer activeDrawer={activeDrawer}>
+              {renderDrawer()}
+            </GlobalDrawer>
+          </Flex>
+        </Box>
         <Box
-          position={"relative"}
-          pt={4}
+          sx={{ marginBottom: "1rem" }}
           pb={isMobile ? "10px" : 0}
-          width={isMobile ? "300px" : "720px"}
-          marginLeft={isMobile ? "10%" : "6%"}
+          width={"100%"}
         >
-          <Skeleton isLoaded={!isLoadingTopBanners} minW={"85vw"}>
+          <Skeleton isLoaded={!isLoadingTopBanners}>
             <Slider ref={sliderRef} {...settings}>
               {dataTopBanners?.data?.map((data, idx) => (
                 <Image
+                  height={isMobile ? "108px" : "322px"}
                   key={idx}
                   src={data?.image?.url}
                   alt="banner"
@@ -191,7 +160,7 @@ const MyAccountMerchant = () => {
           </Skeleton>
         </Box>
         <VStack alignItems={"start"}>
-          <Flex paddingLeft={"5vw"} pt={"10px"}>
+          <Flex pt={"10px"}>
             <Box
               w="50px"
               h="50px"
@@ -208,94 +177,103 @@ const MyAccountMerchant = () => {
               </Text>
             </VStack>
           </Flex>
-          <Box
-            maxW={isMobile ? "300px" : "full"}
-            wordBreak={"break-word"}
-            paddingLeft={"5vw"}
-          >
+          <Box maxW={"full"} wordBreak={"break-word"}>
             <Text color={"white"}>
               From a small quantity, to a large batch - you can find the right
               fit and pricing here.
             </Text>
           </Box>
         </VStack>
-        <HStack
-          pt={{
-            base: "10vh",
-            md: "10vw"
-          }}
-          ml={{
-            base: "20px",
-            md: "5vw"
-          }}
-        >
-          <Link href="/merchant/create-product">
-            <Button bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
-              New Product
+      </Box>
+      <Box
+        sx={{
+          padding: isMobile ? "0 14px" : "0 48px"
+        }}
+      >
+        <HStack>
+          <Flex
+            justifyContent={isMobile ? "space-between" : "flex-start"}
+            gap={4}
+            sx={{ width: "100%" }}
+          >
+            <Link
+              style={{
+                width: isMobile ? "100%" : "150px"
+              }}
+              href="/merchant/create-product"
+            >
+              <Button
+                sx={{
+                  width: isMobile ? "100%" : "150px"
+                }}
+                bgColor={"white"}
+                borderWidth={1}
+                borderRadius={"xl"}
+              >
+                New Product
+              </Button>
+            </Link>
+            <Button
+              sx={{ width: isMobile ? "100%" : "150px" }}
+              bgColor={"white"}
+              borderWidth={1}
+              borderRadius={"xl"}
+            >
+              Credit
             </Button>
-          </Link>
-          <Button bgColor={"white"} borderWidth={1} borderRadius={"xl"}>
-            Credit
-          </Button>
+          </Flex>
         </HStack>
-        <Box
-          display={"flex"}
-          flexDirection={isMobile ? "column" : "row"}
-          py={4}
-          pl={{
-            base: "0",
-            md: "6vw"
-          }}
-          gap={{
-            base: 4,
-            md: "20vw"
-          }}
+        <Grid
+          sx={{ marginTop: "1rem" }}
+          templateColumns="repeat(6, 1fr)"
           color={"#44403C"}
           w="100%"
-          justifyContent={"start"}
-          alignItems={isMobile ? "flex-start" : "center"}
         >
-          <HStack alignItems={"center"}>
-            <Image src="/merchant/sea.svg" width={5} height={5} alt="sea" />
-            <Text pt={1}>Ships in 14-15 days</Text>
-          </HStack>
-          <HStack alignItems={"center"}>
-            <Image src="/merchant/coins.svg" width={5} height={5} alt="sea" />
-            <Text pt={1}>$1,224.58 min. first order</Text>
-          </HStack>
-          <HStack alignItems={"center"}>
-            <Image src="/merchant/reorder.svg" width={5} height={5} alt="sea" />
-            <Text pt={1}>$1,224.58 min. reorder</Text>
-          </HStack>
-        </Box>
-        <Tabs isFitted colorScheme="green">
-          <TabList>
-            <Tab>
-              <Text fontWeight={"700"}>Products</Text>
-            </Tab>
-            <Tab>
-              <Text fontWeight={"700"}>About</Text>
-            </Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <Flex alignItems="center" justifyContent="center">
-                <SimpleGrid
-                  columns={{
-                    base: 2,
-                    md: 3
-                  }}
-                  gap={6}
-                >
-                  {data?.pageParams.length && renderProducts()}
-                </SimpleGrid>
-              </Flex>
-            </TabPanel>
-            <TabPanel>
-              <p>two!</p>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+          <GridItem colSpan={isMobile ? 6 : 2}>
+            <Flex
+              justifyContent={isMobile ? "flex-start" : "center"}
+              alignItems="center"
+            >
+              <HStack alignItems={"center"}>
+                <Image src="/merchant/sea.svg" width={5} height={5} alt="sea" />
+                <Text pt={1}>Ships in 14-15 days</Text>
+              </HStack>
+            </Flex>
+          </GridItem>
+          <GridItem colSpan={isMobile ? 6 : 2}>
+            <Flex
+              justifyContent={isMobile ? "flex-start" : "center"}
+              alignItems="center"
+            >
+              <HStack alignItems={"center"}>
+                <Image
+                  src="/merchant/coins.svg"
+                  width={5}
+                  height={5}
+                  alt="sea"
+                />
+                <Text pt={1}>$1,224.58 min. first order</Text>
+              </HStack>
+            </Flex>
+          </GridItem>
+          <GridItem colSpan={isMobile ? 6 : 2}>
+            <Flex
+              justifyContent={isMobile ? "flex-start" : "center"}
+              alignItems="center"
+            >
+              <HStack alignItems={"center"}>
+                <Image
+                  src="/merchant/reorder.svg"
+                  width={5}
+                  height={5}
+                  alt="sea"
+                />
+                <Text pt={1}>$1,224.58 min. reorder</Text>
+              </HStack>
+            </Flex>
+          </GridItem>
+        </Grid>
+        <TabWrapper data={data} isLoading={isLoading} isMobile={isMobile} />
       </Box>
     </Box>
   )
