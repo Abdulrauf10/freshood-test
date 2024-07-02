@@ -96,9 +96,9 @@ apiClient.interceptors.request.use(
   async (request: any) => {
     console.log("interREq :", request)
     const sessionId = FetchToken()
-    if (sessionId) {
-      request.headers["sessionid"] = sessionId
-    }
+    // if (sessionId) {
+    //   request.headers["sessionid"] = sessionId
+    // }
     request.headers["Accept"] = "application/json"
     return request
   },
