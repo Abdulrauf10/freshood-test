@@ -31,8 +31,8 @@ const Sidebar: FC = () => {
   const menus = [
     // { icon: RiHome6Line, label: "Home", href: "/" },
     // { icon: FaRegHeart, label: "My Favourite", href: "/favourite" },
-    { icon: TbMessage, label: "Message", href: "/merchant/message" },
-    { icon: CgProfile, label: "My Account", href: "/merchant/my-account" }
+    { icon: CgProfile, label: "My Account", href: "/merchant/my-account" },
+    { icon: TbMessage, label: "Message", href: "/merchant/message" }
   ]
 
   return (
@@ -104,7 +104,7 @@ const Sidebar: FC = () => {
         >
           <Box mt={"30px"} ml={"7px"}>
             <IconButton
-              icon={isExpanded ? <IoClose /> : <GiHamburgerMenu />}
+              icon={<GiHamburgerMenu />}
               onClick={toggleSidebar}
               aria-label="Toggle Sidebar"
               background={"none"}

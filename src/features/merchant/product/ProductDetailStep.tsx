@@ -125,6 +125,10 @@ const ProductDetailStep = ({
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
               backgroundColor={"white"}
+              _placeholder={{
+                fontSize: isMobile ? "12px" : "16px",
+                color: "#D5D3D1"
+              }}
             />
           </Box>
           <Box sx={{ width: "100%" }}>
@@ -178,6 +182,10 @@ const ProductDetailStep = ({
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
               backgroundColor={"white"}
+              _placeholder={{
+                fontSize: isMobile ? "12px" : "16px",
+                color: "#D5D3D1"
+              }}
             />
           </Box>
           <Box sx={{ width: "100%" }}>
@@ -199,6 +207,10 @@ const ProductDetailStep = ({
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
               backgroundColor={"white"}
+              _placeholder={{
+                fontSize: isMobile ? "12px" : "16px",
+                color: "#D5D3D1"
+              }}
             />
           </Box>
           <Box sx={{ width: "100%" }}>
@@ -220,6 +232,10 @@ const ProductDetailStep = ({
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
               backgroundColor={"white"}
+              _placeholder={{
+                fontSize: isMobile ? "12px" : "16px",
+                color: "#D5D3D1"
+              }}
             />
             <Text
               sx={{
@@ -250,6 +266,10 @@ const ProductDetailStep = ({
               fieldType={isMobile ? FieldType.textarea : FieldType.textfield}
               borderRadius={"16px"}
               backgroundColor={"white"}
+              _placeholder={{
+                fontSize: isMobile ? "12px" : "16px",
+                color: "#D5D3D1"
+              }}
             />
           </Box>
           <Box sx={{ width: "100%" }}>
@@ -265,7 +285,6 @@ const ProductDetailStep = ({
             <ControlledField
               defaultValue={defaultValue?.weight}
               name="weight"
-              placeholder="Subject"
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}

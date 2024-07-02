@@ -35,7 +35,6 @@ const ProductCard: FC<ProductCardProps> = ({
       <Skeleton isLoaded={!isLoading}>
         <Box
           sx={{
-            width: isMobile ? "160px" : "283px",
             height: isMobile ? "160px" : "312px",
             position: "relative"
           }}
@@ -59,15 +58,30 @@ const ProductCard: FC<ProductCardProps> = ({
       <Box p="3">
         <Box lineHeight="tight">
           <Skeleton isLoaded={!isLoading}>
-            <Text color={"#78716C"}>{product.name}</Text>
+            <Text
+              sx={{ fontSize: isMobile ? "11px" : "14px", fontWeight: 500 }}
+              color={"#78716C"}
+            >
+              {product.name}
+            </Text>
           </Skeleton>
         </Box>
         <HStack>
           <HStack gap={0}>
             <Skeleton isLoaded={!isLoading}>
               <Flex alignItems={"center"}>
-                <Text color={"#1B1917"}> $</Text>
-                <Text color={"#1B1917"} fontWeight={"bold"} fontSize={"28px"}>
+                <Text
+                  color={"#1B1917"}
+                  fontSize={isMobile ? "11px" : "16px"}
+                  fontWeight={400}
+                >
+                  $
+                </Text>
+                <Text
+                  color={"#1B1917"}
+                  fontWeight={"bold"}
+                  fontSize={isMobile ? "20px" : "28px"}
+                >
                   {product.recommended_retail_price}
                 </Text>
               </Flex>
@@ -77,13 +91,16 @@ const ProductCard: FC<ProductCardProps> = ({
             <Text
               color={"#A8A29D"}
               textDecoration="line-through"
-              sx={{ marginTop: "-10px" }}
+              sx={{
+                marginTop: "-8px",
+                fontSize: isMobile ? "11px" : "14px",
+                fontWeight: "400"
+              }}
             >
               ${product.price}
             </Text>
           </Skeleton>
         </HStack>
-
         <Skeleton isLoaded={!isLoading}>
           <Box
             mt={2}
@@ -93,6 +110,7 @@ const ProductCard: FC<ProductCardProps> = ({
             borderRadius={"lg"}
             borderColor={"#016748"}
             color={"#016748"}
+            sx={{ fontSize: isMobile ? "10px" : "13px", fontWeight: "500" }}
           >
             Cebu City
           </Box>
