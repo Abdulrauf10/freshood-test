@@ -22,6 +22,8 @@ import { ImStopwatch } from "react-icons/im"
 import useAddVerification from "./hooks/useAddVerification"
 import { sendOtp } from "@/services/api/auth"
 import useSidebarStore from "@/store/sidebarStore"
+import { useEmailStore } from "@/store/useEmailStore"
+import Link from "next/link"
 
 const Verification = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
@@ -30,6 +32,7 @@ const Verification = () => {
   const [isTimerActive, setIsTimerActive] = useState(true)
   const toast = useToast()
   const { isExpanded } = useSidebarStore()
+  const { emailStore } = useEmailStore()
 
   const steps = [
     { title: "Account registration" },
@@ -50,7 +53,8 @@ const Verification = () => {
     control,
     formState: { errors },
     handleSubmit,
-    onSubmit
+    onSubmit,
+    mutation
   } = useAddVerification()
 
   const handleResendCode = async () => {
@@ -114,18 +118,46 @@ const Verification = () => {
         minH={"470px"}
         alignItems={isMobile ? "flex-start" : "center"}
       >
-        <Box marginBottom={"15px"}>
+        <Box
+          marginBottom={"15px"}
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={isMobile ? "flex-start" : "center"}
+        >
           <Text color={"#78716C"} fontSize={"14px"} fontWeight={500}>
-            We have sent the code verification to your email{" "}
+            We have sent the code verification to
+          </Text>
+          <Text color={"#78716C"} fontSize={"14px"} fontWeight={500}>
+            {`${emailStore}`}{" "}
             <span style={{ color: "#016748", cursor: "pointer" }}>
-              Change email address
+              <Link href={"/register"}>Change email address</Link>
             </span>
           </Text>
         </Box>
 
-        <Center marginBottom={"10px"}>
+        <Center>
           <ControlledBoxesInput name="otp" control={control} errors={errors} />
         </Center>
+
+        <Box
+          display={"flex"}
+          justifyContent={"flex-start"}
+          wordBreak={"break-word"}
+          width={isMobile ? "300px" : "440px"}
+          marginBottom={"10px"}
+          mt={"-10px"}
+        >
+          {mutation?.error?.message && (
+            <Text
+              fontSize={"12px"}
+              fontWeight={500}
+              color={"#B91C1C"}
+              textAlign={"left"}
+            >
+              Wrong OTP
+            </Text>
+          )}
+        </Box>
 
         <HStack
           justifyContent={"flex-start"}
@@ -176,6 +208,7 @@ const Verification = () => {
           type="submit"
           width={isExpanded ? "65%" : "80%"}
           marginBottom={isMobile ? "90px" : "10px"}
+          isLoading={mutation?.isLoading}
         >
           Submit
         </Button>

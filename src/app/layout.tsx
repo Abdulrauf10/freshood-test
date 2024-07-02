@@ -1,7 +1,8 @@
+"use client"
 import ChakraUIProvider from "@/providers/ChakraProvider"
 import ReactQueryProvider from "@/providers/ReactQueryProvider"
 import Sidebar from "@/components/sidebar/SideBar"
-// import { usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { DrawerProvider } from "@/context/drawerContext"
 
 export default function RootLayout({
@@ -9,18 +10,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  // const path = usePathname()
+  const path = usePathname()
   return (
     <html lang="en">
       <body>
         <ChakraUIProvider>
           <ReactQueryProvider>
             <DrawerProvider>
-              {/* {
-                path.includes("/merchant") ? null : */}
-              <Sidebar />
+              {path.includes("/merchant") ? <Sidebar /> : null}
 
-              {/* } */}
               {children}
             </DrawerProvider>
           </ReactQueryProvider>

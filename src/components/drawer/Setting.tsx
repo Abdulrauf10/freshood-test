@@ -3,6 +3,10 @@ import { IoIosArrowForward, IoIosSettings } from "react-icons/io"
 import React, { useEffect, useRef, useState } from "react"
 import CustomTitle from "../Text"
 import Image from "next/image"
+import { logoutService } from "@/services/api/auth"
+import { useRouter } from "next/navigation"
+import { useActiveMenu } from "@/store/useActiveMenu"
+import useSessionStore from "@/store/useSessionStore"
 
 interface MenuItemProps {
   imageSrc: string
@@ -88,6 +92,9 @@ interface SettingProps {
 }
 
 const Setting: React.FC<SettingProps> = ({ handleDrawer }) => {
+  const { setActiveMenu } = useActiveMenu()
+  const { removeSessionId } = useSessionStore()
+  const { replace } = useRouter()
   return (
     <>
       <Flex justifyContent={"center"}>
@@ -119,7 +126,17 @@ const Setting: React.FC<SettingProps> = ({ handleDrawer }) => {
       ))}
       <Divider my={8} />
       <VStack spacing={4} alignItems={"start"}>
-        <Text cursor={"pointer"} color={"#B91C1C"}>
+        <Text
+          cursor={"pointer"}
+          color={"#B91C1C"}
+          onClick={() =>
+            logoutService().then(() => {
+              removeSessionId()
+              setActiveMenu(null)
+              replace("/")
+            })
+          }
+        >
           Sign Out
         </Text>
         <Text cursor={"pointer"} color={"#B91C1C"}>
