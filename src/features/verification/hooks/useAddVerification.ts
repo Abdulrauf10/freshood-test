@@ -44,13 +44,13 @@ const useAddVerification = () => {
         replace("/account-review")
       },
       onError: (error: any) => {
-        toast({
-          title: "Error",
-          description: "Wrong OTP",
-          status: "error",
-          duration: 2000,
-          isClosable: true
-        })
+        // toast({
+        //   title: "Error",
+        //   description: "Wrong OTP",
+        //   status: "error",
+        //   duration: 2000,
+        //   isClosable: true
+        // })
       }
     }
   )
@@ -61,7 +61,8 @@ const useAddVerification = () => {
 
   return {
     ...form,
-    onSubmit
+    onSubmit,
+    mutation
   }
 }
 

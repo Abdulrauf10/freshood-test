@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useEffect } from "react"
 import {
   Box,
   Button,
@@ -27,12 +27,14 @@ import { Controller } from "react-hook-form"
 import useCountries from "@/hooks/useCountries"
 import { registerService } from "@/services/api/auth"
 import useSidebarStore from "@/store/sidebarStore"
+import { useEmailStore } from "@/store/useEmailStore"
 
 const Register = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const router = useRouter()
   const { dataCountries } = useCountries()
   const { isExpanded } = useSidebarStore()
+  const { setEmailStore } = useEmailStore()
 
   const {
     formState: { errors },
@@ -84,6 +86,14 @@ const Register = () => {
     fontWeight: 500,
     marginTop: "7px"
   }
+
+  const email = watch("email")
+
+  useEffect(() => {
+    if (email) {
+      setEmailStore(email)
+    }
+  }, [email, setEmailStore])
 
   return (
     <Box
