@@ -1,7 +1,10 @@
 "use client"
 
 import {
+  Box,
   Flex,
+  Grid,
+  GridItem,
   SimpleGrid,
   Tab,
   TabList,
@@ -11,7 +14,7 @@ import {
   Text
 } from "@chakra-ui/react"
 import ProductCard from "./ProductCard"
-import { Product } from "@/types/product"
+import { Product, ProductMine } from "@/types/product"
 
 const renderProducts = ({
   data,
@@ -39,11 +42,13 @@ const renderProducts = ({
 const TabWrapper = ({
   data,
   isLoading,
-  isMobile
+  isMobile,
+  storeInfo
 }: {
   data: any
   isLoading: boolean
   isMobile: boolean
+  storeInfo: ProductMine | undefined
 }) => {
   const selectedProps = {
     position: "relative",
@@ -73,21 +78,144 @@ const TabWrapper = ({
         </Tab>
       </TabList>
       <TabPanels>
-        <TabPanel>
+        <TabPanel sx={{ padding: 0 }}>
           <SimpleGrid
             columns={{
               base: 2,
               md: 3
             }}
             gap={6}
-            marginBottom="3rem"
+            paddingBottom="10vh"
           >
             {data?.pageParams.length &&
               renderProducts({ data, isLoading, isMobile })}
           </SimpleGrid>
         </TabPanel>
-        <TabPanel>
-          <p>two!</p>
+        <TabPanel sx={{ padding: 0 }}>
+          <Flex flexDirection="column" gap={10} paddingBottom="10vh">
+            <Box>
+              <Text
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#44403C"
+                }}
+              >
+                Value
+              </Text>
+              <Flex
+                sx={{
+                  marginTop: "12px",
+                  fontSize: "16px",
+                  fontWeight: "400",
+                  color: "#44403C"
+                }}
+                gap={2}
+              >
+                <Text
+                  sx={{
+                    padding: "4px 12px",
+                    backgroundColor: "#F9F6ED"
+                  }}
+                >
+                  type name
+                </Text>
+                <Text
+                  sx={{
+                    padding: "4px 12px",
+                    backgroundColor: "#F9F6ED"
+                  }}
+                >
+                  Not on Taobao
+                </Text>
+              </Flex>
+            </Box>
+            <Box>
+              <Text
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#44403C"
+                }}
+              >
+                About {storeInfo?.data.name}
+              </Text>
+              <Box sx={{ marginTop: "12px" }}>
+                <Text
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "400",
+                    color: "#78716C"
+                  }}
+                >
+                  {storeInfo?.data.name} has been creating happy ..since
+                  1993...s been s been s been s been
+                </Text>
+                <Text
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "500",
+                    color: "#016748"
+                  }}
+                >
+                  Read More
+                </Text>
+              </Box>
+            </Box>
+            <Box>
+              <Text
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#44403C"
+                }}
+              >
+                More Details
+              </Text>
+              <Grid marginTop="12px" templateColumns="repeat(12, 1fr)">
+                <GridItem colSpan={6}>
+                  <Text
+                    sx={{
+                      fontSize: isMobile ? "14px" : "16px",
+                      fontWeight: "400",
+                      color: "#78716C"
+                    }}
+                  >
+                    Managed by
+                  </Text>
+                  <Text
+                    sx={{
+                      fontSize: isMobile ? "14px" : "16px",
+                      fontWeight: "500",
+                      color: "#44403C"
+                    }}
+                  >
+                    Brand Owner
+                  </Text>
+                </GridItem>
+                <GridItem colSpan={6} gap={2}>
+                  <Text
+                    sx={{
+                      fontSize: isMobile ? "14px" : "16px",
+                      fontWeight: "400",
+                      color: "#78716C"
+                    }}
+                  >
+                    Ship from
+                  </Text>
+                  <Text
+                    sx={{
+                      fontSize: isMobile ? "14px" : "16px",
+                      fontWeight: "500",
+                      color: "#44403C"
+                    }}
+                  >
+                    Cebu City
+                  </Text>
+                </GridItem>
+              </Grid>
+            </Box>
+          </Flex>
         </TabPanel>
       </TabPanels>
     </Tabs>

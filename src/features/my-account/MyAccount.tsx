@@ -37,6 +37,7 @@ import useListProduct from "@/hooks/useListProduct"
 import { Product } from "@/types/product"
 import ProductCard from "./ProductCard"
 import TabWrapper from "./TabWrapper"
+import useGetProductMine from "@/hooks/useGetProductMine"
 
 const MyAccountMerchant = () => {
   const { isExpanded } = useSidebarStore()
@@ -44,6 +45,7 @@ const MyAccountMerchant = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const { data, isLoading, fetchNextPage, hasNextPage } = useListProduct()
   const { dataTopBanners, isLoadingTopBanners } = useTopBanners()
+  const { dataProductMine, isLoadingProductMine } = useGetProductMine()
 
   const sideBarWidth = isExpanded ? "200px" : "60px"
 
@@ -168,13 +170,19 @@ const MyAccountMerchant = () => {
               backgroundColor={"#1abc9c"}
               mt={"20px"}
             />
-            <VStack textAlign={"center"} gap={-2}>
-              <Text color={"white"} as={"h1"} fontSize={"36px"}>
-                BRANDS NAME
+            <VStack gap={-2} pl={4}>
+              <Text
+                sx={{ width: "100%" }}
+                align="left"
+                color={"white"}
+                as={"h1"}
+                fontSize={"36px"}
+              >
+                <Skeleton isLoaded={!isLoadingProductMine}>
+                  {dataProductMine?.data.name}
+                </Skeleton>
               </Text>
-              <Text color={"white"} pl={4}>
-                United Kingdom | Since 1993
-              </Text>
+              <Text color={"white"}>United Kingdom | Since 1993</Text>
             </VStack>
           </Flex>
           <Box maxW={"full"} wordBreak={"break-word"}>
@@ -235,8 +243,15 @@ const MyAccountMerchant = () => {
               alignItems="center"
             >
               <HStack alignItems={"center"}>
-                <Image src="/merchant/sea.svg" width={5} height={5} alt="sea" />
-                <Text pt={1}>Ships in 14-15 days</Text>
+                <Image
+                  src="/merchant/sea.svg"
+                  width={isMobile ? 4 : 5}
+                  height={isMobile ? 4 : 5}
+                  alt="sea"
+                />
+                <Text pt={1} sx={{ fontSize: isMobile ? "14px" : "16px" }}>
+                  Ships in 14-15 days
+                </Text>
               </HStack>
             </Flex>
           </GridItem>
@@ -248,11 +263,13 @@ const MyAccountMerchant = () => {
               <HStack alignItems={"center"}>
                 <Image
                   src="/merchant/coins.svg"
-                  width={5}
-                  height={5}
+                  width={isMobile ? 4 : 5}
+                  height={isMobile ? 4 : 5}
                   alt="sea"
                 />
-                <Text pt={1}>$1,224.58 min. first order</Text>
+                <Text pt={1} sx={{ fontSize: isMobile ? "14px" : "16px" }}>
+                  $1,224.58 min. first order
+                </Text>
               </HStack>
             </Flex>
           </GridItem>
@@ -264,16 +281,23 @@ const MyAccountMerchant = () => {
               <HStack alignItems={"center"}>
                 <Image
                   src="/merchant/reorder.svg"
-                  width={5}
-                  height={5}
+                  width={isMobile ? 4 : 5}
+                  height={isMobile ? 4 : 5}
                   alt="sea"
                 />
-                <Text pt={1}>$1,224.58 min. reorder</Text>
+                <Text pt={1} sx={{ fontSize: isMobile ? "14px" : "16px" }}>
+                  $1,224.58 min. reorder
+                </Text>
               </HStack>
             </Flex>
           </GridItem>
         </Grid>
-        <TabWrapper data={data} isLoading={isLoading} isMobile={isMobile} />
+        <TabWrapper
+          data={data}
+          isLoading={isLoading}
+          isMobile={isMobile}
+          storeInfo={dataProductMine}
+        />
       </Box>
     </Box>
   )
