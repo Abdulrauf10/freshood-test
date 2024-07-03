@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import {
   Box,
   Button,
@@ -14,7 +14,6 @@ import {
   Grid,
   GridItem
 } from "@chakra-ui/react"
-
 import { IoIosArrowBack } from "react-icons/io"
 import GlobalDrawer from "@/components/drawer/GlobalDrawer"
 import Setting from "@/components/drawer/Setting"
@@ -34,8 +33,6 @@ import useSidebarStore from "@/store/sidebarStore"
 import Link from "next/link"
 import HelpCenter from "@/components/drawer/HelpCenter"
 import useListProduct from "@/hooks/useListProduct"
-import { Product } from "@/types/product"
-import ProductCard from "./ProductCard"
 import TabWrapper from "./TabWrapper"
 import useGetProductMine from "@/hooks/useGetProductMine"
 
@@ -43,7 +40,14 @@ const MyAccountMerchant = () => {
   const { isExpanded } = useSidebarStore()
   const { activeDrawer, setActiveDrawer } = useDrawer()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
-  const { data, isLoading, fetchNextPage, hasNextPage } = useListProduct()
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage
+  } = useListProduct()
   const { dataTopBanners, isLoadingTopBanners } = useTopBanners()
   const { dataProductMine, isLoadingProductMine } = useGetProductMine()
 
@@ -102,6 +106,22 @@ const MyAccountMerchant = () => {
     )
   }
 
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage()
+      }
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [handleScroll])
+
   return (
     <Box
       sx={{
@@ -147,19 +167,20 @@ const MyAccountMerchant = () => {
           pb={isMobile ? "10px" : 0}
           width={"100%"}
         >
-          <Skeleton isLoaded={!isLoadingTopBanners}>
-            <Slider ref={sliderRef} {...settings}>
-              {dataTopBanners?.data?.map((data, idx) => (
-                <Image
-                  height={isMobile ? "108px" : "322px"}
-                  key={idx}
-                  src={data?.image?.url}
-                  alt="banner"
-                  borderRadius={"20px"}
-                />
-              ))}
-            </Slider>
-          </Skeleton>
+          <Slider ref={sliderRef} {...settings}>
+            {dataTopBanners?.data?.map((data, idx) => (
+              <Image
+                height={isMobile ? "108px" : "322px"}
+                key={idx}
+                src={data?.image?.url}
+                alt="banner"
+                borderRadius={"20px"}
+              />
+            ))}
+          </Slider>
+          {isLoadingTopBanners && (
+            <Skeleton height={isMobile ? "108px" : "322px"} />
+          )}
         </Box>
         <VStack alignItems={"start"}>
           <Flex pt={"10px"}>
@@ -178,9 +199,11 @@ const MyAccountMerchant = () => {
                 as={"h1"}
                 fontSize={"36px"}
               >
-                <Skeleton isLoaded={!isLoadingProductMine}>
-                  {dataProductMine?.data.name}
-                </Skeleton>
+                {isLoadingProductMine ? (
+                  <Skeleton height={isMobile ? "28px" : "36px"} />
+                ) : (
+                  dataProductMine?.data.name
+                )}
               </Text>
               <Text color={"white"}>United Kingdom | Since 1993</Text>
             </VStack>
@@ -297,6 +320,8 @@ const MyAccountMerchant = () => {
           isLoading={isLoading}
           isMobile={isMobile}
           storeInfo={dataProductMine}
+          isFetching={isFetching}
+          isFetchinNextPage={isFetchingNextPage}
         />
       </Box>
     </Box>

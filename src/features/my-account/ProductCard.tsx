@@ -27,13 +27,13 @@ const ProductCard: FC<ProductCardProps> = ({
   isMobile
 }) => {
   return (
-    <Link href={`/merchant/product/${product.id}`}>
-      <GridItem
-        borderWidth="1px"
-        borderRadius="lg"
-        overflow="hidden"
-        position="relative"
-      >
+    <GridItem
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      position="relative"
+    >
+      <Link href={`/merchant/product/${product.id}`}>
         <Skeleton isLoaded={!isLoading}>
           <Box
             sx={{
@@ -118,8 +118,8 @@ const ProductCard: FC<ProductCardProps> = ({
             </Box>
           </Skeleton>
         </Box>
-      </GridItem>
-    </Link>
+      </Link>
+    </GridItem>
   )
 }
 
