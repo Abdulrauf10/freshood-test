@@ -13,7 +13,7 @@ const useListProduct = () => {
     status
   } = useInfiniteQuery<any, Error>("product-list", listProductService, {
     getNextPageParam: (lastPage) => {
-      return lastPage.nextPage
+      return lastPage?.nextPage
     }
   })
 
