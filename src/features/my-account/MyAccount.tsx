@@ -205,7 +205,7 @@ const MyAccountMerchant = () => {
                 {isLoadingProductMine ? (
                   <Skeleton height={isMobile ? "28px" : "36px"} />
                 ) : (
-                  dataProductMine?.data?.name
+                  dataProductMine?.data?.name || "-"
                 )}
               </Text>
               <Text color={"white"}>United Kingdom | Since 1993</Text>
