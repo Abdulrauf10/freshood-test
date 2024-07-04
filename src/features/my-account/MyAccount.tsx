@@ -38,6 +38,7 @@ import { Product } from "@/types/product"
 import ProductCard from "./ProductCard"
 import TabWrapper from "./TabWrapper"
 import useGetProductMine from "@/hooks/useGetProductMine"
+import ChangePassword from "@/components/drawer/ChangePassword"
 
 const MyAccountMerchant = () => {
   const { isExpanded } = useSidebarStore()
@@ -69,6 +70,8 @@ const MyAccountMerchant = () => {
         return <AddAddresses />
       case "editStoreInfo":
         return <EditStoreInformation />
+      case "resetPassword":
+        return <ChangePassword />
       case "helpCenter":
         return <HelpCenter onBackClick={() => handleDrawer("setting")} />
       default:
