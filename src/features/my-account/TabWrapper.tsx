@@ -6,6 +6,7 @@ import {
   Grid,
   GridItem,
   SimpleGrid,
+  Skeleton,
   Tab,
   TabList,
   TabPanel,
@@ -43,12 +44,16 @@ const TabWrapper = ({
   data,
   isLoading,
   isMobile,
-  storeInfo
+  storeInfo,
+  isFetching,
+  isFetchinNextPage
 }: {
   data: any
   isLoading: boolean
   isMobile: boolean
   storeInfo: ProductMine | undefined
+  isFetching: boolean
+  isFetchinNextPage: boolean
 }) => {
   const selectedProps = {
     position: "relative",
@@ -78,7 +83,7 @@ const TabWrapper = ({
         </Tab>
       </TabList>
       <TabPanels>
-        <TabPanel sx={{ padding: 0 }}>
+        <TabPanel sx={{ padding: "1rem 0 0 0" }}>
           <SimpleGrid
             columns={{
               base: 2,
@@ -89,9 +94,22 @@ const TabWrapper = ({
           >
             {data?.pageParams.length &&
               renderProducts({ data, isLoading, isMobile })}
+            {isFetching &&
+              isLoading &&
+              new Array(3).fill(0).map((_item, index) => {
+                return (
+                  <Skeleton key={index} height={isMobile ? "160px" : "312px"} />
+                )
+              })}
+            {isFetchinNextPage &&
+              new Array(3).fill(0).map((_item, index) => {
+                return (
+                  <Skeleton key={index} height={isMobile ? "160px" : "312px"} />
+                )
+              })}
           </SimpleGrid>
         </TabPanel>
-        <TabPanel sx={{ padding: 0 }}>
+        <TabPanel sx={{ padding: "1rem 0 0 0" }}>
           <Flex flexDirection="column" gap={10} paddingBottom="10vh">
             <Box>
               <Text
