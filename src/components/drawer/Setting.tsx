@@ -92,8 +92,8 @@ interface SettingProps {
 }
 
 const Setting: React.FC<SettingProps> = ({ handleDrawer }) => {
-  const { setActiveMenu } = useActiveMenu()
   const { removeSessionId } = useSessionStore()
+  const { setActiveMenu } = useActiveMenu()
   const { replace } = useRouter()
   return (
     <>
