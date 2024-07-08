@@ -75,7 +75,7 @@ const Login = () => {
         mt={"30px"}
         mb={"170px"}
       >
-        {!isMobile && (
+        {/* {!isMobile && (
           <HStack
             position="absolute"
             left="0"
@@ -86,7 +86,7 @@ const Login = () => {
             <MdOutlineKeyboardArrowLeft />
             <Text>Back</Text>
           </HStack>
-        )}
+        )} */}
 
         <CustomTitle title={"LOGIN"} />
       </HStack>

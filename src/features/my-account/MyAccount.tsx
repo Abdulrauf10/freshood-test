@@ -151,15 +151,15 @@ const MyAccountMerchant = () => {
           }}
         >
           <Flex
-            justifyContent="space-between"
+            justifyContent="flex-end"
             sx={{
               paddingTop: isMobile ? "1rem" : "0"
             }}
             alignItems="center"
           >
-            <Box sx={{ padding: isMobile ? "0" : "12px 10px" }}>
+            {/* <Box sx={{ padding: isMobile ? "0" : "12px 10px" }}>
               <IoIosArrowBack fontSize="24" color="#FFF" />
-            </Box>
+            </Box> */}
             <GlobalDrawer activeDrawer={activeDrawer}>
               {renderDrawer()}
             </GlobalDrawer>
