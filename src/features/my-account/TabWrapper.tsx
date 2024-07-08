@@ -156,7 +156,7 @@ const TabWrapper = ({
                   color: "#44403C"
                 }}
               >
-                About {storeInfo?.data.name}
+                About {storeInfo?.data?.name || " "}
               </Text>
               <Box sx={{ marginTop: "12px" }}>
                 <Text
@@ -166,7 +166,7 @@ const TabWrapper = ({
                     color: "#78716C"
                   }}
                 >
-                  {storeInfo?.data.name} has been creating happy ..since
+                  {storeInfo?.data?.name || " "} has been creating happy ..since
                   1993...s been s been s been s been
                 </Text>
                 <Text

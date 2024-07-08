@@ -151,15 +151,15 @@ const MyAccountMerchant = () => {
           }}
         >
           <Flex
-            justifyContent="space-between"
+            justifyContent="flex-end"
             sx={{
               paddingTop: isMobile ? "1rem" : "0"
             }}
             alignItems="center"
           >
-            <Box sx={{ padding: isMobile ? "0" : "12px 10px" }}>
+            {/* <Box sx={{ padding: isMobile ? "0" : "12px 10px" }}>
               <IoIosArrowBack fontSize="24" color="#FFF" />
-            </Box>
+            </Box> */}
             <GlobalDrawer activeDrawer={activeDrawer}>
               {renderDrawer()}
             </GlobalDrawer>
@@ -205,7 +205,7 @@ const MyAccountMerchant = () => {
                 {isLoadingProductMine ? (
                   <Skeleton height={isMobile ? "28px" : "36px"} />
                 ) : (
-                  dataProductMine?.data?.name
+                  dataProductMine?.data?.name || "-"
                 )}
               </Text>
               <Text color={"white"}>United Kingdom | Since 1993</Text>

@@ -39,7 +39,7 @@ const useLogin = () => {
       onSuccess: (sessionId) => {
         setSessionId("7xuxpw967wfh8wpf8nouxa6m02r6eq8v")
         replace("/merchant/my-account")
-        setActiveMenu(1)
+        setActiveMenu(0)
       },
       onError: (error: any) => {
         toast({
