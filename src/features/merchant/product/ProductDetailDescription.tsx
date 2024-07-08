@@ -2,7 +2,9 @@
 
 import React from "react"
 import {
+  Avatar,
   Box,
+  Center,
   Divider,
   Flex,
   Grid,
@@ -40,9 +42,46 @@ const ProductDetailDescription = ({
         <Flex flexDirection="column">
           <Flex
             alignItems="center"
-            sx={{ marginBotto: "1.5rem", minHeight: "60px" }}
+            sx={{ marginBottom: "1.5rem", minHeight: "60px" }}
           >
-            Brands Name
+            <Avatar
+              name="Brand Image"
+              src="/merchant/brand-logo.png"
+              sx={{
+                marginRight: "1.2rem",
+                height: isMobile ? "40px" : "60px",
+                width: isMobile ? "40px" : "60px"
+              }}
+            />
+            <Flex
+              flexDirection="column"
+              sx={{ width: "25%" }}
+              justifyContent="center"
+            >
+              <Text
+                sx={{
+                  fontWeight: "600",
+                  fontSize: "28px"
+                }}
+              >
+                BRANDS NAME
+              </Text>
+              <Flex
+                alignItems="center"
+                gap={4}
+                sx={{
+                  color: "#78716C",
+                  fontWeight: "400",
+                  fontSize: "11px"
+                }}
+              >
+                <Text>United Kingdom</Text>
+                <Center height="20px">
+                  <Divider orientation="vertical" backgroundColor="#78716C" />
+                </Center>
+                <Text>Since 1993</Text>
+              </Flex>
+            </Flex>
           </Flex>
           <Grid
             templateColumns="repeat(4, 1fr)"
