@@ -20,7 +20,8 @@ const ProductDetailStep = ({
   isMobile,
   images,
   setValue,
-  defaultValue
+  defaultValue,
+  watch
 }: any) => {
   const pagination = {
     clickable: true,
@@ -28,6 +29,9 @@ const ProductDetailStep = ({
       return '<span class="' + className + '"></span>'
     }
   }
+  const descriptionLength = watch("description")?.length
+    ? watch("description")?.length
+    : 0
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [selectedSubCategory, setSelectedSubCategory] = useState(
@@ -73,8 +77,10 @@ const ProductDetailStep = ({
                         alt={link.url}
                         src={link.url}
                         fill={true}
+                        objectFit="cover"
+                        sizes="50"
+                        priority={false}
                         style={{
-                          objectFit: "contain",
                           borderRadius: "24px"
                         }}
                       />
@@ -174,12 +180,13 @@ const ProductDetailStep = ({
               Price
             </Text>
             <ControlledField
+              isStepper={false}
               placeholder="$"
               name="price"
               defaultValue={defaultValue?.price}
               control={control}
               errors={errors}
-              fieldType={FieldType.textfield}
+              fieldType={FieldType.number}
               borderRadius={"16px"}
               backgroundColor={"white"}
               _placeholder={{
@@ -200,11 +207,12 @@ const ProductDetailStep = ({
             </Text>
             <ControlledField
               name="case_size"
+              isStepper={false}
               defaultValue={defaultValue?.case_size}
               placeholder="e.g 5"
               control={control}
               errors={errors}
-              fieldType={FieldType.textfield}
+              fieldType={FieldType.number}
               borderRadius={"16px"}
               backgroundColor={"white"}
               _placeholder={{
@@ -224,12 +232,13 @@ const ProductDetailStep = ({
               Minimum order quantity
             </Text>
             <ControlledField
+              isStepper={false}
               placeholder="e.g 4"
               defaultValue={defaultValue?.minimum_order}
               name="minimum_order"
               control={control}
               errors={errors}
-              fieldType={FieldType.textfield}
+              fieldType={FieldType.number}
               borderRadius={"16px"}
               backgroundColor={"white"}
               _placeholder={{
@@ -271,6 +280,18 @@ const ProductDetailStep = ({
                 color: "#D5D3D1"
               }}
             />
+            <Flex justifyContent="flex-end">
+              <Text
+                sx={{
+                  fontSize: isMobile ? "11px" : "14px",
+                  fontWeight: "500",
+                  color: "#A8A29D",
+                  marginTop: "8px"
+                }}
+              >
+                {descriptionLength}/250
+              </Text>
+            </Flex>
           </Box>
           <Box sx={{ width: "100%" }}>
             <Text
@@ -283,11 +304,12 @@ const ProductDetailStep = ({
               Weight (Optional)
             </Text>
             <ControlledField
+              isStepper={false}
               defaultValue={defaultValue?.weight}
               name="weight"
               control={control}
               errors={errors}
-              fieldType={FieldType.textfield}
+              fieldType={FieldType.number}
               borderRadius={"16px"}
               backgroundColor={"white"}
             />
@@ -305,13 +327,14 @@ const ProductDetailStep = ({
             <Flex gap={2} justifyContent="space-between" alignItems="center">
               <Box>
                 <ControlledField
+                  isStepper={false}
                   defaultValue={defaultValue?.dimension_length}
                   fontSize={isMobile ? "14px" : "16px"}
                   name="dimension_length"
                   minW="10px"
                   control={control}
                   errors={errors}
-                  fieldType={FieldType.textfield}
+                  fieldType={FieldType.number}
                   borderRadius={"16px"}
                   backgroundColor={"white"}
                 />
@@ -319,13 +342,14 @@ const ProductDetailStep = ({
               x
               <Box>
                 <ControlledField
+                  isStepper={false}
                   defaultValue={defaultValue?.dimension_width}
                   fontSize={isMobile ? "14px" : "16px"}
                   name="dimension_width"
                   minW="10px"
                   control={control}
                   errors={errors}
-                  fieldType={FieldType.textfield}
+                  fieldType={FieldType.number}
                   borderRadius={"16px"}
                   backgroundColor={"white"}
                 />
@@ -333,13 +357,14 @@ const ProductDetailStep = ({
               x
               <Box>
                 <ControlledField
+                  isStepper={false}
                   defaultValue={defaultValue?.dimension_height}
                   fontSize={isMobile ? "14px" : "16px"}
                   minW="10px"
                   name="dimension_height"
                   control={control}
                   errors={errors}
-                  fieldType={FieldType.textfield}
+                  fieldType={FieldType.number}
                   borderRadius={"16px"}
                   backgroundColor={"white"}
                 />

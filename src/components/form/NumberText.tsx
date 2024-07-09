@@ -28,13 +28,15 @@ const NumberText = ({
       <NumberInputField
         value={props?.value === null ? "" : props?.value}
         border={1}
-        borderColor={error ? "brands.red.80" : "var(--chakra-colors-chakra-border-color)"}
+        borderColor={
+          error ? "brands.red.80" : "var(--chakra-colors-chakra-border-color)"
+        }
         borderStyle="solid"
         borderRadius="2xl"
         p={2}
         minW={minW ? minW : "200px"}
         height="auto"
-        fontSize="12px"
+        fontSize="16px"
         _placeholder={{ color: "brands.black.20" }}
       />
       {isStepper ? (

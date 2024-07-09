@@ -41,9 +41,11 @@ const CardSwiper = ({
         <Image
           alt={image?.url}
           src={image?.url}
+          objectFit="cover"
           fill={true}
+          priority={false}
+          sizes="50"
           style={{
-            objectFit: "contain",
             borderRadius: "24px"
           }}
         />

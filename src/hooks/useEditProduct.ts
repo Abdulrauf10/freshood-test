@@ -6,21 +6,22 @@ import { useToast } from "@chakra-ui/react"
 import { editProductService } from "@/services/api/products"
 import { ProductResponse } from "@/types/product"
 import { useRouter } from "next/navigation"
+import { cleanData } from "./useProduct"
 
 type EditProductFormInput = {
   id: string
   name: string
   sub_category_id: string
   currency: string
-  price: string
-  case_size: string
-  minimum_order: string
-  recommended_retail_price: string
+  price: number
+  case_size: number
+  minimum_order: number
+  recommended_retail_price: number
   description?: string
-  weight?: string
-  dimension_length?: string
-  dimension_width?: string
-  dimension_height?: string
+  weight?: number
+  dimension_length?: number
+  dimension_width?: number
+  dimension_height?: number
   image_ids: number[]
 }
 
@@ -31,7 +32,11 @@ const schema = yup
     price: yup.string().required(),
     case_size: yup.string().required(),
     minimum_order: yup.string().required(),
-    image_ids: yup.array().of(yup.number().required()).required().min(1)
+    image_ids: yup.array().of(yup.number().required()).required().min(1),
+    description: yup
+      .string()
+      .test("len", (val) => (val ? val.length <= 250 : true))
+      .nullable()
   })
   .required()
 
@@ -42,18 +47,13 @@ const useEditProduct = (productId: string) => {
   const form = useForm<any>({
     resolver: yupResolver(schema)
   })
-  let result: ProductResponse
 
   const mutation = useMutation(
-    async (payload: EditProductFormInput) =>
-      editProductService(payload).then((data) => {
-        result = data
-      }),
+    async (payload: EditProductFormInput) => editProductService(payload),
     {
-      onSuccess: (sessionId) => {
-        console.log(result.data.id)
+      onSuccess: (data: ProductResponse) => {
         queryClient.invalidateQueries(["product", productId])
-        push(`/merchant/product/${result.data.id}`)
+        push(`/merchant/product/${data.data.id}`)
         toast({
           title: "Success",
           description: "Update Product",
@@ -75,7 +75,8 @@ const useEditProduct = (productId: string) => {
   )
 
   const onSubmit = async (data: EditProductFormInput) => {
-    mutation.mutate(data)
+    const cleanedData = cleanData(data)
+    mutation.mutate(cleanedData)
   }
 
   return {
