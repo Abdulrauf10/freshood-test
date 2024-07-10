@@ -1,11 +1,13 @@
 "use client"
 
 import React, { useRef, useState } from "react"
-import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react"
+import { Box, Flex, Grid, GridItem, Skeleton, Text } from "@chakra-ui/react"
 import Image from "next/image"
 import { FaChevronDown } from "react-icons/fa"
 import { CiCamera } from "react-icons/ci"
 import "react-image-crop/dist/ReactCrop.css"
+import useImageList from "@/hooks/useImageList"
+import { Image as ImageType } from "@/types/product"
 // import CropModal from "./CropModal"
 
 const SelectedImage = ({ largeImage }: { largeImage: string }) => {
@@ -35,12 +37,14 @@ const UploadImageStep = ({
   isMobile: Boolean
   imgsSrc: any
   setImgsSrc: any
-  selectedImages: string[]
-  setSelectedImages: (temp: string[]) => void
+  selectedImages: ImageType[]
+  setSelectedImages: (temp: ImageType[]) => void
   setValue: any
   handleSubmit: any
   onSubmit: any
 }) => {
+  const { isLoading: isLoadingImage, data: dataImage } = useImageList()
+
   const onChange = (e: any) => {
     let uniqueArr: string[] = []
     let defaultValue = ""
@@ -67,12 +71,12 @@ const UploadImageStep = ({
     inputImage.current.click()
   }
 
-  const handleSelectImage = (link: string) => {
+  const handleSelectImage = (image: ImageType) => {
     if (selectedImages.length <= 10) {
-      const temp: string[] = [...selectedImages]
-      const index = temp.indexOf(link)
+      const temp = [...selectedImages]
+      const index = temp.findIndex((data) => data.url === image.url)
       if (index === -1) {
-        temp.push(link)
+        temp.push(image)
       } else {
         temp.splice(index, 1)
       }
@@ -81,9 +85,9 @@ const UploadImageStep = ({
     }
   }
 
-  const checkImageOrder = (link: string) => {
+  const checkImageOrder = (id: number) => {
     const temp = [...selectedImages]
-    const index = temp.indexOf(link)
+    const index = temp.findIndex((data) => data.id === id)
     if (index === -1) {
       return null
     } else {
@@ -162,7 +166,7 @@ const UploadImageStep = ({
           </Text>
           <FaChevronDown />
         </Flex>
-        <Grid templateColumns="repeat(3, 1fr)">
+        <Grid templateColumns="repeat(3, 1fr)" gap={isLoadingImage ? 1 : 0}>
           <GridItem sx={{ height: "170px", width: "auto" }}>
             <Flex
               onClick={onUploadClick}
@@ -175,55 +179,73 @@ const UploadImageStep = ({
               <Text>New Photo</Text>
             </Flex>
           </GridItem>
-          {imgsSrc.map((link: string, index: number) => (
-            <GridItem key={index}>
-              <Box
-                sx={{
-                  height: "170px",
-                  width: "100%",
-                  position: "relative"
-                }}
-              >
-                <Flex
-                  alignItems="center"
-                  justifyContent="center"
-                  sx={{
-                    fontSize: "14px",
-                    color: "#fff",
-                    position: "absolute",
-                    right: "16px",
-                    top: "16px",
-                    border: "1.36px solid #fff",
-                    height: "27.5px",
-                    width: "27.5px",
-                    borderRadius: "100%",
-                    zIndex: "9999",
-                    cursor: "pointer",
-                    backgroundColor:
-                      checkImageOrder(link) === null
-                        ? "transparent"
-                        : "#016748",
-                    boxShadow: "1px 1px 1px rgba(0, 0, 0, .3)"
-                  }}
-                  onClick={() => handleSelectImage(link)}
-                >
-                  {checkImageOrder(link)}
-                </Flex>
-                <Image
-                  alt={link}
-                  src={link}
-                  fill={true}
-                  style={{
-                    objectFit: "contain"
-                  }}
-                  onClick={() => {
-                    setOpenEdit(false)
-                    setLargeImage(link)
-                  }}
-                />
-              </Box>
-            </GridItem>
-          ))}
+          {!isLoadingImage
+            ? dataImage?.map((image: ImageType, index: number) => (
+                <GridItem key={index}>
+                  <Box
+                    sx={{
+                      height: "170px",
+                      width: "100%",
+                      position: "relative"
+                    }}
+                  >
+                    <Flex
+                      alignItems="center"
+                      justifyContent="center"
+                      sx={{
+                        fontSize: "14px",
+                        color: "#fff",
+                        position: "absolute",
+                        right: "16px",
+                        top: "16px",
+                        border: "1.36px solid #fff",
+                        height: "27.5px",
+                        width: "27.5px",
+                        borderRadius: "100%",
+                        zIndex: "9999",
+                        cursor: "pointer",
+                        backgroundColor:
+                          checkImageOrder(image?.id) === null
+                            ? "transparent"
+                            : "#016748",
+                        boxShadow: "1px 1px 1px rgba(0, 0, 0, .3)"
+                      }}
+                      onClick={() => handleSelectImage(image)}
+                    >
+                      {checkImageOrder(image?.id)}
+                    </Flex>
+                    <Image
+                      alt={image?.url}
+                      src={image?.url}
+                      fill={true}
+                      sizes="50"
+                      priority={false}
+                      style={{
+                        objectFit: "cover"
+                      }}
+                      onClick={() => {
+                        setOpenEdit(false)
+                        setLargeImage(image?.url)
+                      }}
+                    />
+                  </Box>
+                </GridItem>
+              ))
+            : new Array(6).fill(1).map((_item, index) => {
+                return (
+                  <GridItem key={index}>
+                    <Skeleton>
+                      <Box
+                        sx={{
+                          height: "170px",
+                          width: "100%",
+                          position: "relative"
+                        }}
+                      />
+                    </Skeleton>
+                  </GridItem>
+                )
+              })}
         </Grid>
       </Box>
       <input

@@ -9,22 +9,12 @@ import ProductDetailStep from "./ProductDetailStep"
 import UploadImageStep from "./UploadImagesStep"
 import PageTitle from "./PageTitle"
 import { useRouter } from "next/navigation"
-
-const imagesTemp = [
-  {
-    id: 33,
-    url: "https://freshood-media.s3.ap-southeast-1.amazonaws.com/product/9ab351a2-854d-46a3-84bf-e9167eb3b2a4"
-  },
-  {
-    id: 35,
-    url: "https://freshood-media.s3.ap-southeast-1.amazonaws.com/product/553db39d-351e-4e64-88df-3b24308a6dc7"
-  }
-]
+import { Image } from "@/types/product"
 
 const CreateProduct = () => {
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [imgsSrc, setImgsSrc] = useState([])
-  const [selectedImages, setSelectedImages] = useState([] as string[])
+  const [selectedImages, setSelectedImages] = useState([] as Image[])
   const [step, setStep] = useState(1)
   const { isExpanded } = useSidebarStore()
   const { push } = useRouter()
@@ -93,7 +83,7 @@ const CreateProduct = () => {
             control={control}
             errors={errors}
             isMobile={isMobile}
-            images={imagesTemp}
+            images={selectedImages}
             setValue={setValue}
             watch={watch}
           />
@@ -122,7 +112,7 @@ const CreateProduct = () => {
             }}
             type="submit"
             onClick={() => {
-              const imageIds = imagesTemp.map((img) => img.id)
+              const imageIds = selectedImages.map((img) => img.id)
               setValue("image_ids", imageIds)
               setValue("currency", "USD")
               setValue("recommended_retail_price", "10")
