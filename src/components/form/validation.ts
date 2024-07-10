@@ -27,8 +27,8 @@ export const validationError = (error: FieldError | undefined): string => {
     case "phone_digit":
       errorText = validation.phone_digit
       break
-    case "typeError":
-      errorText = validation.typeError
+    case "len":
+      errorText = "Description cannot be more than 250 characters"
       break
   }
 

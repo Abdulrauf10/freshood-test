@@ -27,7 +27,8 @@ const EditProduct = ({ productId }: { productId: string }) => {
     handleSubmit,
     onSubmit,
     setValue,
-    mutation
+    mutation,
+    watch
   } = useEditProduct(productId)
 
   const { data, isLoading } = useProductDetail(productId)
@@ -78,7 +79,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
         <PageTitle
           onBackClick={onBackClick}
           isMobile={isMobile}
-          title="New Product"
+          title="Edit Product"
         />
         {!isLoading && (
           <ProductDetailStep
@@ -88,6 +89,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
             images={product.images}
             setValue={setValue}
             defaultValue={product}
+            watch={watch}
           />
         )}
       </Box>
@@ -120,7 +122,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
             setValue("id", productId)
             handleSubmit(onSubmit)
           }}
-          isLoading={mutation.isLoading}
+          isLoading={mutation.isLoading || mutation.isSuccess}
         >
           Save
         </Button>

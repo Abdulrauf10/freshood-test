@@ -81,7 +81,7 @@ const ProductCard: FC<ProductCardProps> = ({
                   </Text>
                   <Text
                     color={"#1B1917"}
-                    fontWeight={"bold"}
+                    fontWeight={"600"}
                     fontSize={isMobile ? "20px" : "28px"}
                   >
                     {product.recommended_retail_price}

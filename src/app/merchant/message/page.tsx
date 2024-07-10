@@ -26,7 +26,8 @@ import {
   ModalCloseButton,
   Tooltip,
   Center,
-  useMediaQuery
+  useMediaQuery,
+  background
 } from "@chakra-ui/react"
 import { AttachmentIcon } from "@chakra-ui/icons"
 import Image from "next/image"
@@ -35,6 +36,7 @@ import { IoIosAlert, IoIosArrowBack, IoIosSearch } from "react-icons/io"
 import { FaExclamation } from "react-icons/fa6"
 import { useForm } from "react-hook-form"
 import { BiMessageRoundedDetail } from "react-icons/bi"
+import useSidebarStore from "@/store/sidebarStore"
 
 const APP_ID = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string
 const USER_ID = process.env.NEXT_PUBLIC_SENDBIRD_USER_ID as string
@@ -54,6 +56,7 @@ interface Message {
 type MessageType = "buying" | "selling" | "unread" | "archived"
 
 const MessagePage: React.FC = () => {
+  const { isExpanded, toggleSidebar } = useSidebarStore()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [sb, setSb] = useState<SendBird.SendBirdInstance | null>(null)
   const [channels, setChannels] = useState<any[]>([])
@@ -478,7 +481,8 @@ const MessagePage: React.FC = () => {
                       maxWidth: "70%", // Maksimal lebar pesan
                       margin: "4px 0", // Margin antar pesan
                       alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
-                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)" // Sedikit bayangan untuk kedalaman
+                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                      fontSize: "14px"
                     }
 
                     // Style untuk pesan masuk (pesan dari orang lain)
@@ -490,7 +494,8 @@ const MessagePage: React.FC = () => {
                       maxWidth: "60%", // Maksimal lebar pesan
                       margin: "4px 0", // Margin antar pesan
                       alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
-                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)" // Sedikit bayangan untuk kedalaman
+                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                      fontSize: "14px",
                     }
 
                     const messageStyle: any = isOutgoingMessage
@@ -813,9 +818,10 @@ const MessagePage: React.FC = () => {
     <Flex
       mx={{
         base: 4,
-        md: "200px",
-        lg: "200px"
+        md: 'auto',
+        lg: 'auto'
       }}
+      // backgroundColor={"blue"}
       direction={"column"}
     >
       <HStack>
@@ -824,11 +830,12 @@ const MessagePage: React.FC = () => {
           <CustomTitle title="Messages" />
         </Flex>
       </HStack>
-      <Flex pt={4}>
+      <Flex pt={4} mx={isMobile ? '0%' : isExpanded  ? '15%' : '10%'} pl={isMobile ? '0px' :'60px'}>
         <Flex
-          w={activeChannel && !isMobile ? "50%" : "100%"}
+          w={activeChannel && !isMobile ? "100%" : "100%"}
           direction={"column"}
           gap={4}
+          pr={4}
         >
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -906,33 +913,35 @@ const MessagePage: React.FC = () => {
                             )?.nickname
                           }
                         </Text>
-                        <Text>
+                        <Text fontSize={"14px"}>
                           {channel.lastMessage
                             ? channel.lastMessage?.message
                             : ""}
                         </Text>
                       </VStack>
                     </HStack>
-                    <VStack alignItems={"end"}>
-                      <Text>
+                    <VStack alignItems={"end"} justifyContent={"space-between"} height={"full"}>
+                      <Text fontSize={"11px"} color={"#78716C"}>
                         {channel.lastMessage
                           ? new Date(
-                              channel.lastMessage.createdAt
-                            ).toLocaleDateString()
+                            channel.lastMessage.createdAt
+                          ).toLocaleDateString()
                           : ""}
                       </Text>
                       {channel?.unreadMessageCount &&
                         channel?.unreadMessageCount > 0 && (
-                          <Box
-                            w="30px"
-                            h="30px"
+                          <Flex
+                            w="20px"
+                            h="20px"
                             borderRadius={"full"}
                             backgroundColor={"#016748"}
+                            justifyContent={"center"}
+                            alignItems={"center"}
                           >
-                            <Text color={"white"} textAlign="center" pt={1}>
+                            <Text fontSize={"11px"} color={"white"} textAlign="center">
                               {channel?.unreadMessageCount}
                             </Text>
-                          </Box>
+                          </Flex>
                         )}
                     </VStack>
                     {/* <Heading as="h2">{channel.name}</Heading>
@@ -956,10 +965,10 @@ const MessagePage: React.FC = () => {
           <Flex
             borderLeft={"1px"}
             display={activeChannel && !isMobile ? "block" : "none"}
-            w={"50%"}
+            w={"100%"}
             gap={4}
             direction={"column"}
-            mx={{
+            px={{
               base: 4
               // md: '200px',
               // lg: '200px'
@@ -1047,7 +1056,8 @@ const MessagePage: React.FC = () => {
                           maxWidth: "70%", // Maksimal lebar pesan
                           margin: "4px 0", // Margin antar pesan
                           alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
-                          boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)" // Sedikit bayangan untuk kedalaman
+                          boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                          fontSize: '14px'
                         }
 
                         // Style untuk pesan masuk (pesan dari orang lain)
@@ -1059,7 +1069,8 @@ const MessagePage: React.FC = () => {
                           maxWidth: "60%", // Maksimal lebar pesan
                           margin: "4px 0", // Margin antar pesan
                           alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
-                          boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)" // Sedikit bayangan untuk kedalaman
+                          boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                          fontSize: '14px'
                         }
 
                         const messageStyle: any = isOutgoingMessage

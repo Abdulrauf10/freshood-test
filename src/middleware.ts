@@ -1,24 +1,40 @@
-import { NextResponse } from "next/server"
-import { NextRequest } from "next/server"
-import UseSessionStore from "./store/useSessionStore"
+import axios from "axios"
+import { NextResponse, NextRequest } from "next/server"
+import { AUTH } from "./config/endpoint"
 
-export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname
-  const userToken = request.cookies.get("sessionid")
-  // const { sessionId } = UseSessionStore()
+const protectedRoutes = ["/account-review", "/forgot-password", "/merchant"]
+const authRoutes = ["/", "/register"]
 
-  // if (path === "/" && sessionId) {
-  //   // If user is already logged in and tries to access login page, redirect to home
-  //   return NextResponse.redirect(new URL("/merchant/my-account", request.url))
-  // } else if (path.includes("/merchant") && !sessionId) {
-  //   // If user tries to access protected route without token, redirect to login
-  //   return NextResponse.redirect(new URL("/", request.url))
-  // } else if (!sessionId) {
-  //   // If user tries to access any protected route without token, redirect to login
-  //   return NextResponse.redirect(new URL("/", request.url))
-  // } else {
-  //   return NextResponse.next()
-  // }
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const sessionId = request.cookies.get("sessionid")
+  let isTokenValid: boolean = false
+
+  if (sessionId && pathname !== "/") {
+    const temp = await axios.get(AUTH.ME, {
+      headers: {
+        Cookie: `sessionid=${sessionId?.value}`
+      },
+      withCredentials: true
+    })
+    isTokenValid = temp.status === 200
+  }
+
+  if (protectedRoutes.some((path) => pathname.startsWith(path))) {
+    if (!isTokenValid) {
+      const loginUrl = new URL("/", request.url)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+
+  if (authRoutes.includes(pathname)) {
+    if (isTokenValid) {
+      const dashboardUrl = new URL("/merchant/my-account", request.url)
+      return NextResponse.redirect(dashboardUrl)
+    }
+  }
+
+  return NextResponse.next()
 }
 
 // protected routes

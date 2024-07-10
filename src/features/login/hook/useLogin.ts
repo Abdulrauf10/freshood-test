@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation"
 import useSessionStore from "@/store/useSessionStore"
 import { useMutation } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import Cookies from "js-cookie"
-import { LOGIN_API_URL } from "@/config/endpoint"
-import { LoginService } from "@/services/api/auth"
+import { LoginService, getMe } from "@/services/api/auth"
 import { useActiveMenu } from "@/store/useActiveMenu"
 
 type LoginFormInput = {
@@ -36,8 +34,9 @@ const useLogin = () => {
     async (payload: LoginFormInput) => LoginService(payload),
 
     {
-      onSuccess: (sessionId) => {
-        setSessionId("7xuxpw967wfh8wpf8nouxa6m02r6eq8v")
+      onSuccess: async (data) => {
+        const sessionId = data.data.data.sessionid
+        setSessionId(sessionId)
         replace("/merchant/my-account")
         setActiveMenu(0)
       },

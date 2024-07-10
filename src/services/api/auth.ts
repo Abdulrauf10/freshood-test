@@ -15,7 +15,7 @@ export const registerService = async (payload?: any) => {
 
 export const LoginService = async (payload: any) => {
   const res = await apiCall.post(LOGIN_API_URL, payload)
-  return res.request
+  return res
 }
 
 export const logoutService = async (payload?: any) => {
@@ -65,5 +65,25 @@ export const editPersonal = async (payload: any) => {
 
 export const changePassword = async (payload: any) => {
   const res = await apiCall.post(AUTH.CHANGE_PASSWORD, payload)
+  return res.data
+}
+
+export const getAddress = async () => {
+  const res = await apiCall.get(AUTH.ADDRESS)
+  return res.data
+}
+
+export const postAddress = async (payload: any) => {
+  const res = await apiCall.post(AUTH.ADDRESS, payload)
+  return res.data
+}
+
+export const updateAddress = async (payload: any, address_id: number) => {
+  const res = await apiCall.post(`${AUTH.ADDRESS}/${address_id}`, payload)
+  return res.data
+}
+
+export const deleteAddress = async (address_id: number) => {
+  const res = await apiCall.delete(`${AUTH.ADDRESS}/${address_id}`)
   return res.data
 }

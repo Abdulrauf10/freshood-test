@@ -35,7 +35,8 @@ const CreateProduct = () => {
     handleSubmit,
     onSubmit,
     setValue,
-    mutation
+    mutation,
+    watch
   } = useProduct()
 
   const {
@@ -94,6 +95,7 @@ const CreateProduct = () => {
             isMobile={isMobile}
             images={imagesTemp}
             setValue={setValue}
+            watch={watch}
           />
         )}
       </Box>
@@ -126,7 +128,7 @@ const CreateProduct = () => {
               setValue("recommended_retail_price", "10")
               handleSubmit(onSubmit)
             }}
-            isLoading={mutation.isLoading}
+            isLoading={mutation.isLoading || mutation.isSuccess}
           >
             List it
           </Button>
