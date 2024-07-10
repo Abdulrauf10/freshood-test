@@ -11,15 +11,15 @@ type ProductFormInput = {
   name: string
   sub_category_id: string
   currency: string
-  price: string
-  case_size: string
-  minimum_order: string
-  recommended_retail_price: string
+  price: number
+  case_size: number
+  minimum_order: number
+  recommended_retail_price: number
   description?: string
-  weight?: string
-  dimension_length?: string
-  dimension_width?: string
-  dimension_height?: string
+  weight?: number
+  dimension_length?: number
+  dimension_width?: number
+  dimension_height?: number
   image_ids: number[]
 }
 
@@ -27,12 +27,26 @@ const schema = yup
   .object({
     name: yup.string().required(),
     sub_category_id: yup.string().required(),
-    price: yup.string().required(),
-    case_size: yup.string().required(),
-    minimum_order: yup.string().required(),
-    image_ids: yup.array().of(yup.number().required()).required().min(1)
+    price: yup.number().required(),
+    case_size: yup.number().required(),
+    minimum_order: yup.number().required(),
+    image_ids: yup.array().of(yup.number().required()).required().min(1),
+    description: yup
+      .string()
+      .test("len", (val) => (val ? val.length <= 250 : true))
+      .nullable()
   })
   .required()
+
+export const cleanData = (data: any): any => {
+  const cleanedData = { ...data }
+  Object.keys(cleanedData).forEach((key) => {
+    if (cleanedData[key] === "") {
+      delete cleanedData[key]
+    }
+  })
+  return cleanedData
+}
 
 const useProduct = () => {
   const toast = useToast()
@@ -42,16 +56,11 @@ const useProduct = () => {
     resolver: yupResolver(schema)
   })
 
-  let result: ProductResponse
-
   const mutation = useMutation(
-    async (payload: ProductFormInput) =>
-      createProductService(payload).then((data) => {
-        result = data
-      }),
+    async (payload: ProductFormInput) => createProductService(payload),
     {
-      onSuccess: (sessionId) => {
-        push(`/merchant/product/${result.data.id}`)
+      onSuccess: (data: ProductResponse) => {
+        push(`/merchant/product/${data?.data?.id}`)
         toast({
           title: "Success",
           description: "Create Product",
@@ -73,7 +82,8 @@ const useProduct = () => {
   )
 
   const onSubmit = async (data: ProductFormInput) => {
-    mutation.mutate(data)
+    const cleanedData = cleanData(data)
+    mutation.mutate(cleanedData)
   }
 
   return {

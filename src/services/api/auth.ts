@@ -15,7 +15,7 @@ export const registerService = async (payload?: any) => {
 
 export const LoginService = async (payload: any) => {
   const res = await apiCall.post(LOGIN_API_URL, payload)
-  return res.request
+  return res
 }
 
 export const logoutService = async (payload?: any) => {

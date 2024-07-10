@@ -136,11 +136,11 @@ const MyAccountMerchant = () => {
         width="full"
         sx={{
           marginBottom: isMobile ? "1rem" : "2.5rem",
-          height: isMobile ? "45vh" : "70vh",
+          height: isMobile ? "45vh" : "75vh",
           backgroundImage: "url(/merchant/BG.png)",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "top",
-          backgroundSize: isMobile ? "100vw 45vh" : "100vw 70vh",
+          backgroundSize: isMobile ? "100vw 45vh" : "100vw 75vh",
           padding: isMobile ? "0 14px" : "0 48px"
         }}
       >

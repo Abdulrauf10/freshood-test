@@ -1,7 +1,7 @@
-"use client"
 import { StateCreator, create } from "zustand"
 import { persist, PersistOptions } from "zustand/middleware"
 import Cookies from "js-cookie"
+import { DataMe } from "@/types/users"
 
 type SessionStoreInterface = {
   sessionId: string | null
