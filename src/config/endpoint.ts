@@ -17,7 +17,8 @@ export const AUTH = {
   VERIFICATION: `${BASE_API_URL}/users/register/verify-email-otp`,
   FORGOT_PASSWOR_SEND_EMAIL: `${BASE_API_URL}/users/password-reset/send-mail`,
   PASSWORD_RESET: `${BASE_API_URL}/users/password-reset/reset`,
-  CHANGE_PASSWORD: `${BASE_API_URL}/users/change-password`
+  CHANGE_PASSWORD: `${BASE_API_URL}/users/change-password`,
+  ADDRESS: `${BASE_API_URL}/users/addresses-list`
 }
 
 export const MERCHANT_INFO = {
