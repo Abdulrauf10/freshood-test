@@ -50,6 +50,26 @@ export type DataMeResponse = {
   }
 }
 
+export type AddrestList = {
+  id: number
+  user: number
+  contact_name: string
+  contact_number: string
+  email: string
+  country: string
+  province_state: string
+  city: string
+  address_line_1: string
+  address_line_2: string
+  postal_code: string
+  is_default: boolean
+  created_at: string
+}
+
+export type AddrestListResponse = {
+  data: AddrestList[]
+}
+
 export type DataMe = {
   id: number
   user_type: string
