@@ -45,9 +45,12 @@ const useChangePassword = () => {
         replace("/password-confirmation")
       },
       onError: (error: any) => {
+        console.log(error)
         toast({
           title: "Error",
-          description: error.message || "Update failed",
+          description:
+            error?.response?.data?.message ||
+            "Your Password must be at least 6 characters.",
           status: "error",
           duration: 2000,
           isClosable: true
