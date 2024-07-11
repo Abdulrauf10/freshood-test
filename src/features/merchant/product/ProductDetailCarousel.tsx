@@ -63,13 +63,6 @@ const ProductDetailCarousel = ({
   isMobile: boolean
   images: ImageType[]
 }) => {
-  const temp = new Array(8).fill({
-    created_at: "2024-06-19T04:36:38.146325Z",
-    creator: 15,
-    id: 33,
-    uploaded: false,
-    url: "https://freshood-media.s3.ap-southeast-1.amazonaws.com/product/9ab351a2-854d-46a3-84bf-e9167eb3b2a4"
-  })
   return (
     <Box sx={{ width: "100%" }}>
       <Skeleton height={isLoading ? "20vh" : "auto"} isLoaded={!isLoading}>
@@ -81,7 +74,7 @@ const ProductDetailCarousel = ({
             modules={[Pagination]}
             className="mySwiper"
           >
-            {temp?.map((image: ImageType, index: number) => {
+            {images?.map((image: ImageType, index: number) => {
               return (
                 <SwiperSlide key={index}>
                   <CardSwiper

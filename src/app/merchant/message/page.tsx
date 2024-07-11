@@ -67,7 +67,7 @@ const MessagePage: React.FC = () => {
   const [messages, setMessages] = useState<any>([])
   const [selectedTypeChat, setSelectedTypeChat] = useState<string>("All")
   const [unreadMessages, setUnreadMessages] = useState(0)
-
+  const [loadPreviousMessages, setLoadPreviousMessages] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const toast = useToast()
@@ -197,10 +197,10 @@ const MessagePage: React.FC = () => {
   }
 
   useEffect(() => {
-    if (messagesEndRef.current) {
+    if (messagesEndRef.current && !loadPreviousMessages) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  }, [messages])
+  }, [activeChannel, messages, loadPreviousMessages])
 
   const selectChannel = (channel: any) => {
     setActiveChannel(channel)
@@ -241,6 +241,8 @@ const MessagePage: React.FC = () => {
 
   const groupedMessages = groupMessagesByTime(messages)
 
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (activeChannel && sb) {
       // Asumsikan activeChannel adalah ID atau instance dari saluran yang aktif
@@ -255,11 +257,52 @@ const MessagePage: React.FC = () => {
     }
   }, [activeChannel, sb])
 
+  // useEffect(() => {
+  //   const handleScroll = async () => {
+  //     // Check if scrolled to top
+  //     if (messagesContainerRef.current?.scrollTop === 0) {
+  //       // Assuming `sb` and `activeChannel` are available in your component's scope
+  //       if (activeChannel && sb) {
+  //         const channel = await sb.GroupChannel.getChannel(activeChannel.url);
+  //         const messageListQuery = channel.createPreviousMessageListQuery();
+  //         messageListQuery.limit = 20; // Number of messages to load
+  //         messageListQuery.includeMetaArray = true;
+  //         messageListQuery.reverse = false; // Load older messages
+  //         if (messageListQuery.hasMore) {
+  //           setLoadPreviousMessages(true);
+  //           const containerBeforeLoad = messagesContainerRef.current.scrollHeight;
+  //           const olderMessages = await messageListQuery.load();
+  //           // Prepend older messages to the existing messages
+  //           setMessages((prevMessages: any) => {
+  //             let filter = olderMessages.filter(om => !prevMessages.some((m: any) => m.messageId === om.messageId))
+  //             if (filter.length > 0) {
+  //               return [...filter, ...prevMessages]
+  //             } else {
+  //               return [...prevMessages]
+  //             }
+  //           });
+  //           const containerAfterLoad = messagesContainerRef.current.scrollHeight;
+  //           // Adjust scroll position to maintain viewing position
+  //           messagesContainerRef.current.scrollTop += containerAfterLoad - containerBeforeLoad;
+  //           setLoadPreviousMessages(false);
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   const messagesContainer = messagesContainerRef.current;
+  //   messagesContainer?.addEventListener('scroll', handleScroll);
+
+  //   return () => messagesContainer?.removeEventListener('scroll', handleScroll);
+  // }, [activeChannel, sb]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
+
+
 
   const RenderModal = () => {
     let messageStyle = {
@@ -461,7 +504,7 @@ const MessagePage: React.FC = () => {
               ([time, groupedMessages]) => (
                 <Flex direction={"column"} key={time}>
                   <Flex justifyContent={"center"}>
-                    <div style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                    <div style={{ marginBottom: "10px", fontSize: '11px' }}>
                       {time}
                     </div>
                   </Flex>
@@ -830,7 +873,7 @@ const MessagePage: React.FC = () => {
           <CustomTitle title="Messages" />
         </Flex>
       </HStack>
-      <Flex pt={4} mx={isMobile ? '0%' : isExpanded  ? '15%' : '10%'} pl={isMobile ? '0px' :'60px'}>
+      <Flex pt={4} mx={isMobile ? '0%' : isExpanded ? '15%' : '10%'} pl={isMobile ? '0px' : '60px'}>
         <Flex
           w={activeChannel && !isMobile ? "100%" : "100%"}
           direction={"column"}
@@ -1021,6 +1064,7 @@ const MessagePage: React.FC = () => {
                 }}
                 px={4}
                 overflow={"auto"}
+                ref={messagesContainerRef}
                 css={{
                   "&::-webkit-scrollbar": {
                     display: "none" // Untuk Chrome, Safari, dan Opera
@@ -1034,7 +1078,7 @@ const MessagePage: React.FC = () => {
                     <Flex direction={"column"} key={time}>
                       <Flex justifyContent={"center"}>
                         <div
-                          style={{ fontWeight: "bold", marginBottom: "10px" }}
+                          style={{ marginBottom: "10px", fontSize: '11px', color: '#44403C' }}
                         >
                           {time}
                         </div>
@@ -1108,7 +1152,9 @@ const MessagePage: React.FC = () => {
                                 key={index}
                                 style={messageStyle}
                               >
-                                <a href={fileMessage.url} download>
+                                <a href={fileMessage.url} style={{
+                                  textDecoration: 'underline',
+                                }} download>
                                   {fileMessage.name}
                                 </a>
                               </div>

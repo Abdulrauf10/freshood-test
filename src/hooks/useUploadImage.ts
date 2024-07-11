@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form"
-import { useMutation } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
 import {
   awsPresignedUrlService,
+  confirmImageUploadUrlService,
   uploadImageService
 } from "@/services/api/uploadImage"
 
@@ -10,13 +11,14 @@ const useUploadImage = () => {
   const toast = useToast()
 
   const form = useForm<any>({})
+  const queryClient = useQueryClient()
 
   const mutation = useMutation(
     async ({ file, folder }: any) => {
       try {
         const { data } = await awsPresignedUrlService({ folder })
 
-        await uploadImageService({
+        const result = await uploadImageService({
           key: data.presign_response.fields.key,
           AWSAccessKeyId: data.presign_response.fields.AWSAccessKeyId,
           policy: data.presign_response.fields.policy,
@@ -24,13 +26,24 @@ const useUploadImage = () => {
           "Content-Type": "image/png",
           file
         })
+
+        if (result?.status === 204) {
+          await confirmImageUploadUrlService(data)
+        }
       } catch (error) {
         console.log("error", error)
       }
     },
     {
-      onSuccess: (sessionId) => {
-        console.log("sess :", sessionId)
+      onSuccess: () => {
+        queryClient.invalidateQueries(["image-list"])
+        toast({
+          title: "Success",
+          description: "Upload Image",
+          status: "success",
+          duration: 2000,
+          isClosable: true
+        })
       },
       onError: (error: any) => {
         console.log(error)
