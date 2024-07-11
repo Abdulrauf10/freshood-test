@@ -132,7 +132,7 @@ const MerchantInfo = () => {
     marginTop: "7px"
   }
 
-  const updateValueId = () => {
+  const updateValueId = useCallback(() => {
     setValue("sub_category_ids", [
       ...value1,
       ...value2,
@@ -141,7 +141,11 @@ const MerchantInfo = () => {
       ...value5,
       ...value6
     ])
-  }
+  }, [setValue, value1, value2, value3, value4, value5, value6])
+
+  useEffect(() => {
+    updateValueId()
+  }, [value1, value2, value3, value4, value5, value6, updateValueId])
 
   return (
     <Box

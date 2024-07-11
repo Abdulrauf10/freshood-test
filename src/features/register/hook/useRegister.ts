@@ -78,9 +78,10 @@ const useRegister = () => {
         replace("/merchant-info")
       },
       onError: (error: any) => {
+        console.log("val", error)
         toast({
           title: "Error",
-          description: error.message || "Registration failed",
+          description: error?.response?.data?.message || "Registration failed",
           status: "error",
           duration: 2000,
           isClosable: true
