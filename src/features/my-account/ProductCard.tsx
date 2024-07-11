@@ -33,7 +33,7 @@ const ProductCard: FC<ProductCardProps> = ({
       overflow="hidden"
       position="relative"
     >
-      <Link href={`/merchant/product/${product.id}`}>
+      <Link href={`/merchant/products/${product.id}`}>
         <Skeleton isLoaded={!isLoading}>
           <Box
             sx={{

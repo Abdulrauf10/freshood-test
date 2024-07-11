@@ -53,7 +53,7 @@ const useEditProduct = (productId: string) => {
     {
       onSuccess: (data: ProductResponse) => {
         queryClient.invalidateQueries(["product", productId])
-        push(`/merchant/product/${data.data.id}`)
+        push(`/merchant/products/${data.data.id}`)
         toast({
           title: "Success",
           description: "Update Product",
