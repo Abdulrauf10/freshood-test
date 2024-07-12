@@ -21,22 +21,20 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import useAddAddress from "./hooks/useAddAddress"
 import PhoneInput from "react-phone-input-2"
+import { useDataEdit } from "@/store/useDataEdit"
 
 const AddAddresses: React.FC<any> = () => {
   const { activeDrawer, setActiveDrawer } = useDrawer()
+  const { isEdit, payload, setIsEdit } = useDataEdit()
   const {
     control,
     formState: { errors },
     handleSubmit,
     onSubmit,
     mutation,
+    mutationUpdate,
     setValue
-  } = useAddAddress()
-
-  const options = [
-    { value: "Mr.", label: "Mr." },
-    { value: "Mrs.", label: "Mrs." }
-  ]
+  } = useAddAddress(isEdit, payload)
 
   const handlePhoneChange = (value: any, country: any) => {
     const countryCode = country.dialCode
@@ -59,7 +57,10 @@ const AddAddresses: React.FC<any> = () => {
         <HStack
           cursor={"pointer"}
           gap={2}
-          onClick={() => setActiveDrawer("addressList")}
+          onClick={() => {
+            setIsEdit(false)
+            setActiveDrawer("addressList")
+          }}
         >
           <IoIosArrowBack size="24px" color="black" />
           <Text>Back</Text>
@@ -218,7 +219,7 @@ const AddAddresses: React.FC<any> = () => {
             marginTop={"20px"}
             type="submit"
             width={"100%"}
-            isLoading={mutation?.isLoading}
+            isLoading={mutation?.isLoading || mutationUpdate?.isLoading}
           >
             Save
           </Button>

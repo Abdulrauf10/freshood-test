@@ -102,7 +102,7 @@ const Verification = () => {
           </HStack>
         )}
 
-        <CustomTitle title={"VERIFICATION"} />
+        <CustomTitle title={"merchant sign up"} />
       </HStack>
 
       <Stepper steps={steps} initialStep={2} width={isMobile ? "90%" : "60%"} />

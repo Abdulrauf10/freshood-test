@@ -14,73 +14,7 @@ import { IoIosArrowBack } from "react-icons/io"
 import { useDrawer } from "@/context/drawerContext"
 import { IoChevronForward } from "react-icons/io5"
 import useAddressList from "./hooks/useAddressList"
-
-const data = [
-  {
-    name: "Jacky Chan",
-    status: "Default",
-    email: "Jacky@example.com",
-    phone: "+85292221234",
-    address:
-      "33 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  },
-  {
-    name: "Bruce Lee",
-    status: "Default",
-    email: "Bruce@example.com",
-    phone: "+85292221235",
-    address:
-      "34 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  },
-  {
-    name: "Donnie Yen",
-    status: "Default",
-    email: "Donnie@example.com",
-    phone: "+85292221236",
-    address:
-      "35 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  },
-  {
-    name: "Jet Li",
-    status: "Default",
-    email: "Jet@example.com",
-    phone: "+85292221237",
-    address:
-      "36 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  },
-  {
-    name: "Chow Yun-fat",
-    status: "Default",
-    email: "Chow@example.com",
-    phone: "+85292221238",
-    address:
-      "37 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  },
-  {
-    name: "Donnie Yen",
-    status: "Default",
-    email: "Donnie@example.com",
-    phone: "+85292221236",
-    address:
-      "35 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  },
-  {
-    name: "Jet Li",
-    status: "Default",
-    email: "Jet@example.com",
-    phone: "+85292221237",
-    address:
-      "36 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  },
-  {
-    name: "Chow Yun-fat",
-    status: "Default",
-    email: "Chow@example.com",
-    phone: "+85292221238",
-    address:
-      "37 Wyndham Street, 19F – 23F, Hong Kong Island , Hong Kong SAR China"
-  }
-]
+import { useDataEdit } from "@/store/useDataEdit"
 
 const MenuItem: React.FC<any> = ({
   contact_name,
@@ -157,6 +91,7 @@ const NoData: React.FC<any> = () => {
 const AddressesList: React.FC<any> = () => {
   const { activeDrawer, setActiveDrawer } = useDrawer()
   const { dataAddress, isLoadingAddress } = useAddressList()
+  const { setIsEdit, setPayload } = useDataEdit()
 
   return (
     <>
@@ -190,7 +125,15 @@ const AddressesList: React.FC<any> = () => {
             maxH={"80vh"}
           >
             {dataAddress?.data?.map((item, index) => (
-              <MenuItem key={index} {...item} />
+              <MenuItem
+                key={index}
+                {...item}
+                onClick={() => {
+                  setIsEdit(true)
+                  setPayload(item)
+                  setActiveDrawer("addAddresses")
+                }}
+              />
             ))}
           </VStack>
           <Divider my={4} />

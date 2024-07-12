@@ -77,7 +77,28 @@ const useMerchantInfo = () => {
   )
 
   const onSubmit = async (payload: MerchantFormInput) => {
-    mutation.mutate(payload)
+    const {
+      store_name,
+      website_url,
+      products_count_range,
+      primary_category_ids,
+      sub_category_ids,
+      sub_category_ids1,
+      heard_from,
+      about_your_business
+    } = payload
+
+    const newPayload: MerchantFormInput = {
+      store_name,
+      website_url: website_url || "",
+      products_count_range,
+      primary_category_ids,
+      sub_category_ids,
+      sub_category_ids1,
+      heard_from,
+      about_your_business
+    }
+    mutation.mutate(newPayload)
   }
 
   return {
