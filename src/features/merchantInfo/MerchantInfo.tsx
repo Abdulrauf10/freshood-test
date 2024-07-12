@@ -177,7 +177,7 @@ const MerchantInfo = () => {
           </HStack>
         )}
 
-        <CustomTitle title={"MERCHANT INFO"} />
+        <CustomTitle title={"MERCHANT sign up"} />
       </HStack>
 
       <Stepper steps={steps} initialStep={1} width={isMobile ? "90%" : "60%"} />
@@ -205,7 +205,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text {...fontStyle}>Website URL</Text>
+          <Text {...fontStyle}>Website URL (if have)</Text>
           <ControlledField
             name="website_url"
             control={control}
@@ -213,19 +213,19 @@ const MerchantInfo = () => {
             fieldType={FieldType.textfield}
             borderRadius={"16px"}
             backgroundColor={"white"}
-            placeholder="https://yourwebsite.com"
+            placeholder="Website url"
           />
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text {...fontStyle}>Products Count Range</Text>
+          <Text {...fontStyle}>How many wholesale products do you sell?</Text>
           <ControlledReactSelect
             name="products_count_range"
             nameData="products_count_range"
             control={control}
             errors={errors}
             options={productCountOptions}
-            placeholder="Select range"
+            placeholder="Select"
             handleChange={(val) => {
               setValue("products_count_range", val.value)
             }}
@@ -236,7 +236,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text {...fontStyle}>Primary Category</Text>
+          <Text {...fontStyle}>Primary categories (Max 3 categories)</Text>
 
           <CheckboxSelect
             renderPopoverContent={() => (
@@ -273,13 +273,9 @@ const MerchantInfo = () => {
               </VStack>
             )}
             select={
-              watch("primary_category_ids")?.length === 3
-                ? "All selected"
-                : `${
-                    watch("primary_category_ids")?.length
-                      ? watch("primary_category_ids")?.length
-                      : 0
-                  } selected`
+              watch("primary_category_ids")?.length
+                ? `${watch("primary_category_ids")?.length} selected`
+                : "Select"
             }
           />
         </Box>
@@ -329,9 +325,7 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  value1?.length === subCategoryOptions1?.length
-                    ? "All selected"
-                    : `${value1?.length ? value1?.length : 0} selected`
+                  value1?.length ? `${value1?.length} selected` : "Select"
                 }
               />
             </Box>
@@ -383,9 +377,7 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  value2?.length === subCategoryOptions2?.length
-                    ? "All selected"
-                    : `${value2?.length ? value2?.length : 0} selected`
+                  value2?.length ? `${value2?.length} selected` : "Select"
                 }
               />
             </Box>
@@ -434,9 +426,7 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  value3?.length === subCategoryOptions3?.length
-                    ? "All selected"
-                    : `${value3?.length ? value3?.length : 0} selected`
+                  value3?.length ? `${value3?.length} selected` : "Select"
                 }
               />
             </Box>
@@ -487,9 +477,7 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  value4?.length === subCategoryOptions4?.length
-                    ? "All selected"
-                    : `${value4?.length ? value4?.length : 0} selected`
+                  value4?.length ? `${value4?.length} selected` : "Select"
                 }
               />
             </Box>
@@ -540,9 +528,7 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  value5?.length === subCategoryOptions5?.length
-                    ? "All selected"
-                    : `${value5?.length ? value5?.length : 0} selected`
+                  value5?.length ? `${value5?.length} selected` : "Select"
                 }
               />
             </Box>
@@ -591,9 +577,7 @@ const MerchantInfo = () => {
                   </VStack>
                 )}
                 select={
-                  value6?.length === subCategoryOptions6?.length
-                    ? "All selected"
-                    : `${value6?.length ? value6?.length : 0} selected`
+                  value6?.length ? `${value6?.length} selected` : "Select"
                 }
               />
             </Box>
@@ -631,7 +615,7 @@ const MerchantInfo = () => {
         </Box>
 
         <Box width={isMobile ? "300px" : "440px"}>
-          <Text {...fontStyle}>About Your Business</Text>
+          <Text {...fontStyle}>More information about your business</Text>
           <ControlledField
             name="about_your_business"
             control={control}
@@ -639,7 +623,7 @@ const MerchantInfo = () => {
             fieldType={FieldType.textarea}
             borderRadius={"16px"}
             backgroundColor={"white"}
-            placeholder="Describe your business"
+            placeholder="Please tell us more about your business and what do you expect to achieve on Freshood"
           />
         </Box>
       </VStack>

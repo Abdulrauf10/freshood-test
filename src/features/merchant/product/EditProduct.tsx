@@ -18,7 +18,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
   const { isExpanded } = useSidebarStore()
 
   const onBackClick = () => {
-    push(`/merchant/product/${productId}`)
+    push(`/merchant/products/${productId}`)
   }
 
   const {

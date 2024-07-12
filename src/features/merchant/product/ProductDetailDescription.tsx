@@ -15,6 +15,7 @@ import {
 import "react-image-crop/dist/ReactCrop.css"
 import { IoChevronForward } from "react-icons/io5"
 import { Product } from "@/types/product"
+import Link from "next/link"
 
 const ProductDetailDescription = ({
   isExpanded,
@@ -55,7 +56,7 @@ const ProductDetailDescription = ({
             />
             <Flex
               flexDirection="column"
-              sx={{ width: "25%" }}
+              sx={{ width: isMobile ? "100%" : "25%" }}
               justifyContent="center"
             >
               <Text
@@ -194,39 +195,62 @@ const ProductDetailDescription = ({
               marginBottom: isMobile ? "10vh" : 0
             }}
           >
-            <Flex
-              sx={{ cursor: "pointer", padding: isMobile ? "4px 0" : "6px 0" }}
-              justifyContent="space-between"
-              alignItems="center"
+            <Link
+              href={{
+                pathname: `/merchant/products/${product?.id}/specification`,
+                query: {
+                  weight: product?.weight,
+                  width: product?.dimension_width,
+                  height: product?.dimension_height,
+                  length: product?.dimension_length,
+                  caseSize: product?.case_size
+                }
+              }}
             >
-              <Text
+              <Flex
                 sx={{
-                  fontWeight: "400",
-                  fontSize: isMobile ? "14px" : "16px",
-                  color: "#44403C"
+                  cursor: "pointer",
+                  padding: isMobile ? "4px 0" : "6px 0"
                 }}
+                justifyContent="space-between"
+                alignItems="center"
               >
-                Specification
-              </Text>
-              <IoChevronForward />
-            </Flex>
+                <Text
+                  sx={{
+                    fontWeight: "400",
+                    fontSize: isMobile ? "14px" : "16px",
+                    color: "#44403C"
+                  }}
+                >
+                  Specification
+                </Text>
+                <IoChevronForward />
+              </Flex>
+            </Link>
             <Divider height="auto" />
-            <Flex
-              sx={{ cursor: "pointer", padding: isMobile ? "4px 0" : "6px 0" }}
-              justifyContent="space-between"
-              alignItems="center"
+            <Link
+              href={`/merchant/products/${product?.id}/payment-and-return-policy`}
             >
-              <Text
+              <Flex
                 sx={{
-                  fontWeight: "400",
-                  fontSize: isMobile ? "14px" : "16px",
-                  color: "#44403C"
+                  cursor: "pointer",
+                  padding: isMobile ? "4px 0" : "6px 0"
                 }}
+                justifyContent="space-between"
+                alignItems="center"
               >
-                Payment and return policy
-              </Text>
-              <IoChevronForward />
-            </Flex>
+                <Text
+                  sx={{
+                    fontWeight: "400",
+                    fontSize: isMobile ? "14px" : "16px",
+                    color: "#44403C"
+                  }}
+                >
+                  Payment and return policy
+                </Text>
+                <IoChevronForward />
+              </Flex>
+            </Link>
           </Flex>
         </Flex>
       </Box>
