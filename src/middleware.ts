@@ -2,7 +2,7 @@ import axios from "axios"
 import { NextResponse, NextRequest } from "next/server"
 import { AUTH } from "./config/endpoint"
 
-const protectedRoutes = ["/account-review", "/forgot-password", "/merchant"]
+const protectedRoutes = ["/forgot-password", "/merchant"]
 const authRoutes = ["/", "/register"]
 
 export async function middleware(request: NextRequest) {

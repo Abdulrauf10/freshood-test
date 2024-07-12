@@ -75,7 +75,7 @@ const useRegister = () => {
           duration: 2000,
           isClosable: true
         })
-        replace("/merchant-info")
+        replace("/register-merchant-info")
       },
       onError: (error: any) => {
         console.log("val", error)

@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation"
 import useSessionStore from "@/store/useSessionStore"
 import { useMutation, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import { postAddress } from "@/services/api/auth"
+import { postAddress, updateAddress } from "@/services/api/auth"
+import { AddrestList } from "@/types/users"
+import { useEffect } from "react"
+import { useDataEdit } from "@/store/useDataEdit"
 
 type AddressFormInput = {
   contact_name: string
@@ -35,14 +38,33 @@ const schema = yup
   })
   .required()
 
-const useAddAddress = () => {
+const useAddAddress = (isEdit?: boolean, dataEdit?: AddrestList) => {
   const { replace } = useRouter()
   const toast = useToast()
   const queryClient = useQueryClient()
+  const { setIsEdit, setPayload } = useDataEdit()
 
   const form = useForm<AddressFormInput>({
     resolver: yupResolver(schema)
   })
+
+  useEffect(() => {
+    if (dataEdit) {
+      const { reset } = form
+
+      reset({
+        contact_name: dataEdit?.contact_name,
+        contact_number: dataEdit?.contact_number,
+        email: dataEdit?.email,
+        country: dataEdit?.country,
+        province_state: dataEdit?.province_state,
+        city: dataEdit?.city,
+        address_line_1: dataEdit?.address_line_1,
+        address_line_2: dataEdit?.address_line_2,
+        postal_code: dataEdit?.postal_code
+      })
+    }
+  }, [dataEdit, form])
 
   const mutation = useMutation(
     async (payload: AddressFormInput) => postAddress(payload),
@@ -61,6 +83,32 @@ const useAddAddress = () => {
         toast({
           title: "Error",
           description: error.error || "Submission failed",
+          status: "error",
+          duration: 2000,
+          isClosable: true
+        })
+      }
+    }
+  )
+
+  const mutationUpdate = useMutation(
+    async (payload: any) => updateAddress(payload?.newPayload, payload.id),
+    {
+      onSuccess: async () => {
+        toast({
+          title: "Success",
+          description: "Address information updated",
+          status: "success",
+          duration: 2000,
+          isClosable: true
+        })
+        queryClient.removeQueries(["address-list"])
+        setIsEdit(false)
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Error",
+          description: error?.response?.data?.message || "Submission failed",
           status: "error",
           duration: 2000,
           isClosable: true
@@ -95,13 +143,20 @@ const useAddAddress = () => {
       postal_code,
       is_default: true
     }
-    mutation.mutate(newPayload)
+    if (!isEdit) {
+      mutation.mutate(newPayload)
+    } else {
+      const id = dataEdit?.id
+      const editPayload = { newPayload, id }
+      mutationUpdate.mutate(editPayload)
+    }
   }
 
   return {
     ...form,
     onSubmit,
-    mutation
+    mutation,
+    mutationUpdate
   }
 }
 
