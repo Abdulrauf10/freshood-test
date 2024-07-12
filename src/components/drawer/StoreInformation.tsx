@@ -179,7 +179,38 @@ const StoreInformation: React.FC<StoreInformationProps> = ({ onBackClick }) => {
             </VStack>
           </TabPanel>
           <TabPanel>
-            <Text>Business Profile content goes here.</Text>
+            <VStack alignItems="start" pt={4} gap={6}>
+              <DetailTextElement
+                topText="Country of Incorporation"
+                bottomText="Honk Kong SAR China"
+                onClick={() => null}
+              />
+              <DetailTextElement
+                topText="Legal Bussines Name"
+                bottomText="Example Shop"
+                onClick={() => null}
+              />
+              <DetailTextElement
+                topText="Owner's name"
+                bottomText="Rauf"
+                onClick={() => null}
+              />
+              <DetailTextElement
+                topText="Bussines Registration Number"
+                bottomText="987845"
+                onClick={() => null}
+              />
+              <DetailTextElement
+                topText="Tax Number"
+                bottomText="001"
+                onClick={() => null}
+              />
+              <DetailTextElement
+                topText="Bussiness Registration Document"
+                bottomText="-"
+                onClick={() => null}
+              />
+            </VStack>
           </TabPanel>
         </TabPanels>
       </Tabs>
