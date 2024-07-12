@@ -60,7 +60,7 @@ const useProduct = () => {
     async (payload: ProductFormInput) => createProductService(payload),
     {
       onSuccess: (data: ProductResponse) => {
-        push(`/merchant/product/${data?.data?.id}`)
+        push(`/merchant/products/${data?.data?.id}`)
         toast({
           title: "Success",
           description: "Create Product",
