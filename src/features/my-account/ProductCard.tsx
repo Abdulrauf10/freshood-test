@@ -89,34 +89,7 @@ const ProductCard: FC<ProductCardProps> = ({
                 </Flex>
               </Skeleton>
             </HStack>
-            <Skeleton isLoaded={!isLoading}>
-              <Text
-                color={"#A8A29D"}
-                textDecoration="line-through"
-                sx={{
-                  marginTop: "-8px",
-                  fontSize: isMobile ? "11px" : "14px",
-                  fontWeight: "400"
-                }}
-              >
-                ${product.price}
-              </Text>
-            </Skeleton>
           </HStack>
-          <Skeleton isLoaded={!isLoading}>
-            <Box
-              mt={2}
-              as="span"
-              borderWidth={1}
-              p={1}
-              borderRadius={"lg"}
-              borderColor={"#016748"}
-              color={"#016748"}
-              sx={{ fontSize: isMobile ? "10px" : "13px", fontWeight: "500" }}
-            >
-              Cebu City
-            </Box>
-          </Skeleton>
         </Box>
       </Link>
     </GridItem>

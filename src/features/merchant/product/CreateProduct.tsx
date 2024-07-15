@@ -135,7 +135,7 @@ const CreateProduct = () => {
               padding: "8px",
               cursor: selectedImages.length ? "pointer" : "not-allowed"
             }}
-            onClick={() => setStep(2)}
+            onClick={selectedImages.length ? () => setStep(2) : () => null}
           >
             Next
           </Flex>

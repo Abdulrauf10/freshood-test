@@ -5,19 +5,28 @@ import { AUTH } from "./config/endpoint"
 const protectedRoutes = ["/forgot-password", "/merchant"]
 const authRoutes = ["/", "/register"]
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  const sessionId = request.cookies.get("sessionid")
-  let isTokenValid: boolean = false
-
-  if (sessionId && pathname !== "/") {
-    const temp = await axios.get(AUTH.ME, {
+const checkSession = async (sessionId: { value: string }) => {
+  try {
+    const result = await axios.get(AUTH.ME, {
       headers: {
         Cookie: `sessionid=${sessionId?.value}`
       },
       withCredentials: true
     })
-    isTokenValid = temp.status === 200
+    return result
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const sessionId = request.cookies.get("sessionid")
+  let isTokenValid: boolean = false
+
+  if (sessionId) {
+    const temp: any = await checkSession(sessionId)
+    isTokenValid = temp?.status === 200
   }
 
   if (protectedRoutes.some((path) => pathname.startsWith(path))) {
