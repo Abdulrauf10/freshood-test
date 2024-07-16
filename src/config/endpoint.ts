@@ -10,6 +10,7 @@ export const PRODUCT_LIST_API_URL = `${BASE_API_URL}/products/products/list`
 export const UPLOAD_IMAGE_API_URL = `${BASE_API_URL}/products/medias`
 export const AWS_S3_API_URL = `${process.env.NEXT_PUBLIC_AWS_S3_URL}`
 export const CONTACT_US_API_URL = `${BASE_API_URL}/users/contact-us/submissions/submit`
+export const ORDER_API_URL = `${BASE_API_URL}/orders`
 
 export const AUTH = {
   ME: `${BASE_API_URL}/users/me`,
