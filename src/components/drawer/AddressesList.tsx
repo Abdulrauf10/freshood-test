@@ -45,7 +45,7 @@ const MenuItem: React.FC<any> = ({
             color="#016748"
             borderRadius={"lg"}
           >
-            {is_default === true ? "Default" : "Inactive"}
+            {is_default === true ? "Default" : "Custom"}
           </Text>
         </HStack>
         <HStack>
