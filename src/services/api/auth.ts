@@ -4,7 +4,8 @@ import {
   LOGOUT_API_URL,
   MERCHANT_INFO,
   OTP_API_URL,
-  REGISTER_API_URL
+  REGISTER_API_URL,
+  ORDER_API_URL
 } from "@/config/endpoint"
 import apiCall from "../apiCall"
 
@@ -86,4 +87,9 @@ export const updateAddress = async (payload: any, address_id: number) => {
 export const deleteAddress = async (address_id: number) => {
   const res = await apiCall.delete(`${AUTH.ADDRESS}/${address_id}`)
   return res.data
+}
+
+export const getGenerateTokenChat = async () => {
+  const res = await apiCall.post(ORDER_API_URL + '/chat' + "/generate-token", {})
+  return res.data?.data
 }
