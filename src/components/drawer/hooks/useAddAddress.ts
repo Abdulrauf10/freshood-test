@@ -141,7 +141,7 @@ const useAddAddress = (isEdit?: boolean, dataEdit?: AddrestList) => {
       address_line_1,
       address_line_2,
       postal_code,
-      is_default: true
+      is_default
     }
     if (!isEdit) {
       mutation.mutate(newPayload)

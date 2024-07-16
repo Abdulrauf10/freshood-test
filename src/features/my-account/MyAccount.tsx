@@ -136,11 +136,11 @@ const MyAccountMerchant = () => {
         width="full"
         sx={{
           marginBottom: isMobile ? "1rem" : "2.5rem",
-          height: isMobile ? "45vh" : "75vh",
+          height: isMobile ? "45vh" : "70vh",
           backgroundImage: "url(/merchant/BG.png)",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "top",
-          backgroundSize: isMobile ? "100vw 45vh" : "100vw 75vh",
+          backgroundSize: isMobile ? "100vw 45vh" : "100vw 70vh",
           padding: isMobile ? "0 14px" : "0 48px"
         }}
       >
@@ -192,9 +192,8 @@ const MyAccountMerchant = () => {
               h="50px"
               borderRadius={"full"}
               backgroundColor={"#1abc9c"}
-              mt={"20px"}
             />
-            <VStack gap={-2} pl={4}>
+            <VStack pl={4}>
               <Text
                 sx={{ width: "100%" }}
                 align="left"
@@ -208,15 +207,8 @@ const MyAccountMerchant = () => {
                   dataProductMine?.data?.name || "-"
                 )}
               </Text>
-              <Text color={"white"}>United Kingdom | Since 1993</Text>
             </VStack>
           </Flex>
-          <Box maxW={"full"} wordBreak={"break-word"}>
-            <Text color={"white"}>
-              From a small quantity, to a large batch - you can find the right
-              fit and pricing here.
-            </Text>
-          </Box>
         </VStack>
       </Box>
       <Box
@@ -247,77 +239,8 @@ const MyAccountMerchant = () => {
                 New Product
               </Button>
             </Link>
-            <Button
-              sx={{ width: isMobile ? "100%" : "150px" }}
-              bgColor={"white"}
-              borderWidth={1}
-              borderRadius={"xl"}
-            >
-              Credit
-            </Button>
           </Flex>
         </HStack>
-        <Grid
-          sx={{ marginTop: "1rem" }}
-          templateColumns="repeat(6, 1fr)"
-          color={"#44403C"}
-          w="100%"
-        >
-          <GridItem colSpan={isMobile ? 6 : 2}>
-            <Flex
-              justifyContent={isMobile ? "flex-start" : "center"}
-              alignItems="center"
-            >
-              <HStack alignItems={"center"}>
-                <Image
-                  src="/merchant/sea.svg"
-                  width={isMobile ? 4 : 5}
-                  height={isMobile ? 4 : 5}
-                  alt="sea"
-                />
-                <Text pt={1} sx={{ fontSize: isMobile ? "14px" : "16px" }}>
-                  Ships in 14-15 days
-                </Text>
-              </HStack>
-            </Flex>
-          </GridItem>
-          <GridItem colSpan={isMobile ? 6 : 2}>
-            <Flex
-              justifyContent={isMobile ? "flex-start" : "center"}
-              alignItems="center"
-            >
-              <HStack alignItems={"center"}>
-                <Image
-                  src="/merchant/coins.svg"
-                  width={isMobile ? 4 : 5}
-                  height={isMobile ? 4 : 5}
-                  alt="sea"
-                />
-                <Text pt={1} sx={{ fontSize: isMobile ? "14px" : "16px" }}>
-                  $1,224.58 min. first order
-                </Text>
-              </HStack>
-            </Flex>
-          </GridItem>
-          <GridItem colSpan={isMobile ? 6 : 2}>
-            <Flex
-              justifyContent={isMobile ? "flex-start" : "center"}
-              alignItems="center"
-            >
-              <HStack alignItems={"center"}>
-                <Image
-                  src="/merchant/reorder.svg"
-                  width={isMobile ? 4 : 5}
-                  height={isMobile ? 4 : 5}
-                  alt="sea"
-                />
-                <Text pt={1} sx={{ fontSize: isMobile ? "14px" : "16px" }}>
-                  $1,224.58 min. reorder
-                </Text>
-              </HStack>
-            </Flex>
-          </GridItem>
-        </Grid>
         <TabWrapper
           data={data}
           isLoading={isLoading}
