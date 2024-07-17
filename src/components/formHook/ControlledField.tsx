@@ -68,6 +68,13 @@ const ControlledField: FC<ControlledField> = ({
               }}
               fontSize={fontSize}
               {...props}
+              height={"40px"}
+              sx={{
+                "::placeholder": {
+                  fontSize: "14px",
+                  color: "#D5D3D1"
+                }
+              }}
             />
             {(field?.name === "password" ||
               field?.name === "new_password" ||
@@ -96,6 +103,12 @@ const ControlledField: FC<ControlledField> = ({
             error={errors?.[field?.name]}
             fontSize={fontSize}
             {...props}
+            sx={{
+              "::placeholder": {
+                fontSize: "14px",
+                color: "#D5D3D1"
+              }
+            }}
           />
         )
         break
@@ -121,6 +134,12 @@ const ControlledField: FC<ControlledField> = ({
               }
             }}
             {...props}
+            sx={{
+              "::placeholder": {
+                fontSize: "14px",
+                color: "#D5D3D1"
+              }
+            }}
           />
         )
         break

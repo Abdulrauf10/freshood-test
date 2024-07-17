@@ -71,7 +71,6 @@ const AccountReview = () => {
           color={"black"}
           width={isMobile ? "95%" : "80%"}
           position={"absolute"}
-          right={0}
           bottom={0}
           marginBottom={isMobile ? "150px" : "30px"}
           marginRight={"7px"}

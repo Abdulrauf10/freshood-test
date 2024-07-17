@@ -40,7 +40,7 @@ const Select: FC<SelectProps> = forwardRef<HTMLInputElement, SelectProps>(
           styles={{
             control: (provided) => ({
               ...provided,
-              borderRadius: "16px", // Apply border-radius here
+              borderRadius: "16px",
               borderColor: error ? "#F96161" : "#5B91AC"
             }),
             // styles={{
@@ -50,6 +50,14 @@ const Select: FC<SelectProps> = forwardRef<HTMLInputElement, SelectProps>(
             //     color: "white",
             //     borderRadius: "16px"
             //   }),
+            placeholder: (provided) => ({
+              ...provided,
+              fontSize: "14px",
+              color: "#D5D3D1"
+            }),
+            indicatorSeparator: () => ({
+              display: "none"
+            }),
             menu: (base) => ({
               ...base,
               zIndex: 9999,

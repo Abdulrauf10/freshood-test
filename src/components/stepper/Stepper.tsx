@@ -57,7 +57,8 @@ const Stepper: React.FC<StepperProps> = ({ steps, initialStep = 0, width }) => {
                 incomplete={
                   <StepNumber
                     style={{
-                      color: `${index === activeStep ? "#016748" : "#A8A29D"}`
+                      color: `${index === activeStep ? "#016748" : "#A8A29D"}`,
+                      fontSize: "11px"
                     }}
                   >
                     {`0${index + 1}`}
@@ -66,7 +67,8 @@ const Stepper: React.FC<StepperProps> = ({ steps, initialStep = 0, width }) => {
                 active={
                   <StepNumber
                     style={{
-                      color: `${index === activeStep ? "#016748" : "#A8A29D"}`
+                      color: `${index === activeStep ? "#016748" : "#A8A29D"}`,
+                      fontSize: "11px"
                     }}
                   >
                     {" "}
@@ -80,13 +82,13 @@ const Stepper: React.FC<StepperProps> = ({ steps, initialStep = 0, width }) => {
               <StepTitle>
                 <StepStatus
                   complete={
-                    <Text fontSize={isMobile ? "10px" : "14px"} color="#016748">
+                    <Text fontSize={isMobile ? "10px" : "12px"} color="#44403C">
                       {step.title}
                     </Text>
                   }
                   incomplete={
                     <Text
-                      fontSize={isMobile ? "10px" : "14px"}
+                      fontSize={isMobile ? "10px" : "12px"}
                       color={index === activeStep ? "#016748" : "#A8A29D"}
                     >
                       {step.title}
@@ -94,7 +96,7 @@ const Stepper: React.FC<StepperProps> = ({ steps, initialStep = 0, width }) => {
                   }
                   active={
                     <Text
-                      fontSize={isMobile ? "10px" : "14px"}
+                      fontSize={isMobile ? "10px" : "12px"}
                       color={index === activeStep ? "#016748" : "#A8A29D"}
                     >
                       {step.title}

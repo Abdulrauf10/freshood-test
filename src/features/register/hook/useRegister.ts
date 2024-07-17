@@ -18,7 +18,7 @@ type RegisterFormInput = {
   phone_number: string
   country_id: string
   city_id: string
-  prefers_marketing_updates: boolean
+  prefers_marketing_updates?: boolean | null
 }
 
 const handlingTestPhoneDigit = (val: string | undefined) => {
@@ -49,7 +49,7 @@ const schema = yup
       ),
     country_id: yup.string().required(),
     city_id: yup.string().required(),
-    prefers_marketing_updates: yup.boolean().required()
+    prefers_marketing_updates: yup.boolean().notRequired().nullable()
   })
   .required()
 
