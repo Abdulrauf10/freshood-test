@@ -221,7 +221,7 @@ const Register = () => {
                 value={field.value}
                 onChange={(value, country) => handlePhoneChange(value, country)}
                 inputStyle={{
-                  color: "#808080",
+                  color: "#44403C",
                   fontWeight: "400",
                   width: `${isMobile ? "300px" : "440px"}`,
                   height: "35px",
@@ -317,7 +317,19 @@ const Register = () => {
           type="submit"
           width={isExpanded ? "65%" : "80%"}
           isLoading={mutation.isLoading}
-          isDisabled={!watch("prefers_marketing_updates")}
+          isDisabled={
+            watch("title") &&
+            watch("first_name") &&
+            watch("last_name") &&
+            watch("email") &&
+            watch("password") &&
+            watch("phone_number") &&
+            watch("country_code") &&
+            watch("country_id") &&
+            watch("city_id")
+              ? false
+              : true
+          }
           onClick={() =>
             onSubmit({
               user_type: "Seller",
