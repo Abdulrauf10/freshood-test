@@ -67,21 +67,6 @@ const ProductDetailDescription = ({
               >
                 BRANDS NAME
               </Text>
-              <Flex
-                alignItems="center"
-                gap={4}
-                sx={{
-                  color: "#78716C",
-                  fontWeight: "400",
-                  fontSize: "11px"
-                }}
-              >
-                <Text>United Kingdom</Text>
-                <Center height="20px">
-                  <Divider orientation="vertical" backgroundColor="#78716C" />
-                </Center>
-                <Text>Since 1993</Text>
-              </Flex>
             </Flex>
           </Flex>
           <Grid
@@ -90,79 +75,6 @@ const ProductDetailDescription = ({
             sx={{ marginBottom: "1rem" }}
           >
             <GridItem colSpan={isMobile ? 4 : 2}>
-              <Grid templateColumns="repeat(6, 1fr)" gap={6}>
-                <GridItem colSpan={2}>
-                  <Box
-                    sx={{
-                      fontWeight: "500",
-                      fontSize: isMobile ? "14px" : "16px",
-                      color: "#44403C"
-                    }}
-                  >
-                    $1,323.42
-                  </Box>
-                  <Box
-                    sx={{
-                      fontWeight: "400",
-                      fontSize: isMobile ? "11px" : "14px",
-                      color: "#78716C"
-                    }}
-                  >
-                    min. first order
-                  </Box>
-                </GridItem>
-                <GridItem
-                  sx={{ borderLeft: "1px solid #E5E1D8", paddingLeft: "12px" }}
-                  colSpan={2}
-                >
-                  <Box
-                    sx={{
-                      fontWeight: "500",
-                      fontSize: isMobile ? "14px" : "16px",
-                      color: "#44403C"
-                    }}
-                  >
-                    $794.05
-                  </Box>
-                  <Box
-                    sx={{
-                      fontWeight: "400",
-                      fontSize: isMobile ? "11px" : "14px",
-                      color: "#78716C"
-                    }}
-                  >
-                    min. reorder
-                  </Box>
-                </GridItem>
-                <GridItem
-                  sx={{ borderLeft: "1px solid #E5E1D8", paddingLeft: "12px" }}
-                  colSpan={2}
-                >
-                  <Box
-                    sx={{
-                      fontWeight: "500",
-                      fontSize: isMobile ? "14px" : "16px",
-                      color: "#44403C"
-                    }}
-                  >
-                    3 - 30 Days
-                  </Box>
-                  <Box
-                    sx={{
-                      fontWeight: "400",
-                      fontSize: isMobile ? "11px" : "14px",
-                      color: "#78716C"
-                    }}
-                  >
-                    Lead time
-                  </Box>
-                </GridItem>
-              </Grid>
-            </GridItem>
-            <GridItem
-              colSpan={isMobile ? 4 : 2}
-              sx={{ marginLeft: isMobile ? "0" : "1rem" }}
-            >
               <Skeleton
                 isLoaded={!isLoading}
                 height={isLoading ? "10vh" : "auto"}
