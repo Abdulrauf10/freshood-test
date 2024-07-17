@@ -6,8 +6,10 @@ import "react-image-crop/dist/ReactCrop.css"
 import useSidebarStore from "@/store/sidebarStore"
 import PageTitle from "./PageTitle"
 import { useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
-const Specification = ({ searchParams }: { searchParams: any }) => {
+const Specification = () => {
+  const searchParams = useSearchParams()
   const router = useRouter()
   const weight = searchParams.get("weight") || "- "
   const caseSize = searchParams.get("caseSize") || "- "

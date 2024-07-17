@@ -37,6 +37,7 @@ import { FaExclamation } from "react-icons/fa6"
 import { useForm } from "react-hook-form"
 import { BiMessageRoundedDetail } from "react-icons/bi"
 import useSidebarStore from "@/store/sidebarStore"
+import useGetGenerateTokenChat from "@/hooks/useGetTokenChat"
 
 const APP_ID = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string
 const USER_ID = process.env.NEXT_PUBLIC_SENDBIRD_USER_ID as string
@@ -57,6 +58,7 @@ type MessageType = "buying" | "selling" | "unread" | "archived"
 
 const MessagePage: React.FC = () => {
   const { isExpanded, toggleSidebar } = useSidebarStore()
+  const { dataGenerateToken, isLoadingGenerateToken } = useGetGenerateTokenChat()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [sb, setSb] = useState<SendBird.SendBirdInstance | null>(null)
   const [channels, setChannels] = useState<any[]>([])
@@ -79,24 +81,27 @@ const MessagePage: React.FC = () => {
   } = form
 
   useEffect(() => {
-    const sb = new SendBird({ appId: APP_ID })
-    sb.connect(USER_ID, (user, error) => {
-      if (error) {
-        console.log(error)
-        return
-      }
-      setSb(sb)
-      setUserProfile(sb.currentUser)
-      const channelListQuery = sb.GroupChannel.createMyGroupChannelListQuery()
-      channelListQuery.next((channelList, error) => {
+    if (dataGenerateToken) {
+      const sb = new SendBird({ appId: APP_ID })
+      sb.connect(dataGenerateToken?.sendbird_user_id!, dataGenerateToken?.token!, (user, error) => {
         if (error) {
           console.log(error)
           return
         }
-        setChannels(channelList)
+        setSb(sb)
+        setUserProfile(sb.currentUser)
+        const channelListQuery = sb.GroupChannel.createMyGroupChannelListQuery()
+        channelListQuery.next((channelList, error) => {
+          if (error) {
+            console.log(error)
+            return
+          }
+          setChannels(channelList)
+        })
       })
-    })
-  }, [])
+    }
+
+  }, [dataGenerateToken])
 
   useEffect(() => {
     if (sb) {
@@ -214,7 +219,7 @@ const MessagePage: React.FC = () => {
     })
   }
 
-  const typeChat = ["All", "Buying", "Selling", "Unread", "Archived"]
+  const typeChat = ["All", "Unread"]
 
   function groupMessagesByTime(messages: Message[]): Map<string, Message[]> {
     const groupedMessages = new Map<string, Message[]>()
@@ -870,15 +875,20 @@ const MessagePage: React.FC = () => {
       <HStack>
         {/* <IoIosArrowBack /> */}
         <Flex w={"full"} justifyContent={"center"}>
+          <div style={{
+            paddingLeft: isExpanded ? '11%' : '3%',
+          }}>
           <CustomTitle title="Messages" />
+          </div>
         </Flex>
       </HStack>
-      <Flex pt={4} mx={isMobile ? '0%' : isExpanded ? '15%' : '10%'} pl={isMobile ? '0px' : '60px'}>
+      <Flex pt={4} mx={isMobile ? '0%' : isExpanded ? '1%' : '1%'} pl={isMobile ? '0px' : '60px'}>
         <Flex
           w={activeChannel && !isMobile ? "100%" : "100%"}
           direction={"column"}
           gap={4}
           pr={4}
+          ml={isExpanded ? '8%' : '0%'}
         >
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -1008,6 +1018,7 @@ const MessagePage: React.FC = () => {
           <Flex
             borderLeft={"1px"}
             display={activeChannel && !isMobile ? "block" : "none"}
+            borderColor={"#E5E1D8"}
             w={"100%"}
             gap={4}
             direction={"column"}
