@@ -22,6 +22,8 @@ const ChangePassword: React.FC<any> = () => {
     mutation
   } = useChangePassword()
 
+  console.log("err :", mutation)
+
   return (
     <>
       <HStack
@@ -53,6 +55,11 @@ const ChangePassword: React.FC<any> = () => {
               label="Current password"
               borderRadius={"3xl"}
             />
+            {mutation?.error?.response?.data?.message && (
+              <Text color="red.500" fontSize={"12px"}>
+                {mutation?.error?.response?.data?.message}
+              </Text>
+            )}
           </VStack>
           <Link href={"/forgot-password"}>
             <Text
@@ -74,13 +81,18 @@ const ChangePassword: React.FC<any> = () => {
               label="New password"
               borderRadius={"3xl"}
             />
+            {errors.new_password && (
+              <Text color="red.500" fontSize={"12px"}>
+                {errors.new_password?.type}
+              </Text>
+            )}
             <Text
               fontSize={"11px"}
               fontWeight={500}
               color={"#A8A29D"}
               mt={"-5px"}
             >
-              Password must be at least 6 characters.
+              Password must be at least 8 characters.
             </Text>
           </VStack>
 

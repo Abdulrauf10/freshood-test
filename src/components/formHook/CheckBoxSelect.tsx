@@ -27,10 +27,11 @@ const CheckboxSelect: React.FC<CheckboxSelectProps> = ({
           borderRadius={"16px"}
           backgroundColor={"white"}
           _hover={{ backgroundColor: "none" }}
-          color={"#808080"}
+          color={"#D5D3D1"}
           fontWeight={"400"}
           display={"flex"}
           justifyContent={"flex-start"}
+          fontSize={"14px"}
         >
           {select}
         </Button>

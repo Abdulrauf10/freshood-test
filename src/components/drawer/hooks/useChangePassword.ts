@@ -15,9 +15,25 @@ type PasswordFormInput = {
 const schema = yup
   .object({
     current_password: yup.string().required(),
-    new_password: yup.string().required()
+    new_password: yup
+      .string()
+      .required()
+      .test("Password must be at least 8 characters", (val) =>
+        handlingTestNewPassword(val)
+      )
   })
   .required()
+
+const handlingTestNewPassword = (val: string | undefined) => {
+  if (!val) {
+    return true
+  }
+  if (val?.length != undefined) {
+    return val?.length >= 8
+  } else {
+    return true
+  }
+}
 
 const useChangePassword = () => {
   const { replace } = useRouter()
@@ -46,15 +62,15 @@ const useChangePassword = () => {
       },
       onError: (error: any) => {
         console.log(error)
-        toast({
-          title: "Error",
-          description:
-            error?.response?.data?.message ||
-            "Your Password must be at least 6 characters.",
-          status: "error",
-          duration: 2000,
-          isClosable: true
-        })
+        // toast({
+        //   title: "Error",
+        //   description:
+        //     error?.response?.data?.message ||
+        //     "Your Password must be at least 6 characters.",
+        //   status: "error",
+        //   duration: 2000,
+        //   isClosable: true
+        // })
       }
     }
   )

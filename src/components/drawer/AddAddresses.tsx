@@ -22,10 +22,14 @@ import * as yup from "yup"
 import useAddAddress from "./hooks/useAddAddress"
 import PhoneInput from "react-phone-input-2"
 import { useDataEdit } from "@/store/useDataEdit"
+import ControlledSwitch from "../formHook/ControlledSwitch"
+import useCountries from "@/hooks/useCountries"
 
 const AddAddresses: React.FC<any> = () => {
   const { activeDrawer, setActiveDrawer } = useDrawer()
-  const { isEdit, payload, setIsEdit } = useDataEdit()
+  const { isEdit, payload, setIsEdit, setPayload } = useDataEdit()
+  const { dataCountries } = useCountries()
+
   const {
     control,
     formState: { errors },
@@ -33,8 +37,15 @@ const AddAddresses: React.FC<any> = () => {
     onSubmit,
     mutation,
     mutationUpdate,
-    setValue
+    setValue,
+    watch
   } = useAddAddress(isEdit, payload)
+
+  const countryOptions =
+    dataCountries?.data?.map((data) => ({
+      label: data.name,
+      value: data.id
+    })) || []
 
   const handlePhoneChange = (value: any, country: any) => {
     const countryCode = country.dialCode
@@ -59,6 +70,7 @@ const AddAddresses: React.FC<any> = () => {
           gap={2}
           onClick={() => {
             setIsEdit(false)
+            setPayload(null)
             setActiveDrawer("addressList")
           }}
         >
@@ -93,6 +105,7 @@ const AddAddresses: React.FC<any> = () => {
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+              placeholder="Contact name"
             />
             <Text fontSize={"14px"} fontWeight={500}>
               Contact number
@@ -130,6 +143,7 @@ const AddAddresses: React.FC<any> = () => {
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+              placeholder="Email"
             />
 
             <HStack width="100%" mt={"20px"}>
@@ -147,12 +161,27 @@ const AddAddresses: React.FC<any> = () => {
             <Text fontSize={"14px"} fontWeight={500}>
               Country
             </Text>
-            <ControlledField
+            {/* <ControlledField
               name="country"
               control={control}
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+            /> */}
+
+            <ControlledReactSelect
+              name="country"
+              nameData="country"
+              control={control}
+              errors={errors}
+              options={countryOptions}
+              handleChange={(val) => {
+                setValue("country", val.value)
+              }}
+              value={countryOptions?.find(
+                (val: any) => val.value == payload?.country
+              )}
+              placeholder={"Select country"}
             />
 
             <Text fontSize={"14px"} fontWeight={500}>
@@ -164,6 +193,7 @@ const AddAddresses: React.FC<any> = () => {
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+              placeholder="Province / state"
             />
 
             <Text fontSize={"14px"} fontWeight={500}>
@@ -175,6 +205,7 @@ const AddAddresses: React.FC<any> = () => {
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+              placeholder="City"
             />
 
             <Text fontSize={"14px"} fontWeight={500}>
@@ -186,6 +217,7 @@ const AddAddresses: React.FC<any> = () => {
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+              placeholder="Address Line 1"
             />
 
             <Text fontSize={"14px"} fontWeight={500}>
@@ -197,6 +229,7 @@ const AddAddresses: React.FC<any> = () => {
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+              placeholder="Unit, Building, Floor"
             />
 
             <Text fontSize={"14px"} fontWeight={500}>
@@ -208,7 +241,21 @@ const AddAddresses: React.FC<any> = () => {
               errors={errors}
               fieldType={FieldType.textfield}
               borderRadius={"16px"}
+              placeholder="Postal code"
             />
+
+            <HStack justifyContent={"space-between"} width={"100%"}>
+              <Text>Set as default</Text>
+              <ControlledSwitch
+                name="is_default"
+                control={control}
+                errors={errors}
+                handleChange={(val) => {
+                  setValue("is_default", val)
+                }}
+                isChecked={payload?.is_default}
+              />
+            </HStack>
           </VStack>
 
           <Button
