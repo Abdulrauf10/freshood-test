@@ -60,6 +60,7 @@ const MessagePage: React.FC = () => {
   const { dataGenerateToken, isLoadingGenerateToken } = useGetGenerateTokenChat()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [sb, setSb] = useState<SendBird.SendBirdInstance | null>(null)
+  const [temporaryChannels, setTemporaryChannels] = useState<any[]>([])
   const [channels, setChannels] = useState<any[]>([])
   const [message, setMessage] = useState<string>("")
   const [userProfile, setUserProfile] = useState<SendBird.User | null>(null)
@@ -70,6 +71,9 @@ const MessagePage: React.FC = () => {
   const [unreadMessages, setUnreadMessages] = useState(0)
   const [loadPreviousMessages, setLoadPreviousMessages] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [search, setSearch] = useState('');
+  const [debounceSearch, setDebounceSearch] = useState('');
 
   const toast = useToast()
   const form = useForm<any>()
@@ -95,6 +99,7 @@ const MessagePage: React.FC = () => {
             console.log(error)
             return
           }
+          setTemporaryChannels(channelList)
           setChannels(channelList)
         })
       })
@@ -169,6 +174,99 @@ const MessagePage: React.FC = () => {
     e.target.value = "" // Reset the input to allow selecting the same file
   }
 
+  useEffect(() => {
+    if (messagesEndRef.current && !loadPreviousMessages) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [activeChannel, messages, loadPreviousMessages])
+
+  useEffect(() => {
+    if (activeChannel && sb) {
+      // Asumsikan activeChannel adalah ID atau instance dari saluran yang aktif
+      // Dan sb.groupChannel.getChannel() adalah cara untuk mendapatkan instance saluran
+      // Berikut adalah contoh menggunakan instance method
+      const markMessagesAsRead = async () => {
+        const channel = await sb.GroupChannel.getChannel(activeChannel.url)
+        await channel.markAsRead() // Menandai semua pesan di saluran sebagai dibaca
+      }
+
+      markMessagesAsRead().then((res) => {
+        console.log('Messages marked as read')
+      }).catch((error) => {
+        console.error('Failed to mark messages as read', error)
+      })
+    }
+  }, [activeChannel, sb])
+
+  useEffect(() => {
+    //how to make a debounce function, so that the search function is not called every time the user types only when user finish typing
+    if (!search) {
+      setChannels(temporaryChannels)
+    }
+    const timer = setTimeout(() => {
+      setDebounceSearch(search)
+    }, 500)
+    return () => {
+      clearTimeout(timer)
+    }
+
+
+
+  }, [search])
+
+  useEffect(() => {
+    if (debounceSearch) {
+      searchMessages(debounceSearch)
+    }
+  }, [debounceSearch])
+
+  useEffect(() => {
+    if (searchResults.length > 0 && channels?.length) {
+      const filter = channels?.filter((channel) => {
+        const channelUrl = channel?.url?.toLowerCase()
+        const searchResultChannelUrl = searchResults?.map((result) => result.channelUrl?.toLowerCase())
+        return searchResultChannelUrl?.includes(channelUrl)
+
+      })
+
+      const map = filter?.map((channel) => {
+        return {
+          ...channel,
+          searchedMessages: searchResults?.filter((result) => result.channelUrl?.toLowerCase() === channel?.url?.toLowerCase())
+        }
+      })
+      setChannels(map)
+    }
+  }, [searchResults])
+
+
+
+  const selectChannel = (channel: any) => {
+    setActiveChannel(channel)
+    const messageListQuery = channel.createPreviousMessageListQuery()
+    messageListQuery.load(20, false, (messageList: any, error: any) => {
+      if (error) {
+        console.log(error)
+        return
+      }
+      setMessages(messageList)
+    })
+  }
+
+  const searchMessages = async (query: string) => {
+    if (!sb) return;
+    try {
+
+      // Perform search with the current params
+      const searchResults = await sb.createMessageSearchQuery(query).next(); // Assuming 'searchMessages' is your function to perform the search
+      setSearchResults(searchResults);
+      // setSearchResults(searchResults);
+    } catch (error) {
+      console.error('Error searching messages:', error);
+    }
+  };
+
+
   const sendMessage = (channelUrl: string) => {
     const channel = channels.find((channel) => channel.url === channelUrl)
     const params: any = new sb!.UserMessageParams()
@@ -205,23 +303,6 @@ const MessagePage: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (messagesEndRef.current && !loadPreviousMessages) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
-    }
-  }, [activeChannel, messages, loadPreviousMessages])
-
-  const selectChannel = (channel: any) => {
-    setActiveChannel(channel)
-    const messageListQuery = channel.createPreviousMessageListQuery()
-    messageListQuery.load(20, false, (messageList: any, error: any) => {
-      if (error) {
-        console.log(error)
-        return
-      }
-      setMessages(messageList)
-    })
-  }
 
   const typeChat = ["All", "Unread"]
 
@@ -252,23 +333,7 @@ const MessagePage: React.FC = () => {
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (activeChannel && sb) {
-      // Asumsikan activeChannel adalah ID atau instance dari saluran yang aktif
-      // Dan sb.groupChannel.getChannel() adalah cara untuk mendapatkan instance saluran
-      // Berikut adalah contoh menggunakan instance method
-      const markMessagesAsRead = async () => {
-        const channel = await sb.GroupChannel.getChannel(activeChannel.url)
-        await channel.markAsRead() // Menandai semua pesan di saluran sebagai dibaca
-      }
 
-      markMessagesAsRead().then((res) => {
-        console.log('Messages marked as read')
-      }).catch((error) => {
-        console.error('Failed to mark messages as read', error)
-      })
-    }
-  }, [activeChannel, sb])
 
   // useEffect(() => {
   //   const handleScroll = async () => {
@@ -441,7 +506,7 @@ const MessagePage: React.FC = () => {
     )
   }
 
-  
+
 
   const RenderBanner = ({ status = 4 }: any) => {
     switch (status) {
@@ -1099,7 +1164,10 @@ const MessagePage: React.FC = () => {
             <InputLeftElement pointerEvents="none">
               <IoIosSearch />
             </InputLeftElement>
-            <Input borderRadius={"xl"} placeholder="Search" />
+            <Input borderRadius={"xl"} placeholder="Search"
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+            />
           </InputGroup>
           <Flex flexWrap={"wrap"} gap={2}>
             {typeChat.map((type, index) => (
@@ -1172,7 +1240,7 @@ const MessagePage: React.FC = () => {
                           }
                         </Text>
                         <Text fontSize={"14px"}>
-                          {channel.lastMessage
+                          {channel?.searchedMessages?.length ? channel?.searchedMessages?.[channel?.searchedMessages - 1]?.message : channel.lastMessage
                             ? channel.lastMessage?.message
                             : ""}
                         </Text>
