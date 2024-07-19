@@ -57,7 +57,8 @@ type MessageType = "buying" | "selling" | "unread" | "archived"
 
 const MessagePage: React.FC = () => {
   const { isExpanded, toggleSidebar } = useSidebarStore()
-  const { dataGenerateToken, isLoadingGenerateToken } = useGetGenerateTokenChat()
+  const { dataGenerateToken, isLoadingGenerateToken } =
+    useGetGenerateTokenChat()
   const [isMobile] = useMediaQuery(`(max-width: 768px)`)
   const [sb, setSb] = useState<SendBird.SendBirdInstance | null>(null)
   const [channels, setChannels] = useState<any[]>([])
@@ -82,24 +83,28 @@ const MessagePage: React.FC = () => {
   useEffect(() => {
     if (dataGenerateToken) {
       const sb = new SendBird({ appId: APP_ID })
-      sb.connect(dataGenerateToken?.sendbird_user_id!, dataGenerateToken?.token!, (user, error) => {
-        if (error) {
-          console.log(error)
-          return
-        }
-        setSb(sb)
-        setUserProfile(sb.currentUser)
-        const channelListQuery = sb.GroupChannel.createMyGroupChannelListQuery()
-        channelListQuery.next((channelList, error) => {
+      sb.connect(
+        dataGenerateToken?.sendbird_user_id!,
+        dataGenerateToken?.token!,
+        (user, error) => {
           if (error) {
             console.log(error)
             return
           }
-          setChannels(channelList)
-        })
-      })
+          setSb(sb)
+          setUserProfile(sb.currentUser)
+          const channelListQuery =
+            sb.GroupChannel.createMyGroupChannelListQuery()
+          channelListQuery.next((channelList, error) => {
+            if (error) {
+              console.log(error)
+              return
+            }
+            setChannels(channelList)
+          })
+        }
+      )
     }
-
   }, [dataGenerateToken])
 
   useEffect(() => {
@@ -193,10 +198,9 @@ const MessagePage: React.FC = () => {
             return
           }
           console.log("Message sent")
-          activeChannel?.markAsRead()
-            .then(() => {
-              console.log('Messages marked as read')
-            })
+          activeChannel?.markAsRead().then(() => {
+            console.log("Messages marked as read")
+          })
           setMessage("") // Mengosongkan input
           selectChannel(channel) // Memperbarui daftar pesan
           scrollToBottom()
@@ -250,7 +254,7 @@ const MessagePage: React.FC = () => {
 
   const groupedMessages = groupMessagesByTime(messages)
 
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (activeChannel && sb) {
@@ -262,11 +266,13 @@ const MessagePage: React.FC = () => {
         await channel.markAsRead() // Menandai semua pesan di saluran sebagai dibaca
       }
 
-      markMessagesAsRead().then((res) => {
-        console.log('Messages marked as read')
-      }).catch((error) => {
-        console.error('Failed to mark messages as read', error)
-      })
+      markMessagesAsRead()
+        .then((res) => {
+          console.log("Messages marked as read")
+        })
+        .catch((error) => {
+          console.error("Failed to mark messages as read", error)
+        })
     }
   }, [activeChannel, sb])
 
@@ -314,7 +320,6 @@ const MessagePage: React.FC = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-
 
   const RenderModal = () => {
     let messageStyle = {
@@ -440,8 +445,6 @@ const MessagePage: React.FC = () => {
       </Tooltip>
     )
   }
-
-  
 
   const RenderBanner = ({ status = 4 }: any) => {
     switch (status) {
@@ -624,7 +627,6 @@ const MessagePage: React.FC = () => {
 
   const RenderBuyerProfilePictInChat = (image_url: string) => {
     return (
-
       <Image
         src={image_url}
         alt="Profile Picture"
@@ -645,7 +647,11 @@ const MessagePage: React.FC = () => {
         <Flex direction={"column"} key={time} gap={2}>
           <Flex justifyContent={"center"}>
             <div
-              style={{ marginBottom: "10px", fontSize: '11px', color: '#44403C' }}
+              style={{
+                marginBottom: "10px",
+                fontSize: "11px",
+                color: "#44403C"
+              }}
             >
               {time}
             </div>
@@ -653,10 +659,8 @@ const MessagePage: React.FC = () => {
           {groupedMessages.map((message: any, index: number) => {
             const isRead = activeChannel?.getReadMembers?.(message)?.[0]
 
-            const lastGroup: any =
-              groupedMessages[groupedMessages.length - 1]
-            const isLastMessage =
-              message.messageId === lastGroup.messageId
+            const lastGroup: any = groupedMessages[groupedMessages.length - 1]
+            const isLastMessage = message.messageId === lastGroup.messageId
             const isOutgoingMessage =
               message.sender.userId === dataGenerateToken?.sendbird_user_id // Contoh: bandingkan userId dari pengirim dengan userId pengguna saat ini
 
@@ -670,7 +674,7 @@ const MessagePage: React.FC = () => {
               margin: "4px 0", // Margin antar pesan
               alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
               boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
-              fontSize: '14px'
+              fontSize: "14px"
             }
 
             // Style untuk pesan masuk (pesan dari orang lain)
@@ -683,7 +687,7 @@ const MessagePage: React.FC = () => {
               margin: "4px 0", // Margin antar pesan
               alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
               boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
-              fontSize: '14px'
+              fontSize: "14px"
             }
 
             const messageStyle: any = isOutgoingMessage
@@ -691,13 +695,12 @@ const MessagePage: React.FC = () => {
               : incomingMessageStyle
             if (message.isFileMessage()) {
               const fileMessage = message as SendBird.FileMessage
-              if (
-                fileMessage.type &&
-                fileMessage.type.startsWith("image/")
-              ) {
+              if (fileMessage.type && fileMessage.type.startsWith("image/")) {
                 return (
-                  <HStack alignItems={'start'}>
-                    {RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
+                  <HStack alignItems={"start"} key={index}>
+                    {RenderBuyerProfilePictInChat(
+                      message?._sender?.plainProfileUrl || defaultProfileUrl
+                    )}
 
                     <div
                       ref={isLastMessage ? messagesEndRef : null}
@@ -717,20 +720,25 @@ const MessagePage: React.FC = () => {
                       </a>
                     </div>
                   </HStack>
-
                 )
               } else {
                 return (
-                  <HStack alignItems={'start'}>
-                    {RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
+                  <HStack alignItems={"start"} key={index}>
+                    {RenderBuyerProfilePictInChat(
+                      message?._sender?.plainProfileUrl || defaultProfileUrl
+                    )}
                     <div
                       ref={isLastMessage ? messagesEndRef : null}
                       key={index}
                       style={messageStyle}
                     >
-                      <a href={fileMessage.url} style={{
-                        textDecoration: 'underline',
-                      }} download>
+                      <a
+                        href={fileMessage.url}
+                        style={{
+                          textDecoration: "underline"
+                        }}
+                        download
+                      >
                         {fileMessage.name}
                       </a>
                     </div>
@@ -741,8 +749,10 @@ const MessagePage: React.FC = () => {
               if (message.customType === "purchase-chat" && message.data) {
                 const data = JSON.parse(message.data)
                 return (
-                  <HStack alignItems={'start'}>
-                    {RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
+                  <HStack alignItems={"start"} key={index}>
+                    {RenderBuyerProfilePictInChat(
+                      message?._sender?.plainProfileUrl || defaultProfileUrl
+                    )}
                     <Flex
                       onClick={onOpen}
                       cursor={"pointer"}
@@ -786,9 +796,17 @@ const MessagePage: React.FC = () => {
                 )
               }
               return (
-                <HStack width={'full'} gap={2} justifyContent={isOutgoingMessage ? 'end' : 'start'}>
-                  {!isOutgoingMessage && RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
-                  <VStack width={'full'} gap={-2} alignItems={'end'}>
+                <HStack
+                  width={"full"}
+                  gap={2}
+                  justifyContent={isOutgoingMessage ? "end" : "start"}
+                  key={index}
+                >
+                  {!isOutgoingMessage &&
+                    RenderBuyerProfilePictInChat(
+                      message?._sender?.plainProfileUrl || defaultProfileUrl
+                    )}
+                  <VStack width={"full"} gap={-2} alignItems={"end"}>
                     <p
                       ref={isLastMessage ? messagesEndRef : null}
                       key={index}
@@ -796,15 +814,17 @@ const MessagePage: React.FC = () => {
                     >
                       {message.message}
                     </p>
-                    {
-                      isRead && (
-                        <HStack gap={-1}>
-                          <Image src={'/merchant/ic_seen.svg'} alt="Read" width={20} height={20} />
-                          <Text fontSize={11}>SEEN</Text>
-                        </HStack>
-                      )
-                    }
-
+                    {isRead && (
+                      <HStack gap={-1}>
+                        <Image
+                          src={"/merchant/ic_seen.svg"}
+                          alt="Read"
+                          width={20}
+                          height={20}
+                        />
+                        <Text fontSize={11}>SEEN</Text>
+                      </HStack>
+                    )}
                   </VStack>
                 </HStack>
               )
@@ -857,7 +877,8 @@ const MessagePage: React.FC = () => {
               <Text color={"#1B1917"} fontWeight={"600"}>
                 {
                   activeChannel?.members.find(
-                    (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
+                    (member: any) =>
+                      member.userId !== dataGenerateToken?.sendbird_user_id
                   )?.nickname
                 }
               </Text>
@@ -1027,9 +1048,7 @@ const MessagePage: React.FC = () => {
                 </Flex>
               )
             )} */}
-            {
-              RenderGroupedChat()
-            }
+            {RenderGroupedChat()}
           </Flex>
         </Flex>
         <Divider />
@@ -1071,8 +1090,8 @@ const MessagePage: React.FC = () => {
     <Flex
       mx={{
         base: 4,
-        md: 'auto',
-        lg: 'auto'
+        md: "auto",
+        lg: "auto"
       }}
       // backgroundColor={"blue"}
       direction={"column"}
@@ -1080,20 +1099,26 @@ const MessagePage: React.FC = () => {
       <HStack>
         {/* <IoIosArrowBack /> */}
         <Flex w={"full"} justifyContent={"center"}>
-          <div style={{
-            paddingLeft: isExpanded ? '11%' : '3%',
-          }}>
+          <div
+            style={{
+              paddingLeft: isExpanded ? "11%" : "3%"
+            }}
+          >
             <CustomTitle title="Messages" />
           </div>
         </Flex>
       </HStack>
-      <Flex pt={4} mx={isMobile ? '0%' : isExpanded ? '1%' : '1%'} pl={isMobile ? '0px' : '60px'}>
+      <Flex
+        pt={4}
+        mx={isMobile ? "0%" : isExpanded ? "1%" : "1%"}
+        pl={isMobile ? "0px" : "60px"}
+      >
         <Flex
           w={activeChannel && !isMobile ? "100%" : "100%"}
           direction={"column"}
           gap={4}
           pr={4}
-          ml={isExpanded ? '8%' : '0%'}
+          ml={isExpanded ? "8%" : "0%"}
         >
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -1126,7 +1151,8 @@ const MessagePage: React.FC = () => {
           <VStack alignItems={"start"} gap={4}>
             {channels.map((channel, index) => {
               const user = channel.members.find(
-                (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
+                (member: any) =>
+                  member.userId !== dataGenerateToken?.sendbird_user_id
               )
               const flatColors = [
                 "#1abc9c",
@@ -1167,7 +1193,9 @@ const MessagePage: React.FC = () => {
                         <Text color={"#78716C"} fontSize={"11px"}>
                           {
                             channel.members.find(
-                              (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
+                              (member: any) =>
+                                member.userId !==
+                                dataGenerateToken?.sendbird_user_id
                             )?.nickname
                           }
                         </Text>
@@ -1178,12 +1206,16 @@ const MessagePage: React.FC = () => {
                         </Text>
                       </VStack>
                     </HStack>
-                    <VStack alignItems={"end"} justifyContent={"space-between"} height={"full"}>
+                    <VStack
+                      alignItems={"end"}
+                      justifyContent={"space-between"}
+                      height={"full"}
+                    >
                       <Text fontSize={"11px"} color={"#78716C"}>
                         {channel.lastMessage
                           ? new Date(
-                            channel.lastMessage.createdAt
-                          ).toLocaleDateString()
+                              channel.lastMessage.createdAt
+                            ).toLocaleDateString()
                           : ""}
                       </Text>
                       {channel?.unreadMessageCount &&
@@ -1196,7 +1228,11 @@ const MessagePage: React.FC = () => {
                             justifyContent={"center"}
                             alignItems={"center"}
                           >
-                            <Text fontSize={"11px"} color={"white"} textAlign="center">
+                            <Text
+                              fontSize={"11px"}
+                              color={"white"}
+                              textAlign="center"
+                            >
                               {channel?.unreadMessageCount}
                             </Text>
                           </Flex>
@@ -1259,7 +1295,8 @@ const MessagePage: React.FC = () => {
                   <Text color={"#1B1917"} fontWeight={"600"}>
                     {
                       activeChannel?.members.find(
-                        (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
+                        (member: any) =>
+                          member.userId !== dataGenerateToken?.sendbird_user_id
                       )?.nickname
                     }
                   </Text>
