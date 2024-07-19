@@ -40,7 +40,6 @@ import useSidebarStore from "@/store/sidebarStore"
 import useGetGenerateTokenChat from "@/hooks/useGetTokenChat"
 
 const APP_ID = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string
-const USER_ID = process.env.NEXT_PUBLIC_SENDBIRD_USER_ID as string
 const defaultProfileUrl =
   "https://atech-capacitor.s3.ap-southeast-1.amazonaws.com/dev/c1d7c2f4-aaa3-4ff1-bb9d-6363a1556264%20-%20cropped-image"
 
@@ -114,6 +113,7 @@ const MessagePage: React.FC = () => {
       // Define what happens when a new message is received
       channelHandler.onMessageReceived = (channel, message) => {
         if (activeChannel?.url === channel.url) {
+          activeChannel?.markAsRead()
           setMessages((prevMessages: any) => [...prevMessages, message])
         }
         setUnreadMessages((prevCount) => prevCount + 1)
@@ -193,6 +193,10 @@ const MessagePage: React.FC = () => {
             return
           }
           console.log("Message sent")
+          activeChannel?.markAsRead()
+            .then(() => {
+              console.log('Messages marked as read')
+            })
           setMessage("") // Mengosongkan input
           selectChannel(channel) // Memperbarui daftar pesan
           scrollToBottom()
@@ -258,7 +262,11 @@ const MessagePage: React.FC = () => {
         await channel.markAsRead() // Menandai semua pesan di saluran sebagai dibaca
       }
 
-      markMessagesAsRead().catch(console.error)
+      markMessagesAsRead().then((res) => {
+        console.log('Messages marked as read')
+      }).catch((error) => {
+        console.error('Failed to mark messages as read', error)
+      })
     }
   }, [activeChannel, sb])
 
@@ -306,7 +314,6 @@ const MessagePage: React.FC = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-
 
 
   const RenderModal = () => {
@@ -434,254 +441,7 @@ const MessagePage: React.FC = () => {
     )
   }
 
-  if (activeChannel && isMobile) {
-    return (
-      <Flex
-        gap={4}
-        direction={"column"}
-        mx={{
-          base: 4,
-          md: "200px",
-          lg: "200px"
-        }}
-      >
-        <Flex direction={"column"} gap={4}>
-          <HStack width={"full"} justifyContent={"space-between"}>
-            <IoIosArrowBack
-              cursor={"pointer"}
-              onClick={() => {
-                setActiveChannel(null)
-              }}
-            />
-            <Flex w={"full"} justifyContent={"center"}>
-              <CustomTitle title="Messages" />
-            </Flex>
-          </HStack>
-          <HStack width={"full"}>
-            {/* <Image
-              src={activeChannel?.members.find(
-                (member: any) => member.userId !== USER_ID
-              )?.plainProfileUrl || defaultProfileUrl}
-              alt="Profile Picture"
-              width={50}
-              height={50}
-              style={{
-                borderRadius: "50%",
-                overflow: "hidden",
-                width: "50px",
-                height: "50px"
-              }}
-            /> */}
-            <Flex pl={4} justifyContent={"center"} w={"full"}>
-              <Text color={"#1B1917"} fontWeight={"600"}>
-                {
-                  activeChannel?.members.find(
-                    (member: any) => member.userId !== USER_ID
-                  )?.nickname
-                }
-              </Text>
-            </Flex>
-          </HStack>
-          <Flex
-            direction={"column"}
-            gap={2}
-            minHeight={{
-              base: "65vh",
-              md: "70vh",
-              lg: "70vh"
-            }}
-            maxHeight={{
-              base: "65vh",
-              md: "70vh",
-              lg: "70vh"
-            }}
-            px={4}
-            overflow={"auto"}
-            css={{
-              "&::-webkit-scrollbar": {
-                display: "none" // Untuk Chrome, Safari, dan Opera
-              },
-              "-ms-overflow-style": "none", // Untuk IE dan Edge
-              scrollbarWidth: "none" // Untuk Firefox
-            }}
-          >
-            {Array.from(groupedMessages.entries()).map(
-              ([time, groupedMessages]) => (
-                <Flex direction={"column"} key={time}>
-                  <Flex justifyContent={"center"}>
-                    <div style={{ marginBottom: "10px", fontSize: '11px' }}>
-                      {time}
-                    </div>
-                  </Flex>
-                  {groupedMessages.map((message: any, index: number) => {
-                    const lastGroup: any =
-                      groupedMessages[groupedMessages.length - 1]
-                    const isLastMessage =
-                      message.messageId === lastGroup.messageId
-                    const isOutgoingMessage = message.sender.userId === USER_ID // Contoh: bandingkan userId dari pengirim dengan userId pengguna saat ini
-
-                    // Style untuk pesan keluar (pesan yang Anda kirim)
-                    const outgoingMessageStyle = {
-                      backgroundColor: "#F5F5F4", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
-                      color: "black", // Warna teks
-                      padding: "8px 12px", // Padding di dalam balon pesan
-                      borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
-                      maxWidth: "70%", // Maksimal lebar pesan
-                      margin: "4px 0", // Margin antar pesan
-                      alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
-                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
-                      fontSize: "14px"
-                    }
-
-                    // Style untuk pesan masuk (pesan dari orang lain)
-                    const incomingMessageStyle = {
-                      backgroundColor: "#F5F5F4", // Warna latar putih untuk pesan masuk
-                      color: "black", // Warna teks
-                      padding: "8px 12px", // Padding di dalam balon pesan
-                      borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
-                      maxWidth: "60%", // Maksimal lebar pesan
-                      margin: "4px 0", // Margin antar pesan
-                      alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
-                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
-                      fontSize: "14px",
-                    }
-
-                    const messageStyle: any = isOutgoingMessage
-                      ? outgoingMessageStyle
-                      : incomingMessageStyle
-                    if (message.isFileMessage()) {
-                      const fileMessage = message as SendBird.FileMessage
-                      if (
-                        fileMessage.type &&
-                        fileMessage.type.startsWith("image/")
-                      ) {
-                        return (
-                          <div
-                            ref={isLastMessage ? messagesEndRef : null}
-                            key={index}
-                            style={messageStyle}
-                          >
-                            <a
-                              href={fileMessage.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <img
-                                src={fileMessage.url}
-                                alt={fileMessage.name}
-                                style={{ maxWidth: "100%", height: "auto" }}
-                              />
-                            </a>
-                          </div>
-                        )
-                      } else {
-                        return (
-                          <div
-                            ref={isLastMessage ? messagesEndRef : null}
-                            key={index}
-                            style={messageStyle}
-                          >
-                            <a href={fileMessage.url} download>
-                              {fileMessage.name}
-                            </a>
-                          </div>
-                        )
-                      }
-                    } else {
-                      if (message.customType === "buying" && message.data) {
-                        const data = JSON.parse(message.data)
-                        return (
-                          <Flex
-                            onClick={onOpen}
-                            cursor={"pointer"}
-                            ref={isLastMessage ? messagesEndRef : null}
-                            key={index}
-                            style={messageStyle}
-                            alignItems="center"
-                          >
-                            <Image
-                              src={data.productImage}
-                              alt="Product Image"
-                              width={100}
-                              height={100}
-                              style={{
-                                borderRadius: "12px",
-                                overflow: "hidden"
-                              }}
-                            />
-                            <VStack gap={0} alignItems="start" pl={4}>
-                              <Text
-                                color={"#44403C"}
-                                fontSize={"14px"}
-                                fontWeight={"600"}
-                              >
-                                {data.productName}
-                              </Text>
-                              <Text
-                                color={"#016748"}
-                                fontSize={"20px"}
-                                fontWeight={"600"}
-                              >
-                                {"$" + data.totalProductPrice}
-                              </Text>
-                              <Text color={"#78716C"} fontSize={"14px"}>
-                                Unit Price:{" "}
-                                {`$${data.unitPrice} Qty: ${data.quantity}`}
-                              </Text>
-                            </VStack>
-                          </Flex>
-                        )
-                      }
-                      return (
-                        <p
-                          ref={isLastMessage ? messagesEndRef : null}
-                          key={index}
-                          style={messageStyle}
-                        >
-                          {message.message}
-                        </p>
-                      )
-                    }
-                  })}
-                </Flex>
-              )
-            )}
-          </Flex>
-        </Flex>
-        <Divider />
-        <HStack>
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                sendMessage(activeChannel?.url as string)
-                setMessage("") // Opsional: Bersihkan input setelah mengirim
-              }
-            }}
-          />
-          <Box position="relative">
-            <Input
-              cursor={"pointer"}
-              type="file"
-              onChange={handleFileChange}
-              opacity="0"
-              position="absolute"
-              zIndex="1"
-            />
-            <IconButton aria-label="Upload file" icon={<AttachmentIcon />} />
-          </Box>
-        </HStack>
-        <Button
-          disabled={!message}
-          onClick={() => sendMessage(activeChannel?.url as string)}
-        >
-          Send
-        </Button>
-        <RenderModal />
-      </Flex>
-    )
-  }
+  
 
   const RenderBanner = ({ status = 4 }: any) => {
     switch (status) {
@@ -862,6 +622,451 @@ const MessagePage: React.FC = () => {
     }
   }
 
+  const RenderBuyerProfilePictInChat = (image_url: string) => {
+    return (
+
+      <Image
+        src={image_url}
+        alt="Profile Picture"
+        width={39}
+        height={39}
+        style={{
+          borderRadius: "50%",
+          width: "39px",
+          height: "39px"
+        }}
+      />
+    )
+  }
+
+  const RenderGroupedChat = () => {
+    return Array.from(groupedMessages.entries()).map(
+      ([time, groupedMessages]) => (
+        <Flex direction={"column"} key={time} gap={2}>
+          <Flex justifyContent={"center"}>
+            <div
+              style={{ marginBottom: "10px", fontSize: '11px', color: '#44403C' }}
+            >
+              {time}
+            </div>
+          </Flex>
+          {groupedMessages.map((message: any, index: number) => {
+            const isRead = activeChannel?.getReadMembers?.(message)?.[0]
+
+            const lastGroup: any =
+              groupedMessages[groupedMessages.length - 1]
+            const isLastMessage =
+              message.messageId === lastGroup.messageId
+            const isOutgoingMessage =
+              message.sender.userId === dataGenerateToken?.sendbird_user_id // Contoh: bandingkan userId dari pengirim dengan userId pengguna saat ini
+
+            // Style untuk pesan keluar (pesan yang Anda kirim)
+            const outgoingMessageStyle = {
+              backgroundColor: "#1B1917", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
+              color: "white", // Warna teks
+              padding: "8px 12px", // Padding di dalam balon pesan
+              borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
+              maxWidth: "70%", // Maksimal lebar pesan
+              margin: "4px 0", // Margin antar pesan
+              alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
+              boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+              fontSize: '14px'
+            }
+
+            // Style untuk pesan masuk (pesan dari orang lain)
+            const incomingMessageStyle = {
+              backgroundColor: "#F5F5F4", // Warna latar putih untuk pesan masuk
+              color: "black", // Warna teks
+              padding: "8px 12px", // Padding di dalam balon pesan
+              borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
+              maxWidth: "60%", // Maksimal lebar pesan
+              margin: "4px 0", // Margin antar pesan
+              alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
+              boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+              fontSize: '14px'
+            }
+
+            const messageStyle: any = isOutgoingMessage
+              ? outgoingMessageStyle
+              : incomingMessageStyle
+            if (message.isFileMessage()) {
+              const fileMessage = message as SendBird.FileMessage
+              if (
+                fileMessage.type &&
+                fileMessage.type.startsWith("image/")
+              ) {
+                return (
+                  <HStack alignItems={'start'}>
+                    {RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
+
+                    <div
+                      ref={isLastMessage ? messagesEndRef : null}
+                      key={index}
+                      style={messageStyle}
+                    >
+                      <a
+                        href={fileMessage.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={fileMessage.url}
+                          alt={fileMessage.name}
+                          style={{ maxWidth: "100%", height: "auto" }}
+                        />
+                      </a>
+                    </div>
+                  </HStack>
+
+                )
+              } else {
+                return (
+                  <HStack alignItems={'start'}>
+                    {RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
+                    <div
+                      ref={isLastMessage ? messagesEndRef : null}
+                      key={index}
+                      style={messageStyle}
+                    >
+                      <a href={fileMessage.url} style={{
+                        textDecoration: 'underline',
+                      }} download>
+                        {fileMessage.name}
+                      </a>
+                    </div>
+                  </HStack>
+                )
+              }
+            } else {
+              if (message.customType === "purchase-chat" && message.data) {
+                const data = JSON.parse(message.data)
+                return (
+                  <HStack alignItems={'start'}>
+                    {RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
+                    <Flex
+                      onClick={onOpen}
+                      cursor={"pointer"}
+                      ref={isLastMessage ? messagesEndRef : null}
+                      key={index}
+                      style={messageStyle}
+                      alignItems="center"
+                    >
+                      <Image
+                        src={data.productImage}
+                        alt="Product Image"
+                        width={100}
+                        height={100}
+                        style={{
+                          borderRadius: "12px",
+                          overflow: "hidden"
+                        }}
+                      />
+                      <VStack gap={0} alignItems="start" pl={4}>
+                        <Text
+                          color={"#44403C"}
+                          fontSize={"14px"}
+                          fontWeight={"600"}
+                        >
+                          {data.productName}
+                        </Text>
+                        <Text
+                          color={"#016748"}
+                          fontSize={"20px"}
+                          fontWeight={"600"}
+                        >
+                          {"$" + data.totalProductPrice}
+                        </Text>
+                        <Text color={"#78716C"} fontSize={"14px"}>
+                          Unit Price:{" "}
+                          {`$${data.unitPrice} Qty: ${data.quantity}`}
+                        </Text>
+                      </VStack>
+                    </Flex>
+                  </HStack>
+                )
+              }
+              return (
+                <HStack width={'full'} gap={2} justifyContent={isOutgoingMessage ? 'end' : 'start'}>
+                  {!isOutgoingMessage && RenderBuyerProfilePictInChat(message?._sender?.plainProfileUrl || defaultProfileUrl)}
+                  <VStack width={'full'} gap={-2} alignItems={'end'}>
+                    <p
+                      ref={isLastMessage ? messagesEndRef : null}
+                      key={index}
+                      style={messageStyle}
+                    >
+                      {message.message}
+                    </p>
+                    {
+                      isRead && (
+                        <HStack gap={-1}>
+                          <Image src={'/merchant/ic_seen.svg'} alt="Read" width={20} height={20} />
+                          <Text fontSize={11}>SEEN</Text>
+                        </HStack>
+                      )
+                    }
+
+                  </VStack>
+                </HStack>
+              )
+            }
+          })}
+        </Flex>
+      )
+    )
+  }
+
+  if (activeChannel && isMobile) {
+    return (
+      <Flex
+        gap={4}
+        direction={"column"}
+        mx={{
+          base: 4,
+          md: "200px",
+          lg: "200px"
+        }}
+      >
+        <Flex direction={"column"} gap={4}>
+          <HStack width={"full"} justifyContent={"space-between"}>
+            <IoIosArrowBack
+              cursor={"pointer"}
+              onClick={() => {
+                setActiveChannel(null)
+              }}
+            />
+            <Flex w={"full"} justifyContent={"center"}>
+              <CustomTitle title="Messages" />
+            </Flex>
+          </HStack>
+          <HStack width={"full"}>
+            {/* <Image
+              src={activeChannel?.members.find(
+                (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
+              )?.plainProfileUrl || defaultProfileUrl}
+              alt="Profile Picture"
+              width={50}
+              height={50}
+              style={{
+                borderRadius: "50%",
+                overflow: "hidden",
+                width: "50px",
+                height: "50px"
+              }}
+            /> */}
+            <Flex pl={4} justifyContent={"center"} w={"full"}>
+              <Text color={"#1B1917"} fontWeight={"600"}>
+                {
+                  activeChannel?.members.find(
+                    (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
+                  )?.nickname
+                }
+              </Text>
+            </Flex>
+          </HStack>
+          <Flex
+            direction={"column"}
+            gap={2}
+            minHeight={{
+              base: "65vh",
+              md: "70vh",
+              lg: "70vh"
+            }}
+            maxHeight={{
+              base: "65vh",
+              md: "70vh",
+              lg: "70vh"
+            }}
+            px={4}
+            overflow={"auto"}
+            css={{
+              "&::-webkit-scrollbar": {
+                display: "none" // Untuk Chrome, Safari, dan Opera
+              },
+              "-ms-overflow-style": "none", // Untuk IE dan Edge
+              scrollbarWidth: "none" // Untuk Firefox
+            }}
+          >
+            {/* {Array.from(groupedMessages.entries()).map(
+              ([time, groupedMessages]) => (
+                <Flex direction={"column"} key={time}>
+                  <Flex justifyContent={"center"}>
+                    <div style={{ marginBottom: "10px", fontSize: '11px' }}>
+                      {time}
+                    </div>
+                  </Flex>
+                  {groupedMessages.map((message: any, index: number) => {
+                    const lastGroup: any =
+                      groupedMessages[groupedMessages.length - 1]
+                    const isLastMessage =
+                      message.messageId === lastGroup.messageId
+                    const isOutgoingMessage = message.sender.userId === dataGenerateToken?.sendbird_user_id // Contoh: bandingkan userId dari pengirim dengan userId pengguna saat ini
+
+                    // Style untuk pesan keluar (pesan yang Anda kirim)
+                    const outgoingMessageStyle = {
+                      backgroundColor: "#F5F5F4", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
+                      color: "black", // Warna teks
+                      padding: "8px 12px", // Padding di dalam balon pesan
+                      borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
+                      maxWidth: "70%", // Maksimal lebar pesan
+                      margin: "4px 0", // Margin antar pesan
+                      alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
+                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                      fontSize: "14px"
+                    }
+
+                    // Style untuk pesan masuk (pesan dari orang lain)
+                    const incomingMessageStyle = {
+                      backgroundColor: "#F5F5F4", // Warna latar putih untuk pesan masuk
+                      color: "black", // Warna teks
+                      padding: "8px 12px", // Padding di dalam balon pesan
+                      borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
+                      maxWidth: "60%", // Maksimal lebar pesan
+                      margin: "4px 0", // Margin antar pesan
+                      alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
+                      boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
+                      fontSize: "14px",
+                    }
+
+                    const messageStyle: any = isOutgoingMessage
+                      ? outgoingMessageStyle
+                      : incomingMessageStyle
+                    if (message.isFileMessage()) {
+                      const fileMessage = message as SendBird.FileMessage
+                      if (
+                        fileMessage.type &&
+                        fileMessage.type.startsWith("image/")
+                      ) {
+                        return (
+                          <div
+                            ref={isLastMessage ? messagesEndRef : null}
+                            key={index}
+                            style={messageStyle}
+                          >
+                            <a
+                              href={fileMessage.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <img
+                                src={fileMessage.url}
+                                alt={fileMessage.name}
+                                style={{ maxWidth: "100%", height: "auto" }}
+                              />
+                            </a>
+                          </div>
+                        )
+                      } else {
+                        return (
+                          <div
+                            ref={isLastMessage ? messagesEndRef : null}
+                            key={index}
+                            style={messageStyle}
+                          >
+                            <a href={fileMessage.url} download>
+                              {fileMessage.name}
+                            </a>
+                          </div>
+                        )
+                      }
+                    } else {
+                      if (message.customType === "buying" && message.data) {
+                        const data = JSON.parse(message.data)
+                        return (
+                          <Flex
+                            onClick={onOpen}
+                            cursor={"pointer"}
+                            ref={isLastMessage ? messagesEndRef : null}
+                            key={index}
+                            style={messageStyle}
+                            alignItems="center"
+                          >
+                            <Image
+                              src={data.productImage}
+                              alt="Product Image"
+                              width={100}
+                              height={100}
+                              style={{
+                                borderRadius: "12px",
+                                overflow: "hidden"
+                              }}
+                            />
+                            <VStack gap={0} alignItems="start" pl={4}>
+                              <Text
+                                color={"#44403C"}
+                                fontSize={"14px"}
+                                fontWeight={"600"}
+                              >
+                                {data.productName}
+                              </Text>
+                              <Text
+                                color={"#016748"}
+                                fontSize={"20px"}
+                                fontWeight={"600"}
+                              >
+                                {"$" + data.totalProductPrice}
+                              </Text>
+                              <Text color={"#78716C"} fontSize={"14px"}>
+                                Unit Price:{" "}
+                                {`$${data.unitPrice} Qty: ${data.quantity}`}
+                              </Text>
+                            </VStack>
+                          </Flex>
+                        )
+                      }
+                      return (
+                        <p
+                          ref={isLastMessage ? messagesEndRef : null}
+                          key={index}
+                          style={messageStyle}
+                        >
+                          {message.message}
+                        </p>
+                      )
+                    }
+                  })}
+                </Flex>
+              )
+            )} */}
+            {
+              RenderGroupedChat()
+            }
+          </Flex>
+        </Flex>
+        <Divider />
+        <HStack>
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendMessage(activeChannel?.url as string)
+                setMessage("") // Opsional: Bersihkan input setelah mengirim
+              }
+            }}
+          />
+          <Box position="relative">
+            <Input
+              cursor={"pointer"}
+              type="file"
+              onChange={handleFileChange}
+              opacity="0"
+              position="absolute"
+              zIndex="1"
+            />
+            <IconButton aria-label="Upload file" icon={<AttachmentIcon />} />
+          </Box>
+        </HStack>
+        <Button
+          disabled={!message}
+          onClick={() => sendMessage(activeChannel?.url as string)}
+        >
+          Send
+        </Button>
+        <RenderModal />
+      </Flex>
+    )
+  }
+
   return (
     <Flex
       mx={{
@@ -878,7 +1083,7 @@ const MessagePage: React.FC = () => {
           <div style={{
             paddingLeft: isExpanded ? '11%' : '3%',
           }}>
-          <CustomTitle title="Messages" />
+            <CustomTitle title="Messages" />
           </div>
         </Flex>
       </HStack>
@@ -921,7 +1126,7 @@ const MessagePage: React.FC = () => {
           <VStack alignItems={"start"} gap={4}>
             {channels.map((channel, index) => {
               const user = channel.members.find(
-                (member: any) => member.userId !== USER_ID
+                (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
               )
               const flatColors = [
                 "#1abc9c",
@@ -962,7 +1167,7 @@ const MessagePage: React.FC = () => {
                         <Text color={"#78716C"} fontSize={"11px"}>
                           {
                             channel.members.find(
-                              (member: any) => member.userId !== USER_ID
+                              (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
                             )?.nickname
                           }
                         </Text>
@@ -1038,7 +1243,7 @@ const MessagePage: React.FC = () => {
               <HStack width={"full"}>
                 {/* <Image
                 src={activeChannel?.members.find(
-                  (member: any) => member.userId !== USER_ID
+                  (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
                 )?.plainProfileUrl || defaultProfileUrl}
                 alt="Profile Picture"
                 width={50}
@@ -1054,7 +1259,7 @@ const MessagePage: React.FC = () => {
                   <Text color={"#1B1917"} fontWeight={"600"}>
                     {
                       activeChannel?.members.find(
-                        (member: any) => member.userId !== USER_ID
+                        (member: any) => member.userId !== dataGenerateToken?.sendbird_user_id
                       )?.nickname
                     }
                   </Text>
@@ -1084,152 +1289,7 @@ const MessagePage: React.FC = () => {
                   scrollbarWidth: "none" // Untuk Firefox
                 }}
               >
-                {Array.from(groupedMessages.entries()).map(
-                  ([time, groupedMessages]) => (
-                    <Flex direction={"column"} key={time}>
-                      <Flex justifyContent={"center"}>
-                        <div
-                          style={{ marginBottom: "10px", fontSize: '11px', color: '#44403C' }}
-                        >
-                          {time}
-                        </div>
-                      </Flex>
-                      {groupedMessages.map((message: any, index: number) => {
-                        const lastGroup: any =
-                          groupedMessages[groupedMessages.length - 1]
-                        const isLastMessage =
-                          message.messageId === lastGroup.messageId
-                        const isOutgoingMessage =
-                          message.sender.userId === USER_ID // Contoh: bandingkan userId dari pengirim dengan userId pengguna saat ini
-
-                        // Style untuk pesan keluar (pesan yang Anda kirim)
-                        const outgoingMessageStyle = {
-                          backgroundColor: "#F5F5F4", // Warna latar hijau muda khas WhatsApp untuk pesan keluar
-                          color: "black", // Warna teks
-                          padding: "8px 12px", // Padding di dalam balon pesan
-                          borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
-                          maxWidth: "70%", // Maksimal lebar pesan
-                          margin: "4px 0", // Margin antar pesan
-                          alignSelf: "flex-end", // Menyelaraskan pesan ke kanan
-                          boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
-                          fontSize: '14px'
-                        }
-
-                        // Style untuk pesan masuk (pesan dari orang lain)
-                        const incomingMessageStyle = {
-                          backgroundColor: "#F5F5F4", // Warna latar putih untuk pesan masuk
-                          color: "black", // Warna teks
-                          padding: "8px 12px", // Padding di dalam balon pesan
-                          borderRadius: "10px", // Radius border untuk membuat sudut balon pesan membulat
-                          maxWidth: "60%", // Maksimal lebar pesan
-                          margin: "4px 0", // Margin antar pesan
-                          alignSelf: "flex-start", // Menyelaraskan pesan ke kiri
-                          boxShadow: "0 1px 1px rgba(0, 0, 0, 0.1)", // Sedikit bayangan untuk kedalaman
-                          fontSize: '14px'
-                        }
-
-                        const messageStyle: any = isOutgoingMessage
-                          ? outgoingMessageStyle
-                          : incomingMessageStyle
-                        if (message.isFileMessage()) {
-                          const fileMessage = message as SendBird.FileMessage
-                          if (
-                            fileMessage.type &&
-                            fileMessage.type.startsWith("image/")
-                          ) {
-                            return (
-                              <div
-                                ref={isLastMessage ? messagesEndRef : null}
-                                key={index}
-                                style={messageStyle}
-                              >
-                                <a
-                                  href={fileMessage.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <img
-                                    src={fileMessage.url}
-                                    alt={fileMessage.name}
-                                    style={{ maxWidth: "100%", height: "auto" }}
-                                  />
-                                </a>
-                              </div>
-                            )
-                          } else {
-                            return (
-                              <div
-                                ref={isLastMessage ? messagesEndRef : null}
-                                key={index}
-                                style={messageStyle}
-                              >
-                                <a href={fileMessage.url} style={{
-                                  textDecoration: 'underline',
-                                }} download>
-                                  {fileMessage.name}
-                                </a>
-                              </div>
-                            )
-                          }
-                        } else {
-                          if (message.customType === "buying" && message.data) {
-                            const data = JSON.parse(message.data)
-                            return (
-                              <Flex
-                                onClick={onOpen}
-                                cursor={"pointer"}
-                                ref={isLastMessage ? messagesEndRef : null}
-                                key={index}
-                                style={messageStyle}
-                                alignItems="center"
-                              >
-                                <Image
-                                  src={data.productImage}
-                                  alt="Product Image"
-                                  width={100}
-                                  height={100}
-                                  style={{
-                                    borderRadius: "12px",
-                                    overflow: "hidden"
-                                  }}
-                                />
-                                <VStack gap={0} alignItems="start" pl={4}>
-                                  <Text
-                                    color={"#44403C"}
-                                    fontSize={"14px"}
-                                    fontWeight={"600"}
-                                  >
-                                    {data.productName}
-                                  </Text>
-                                  <Text
-                                    color={"#016748"}
-                                    fontSize={"20px"}
-                                    fontWeight={"600"}
-                                  >
-                                    {"$" + data.totalProductPrice}
-                                  </Text>
-                                  <Text color={"#78716C"} fontSize={"14px"}>
-                                    Unit Price:{" "}
-                                    {`$${data.unitPrice} Qty: ${data.quantity}`}
-                                  </Text>
-                                </VStack>
-                              </Flex>
-                            )
-                          }
-                          return (
-                            <p
-                              ref={isLastMessage ? messagesEndRef : null}
-                              key={index}
-                              style={messageStyle}
-                            >
-                              {message.message}
-                            </p>
-                          )
-                        }
-                      })}
-                    </Flex>
-                  )
-                )}
+                {RenderGroupedChat()}
               </Flex>
             </Flex>
             <Divider my={4} ml={4} />
