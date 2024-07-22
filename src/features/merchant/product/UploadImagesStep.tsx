@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Box, Flex, Grid, GridItem, Skeleton, Text } from "@chakra-ui/react"
 import Image from "next/image"
 import { FaChevronDown } from "react-icons/fa"
@@ -43,9 +43,14 @@ const UploadImageStep = ({
   handleSubmit: any
   onSubmit: any
 }) => {
-  const { isLoading: isLoadingImage, data: dataImage } = useImageList()
+  const [orderBy, setOrderBy] = useState("asc")
+  const { isLoading: isLoadingImage, data: dataImage } = useImageList(orderBy)
 
-  const onChange = (e: any) => {
+  const onRecentClick = () => {
+    setOrderBy(orderBy === "desc" ? "asc" : "desc")
+  }
+
+  const onChange = async (e: any) => {
     let uniqueArr: string[] = []
     let defaultValue = ""
     if (!e.target.files.length) return
@@ -72,17 +77,25 @@ const UploadImageStep = ({
   }
 
   const handleSelectImage = (image: ImageType) => {
-    if (selectedImages.length <= 10) {
-      const temp = [...selectedImages]
-      const index = temp.findIndex((data) => data.url === image.url)
+    const temp = [...selectedImages]
+    let index = temp.findIndex((data) => data.url === image.url)
+    if (selectedImages.length < 10) {
       if (index === -1) {
         temp.push(image)
       } else {
         temp.splice(index, 1)
       }
-      setSelectedImages(temp)
-      setValue("files", temp)
+    } else {
+      if (index === -1) {
+        temp.shift()
+        temp.push(image)
+      } else {
+        index = temp.findIndex((data) => data.url === image.url)
+        temp.splice(index, 1)
+      }
     }
+    setSelectedImages(temp)
+    setValue("files", temp)
   }
 
   const checkImageOrder = (id: number) => {
@@ -104,7 +117,6 @@ const UploadImageStep = ({
     >
       <Flex
         justifyContent="center"
-        alignItems="center"
         sx={{
           width: isMobile ? "100%" : "45%"
         }}
@@ -161,6 +173,7 @@ const UploadImageStep = ({
               fontSize: "19px",
               fontWeight: "500"
             }}
+            onClick={onRecentClick}
           >
             Recents
           </Text>
@@ -221,7 +234,8 @@ const UploadImageStep = ({
                       sizes="50"
                       priority={false}
                       style={{
-                        objectFit: "cover"
+                        objectFit: "cover",
+                        cursor: "pointer"
                       }}
                       onClick={() => {
                         setOpenEdit(false)

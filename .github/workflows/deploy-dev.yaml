@@ -40,7 +40,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source:
-            "./.next, ./package*.json, ./yarn.lock, ./tsconfig.json, ./public"
+            "./.next, ./package*.json, ./yarn.lock, ./tsconfig.json, ./public,
+            ./next.config.mjs"
           target: "~/deployment"
       - name: Run App
         uses: appleboy/ssh-action@master

@@ -96,7 +96,9 @@ const CreateProduct = () => {
           bottom: isMobile ? "9%" : "0",
           padding: "16px",
           borderTop: "1px solid #E5E1D8",
-          width: isMobile ? "100%" : `calc(100% - ${sideBarWidth})`
+          width: isMobile ? "100%" : `calc(100% - ${sideBarWidth})`,
+          backgroundColor: "white",
+          zIndex: 99999
         }}
       >
         {step === 2 ? (
