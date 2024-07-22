@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { Box, Flex, Grid, GridItem, Skeleton, Text } from "@chakra-ui/react"
 import Image from "next/image"
-import { FaChevronDown } from "react-icons/fa"
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"
 import { CiCamera } from "react-icons/ci"
 import "react-image-crop/dist/ReactCrop.css"
 import useImageList from "@/hooks/useImageList"
@@ -163,22 +163,23 @@ const UploadImageStep = ({
           width: isMobile ? "100%" : "55%"
         }}
       >
-        <Flex
-          gap={2}
-          alignItems="center"
-          sx={{ padding: "14px", cursor: "pointer" }}
-        >
-          <Text
-            sx={{
-              fontSize: "19px",
-              fontWeight: "500"
-            }}
-            onClick={onRecentClick}
+        <Box onClick={onRecentClick}>
+          <Flex
+            gap={2}
+            alignItems="center"
+            sx={{ padding: "14px", cursor: "pointer" }}
           >
-            Recents
-          </Text>
-          <FaChevronDown />
-        </Flex>
+            <Text
+              sx={{
+                fontSize: "19px",
+                fontWeight: "500"
+              }}
+            >
+              Recents
+            </Text>
+            {orderBy === "asc" ? <FaChevronDown /> : <FaChevronUp />}
+          </Flex>
+        </Box>
         <Grid templateColumns="repeat(3, 1fr)" gap={isLoadingImage ? 1 : 0}>
           <GridItem sx={{ height: "170px", width: "auto" }}>
             <Flex

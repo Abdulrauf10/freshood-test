@@ -1,6 +1,6 @@
 import { Box, Flex, VStack, Text, HStack, Divider } from "@chakra-ui/react"
-import { IoIosArrowForward, IoIosSettings } from "react-icons/io"
-import React, { useEffect, useRef, useState } from "react"
+import { IoIosArrowForward } from "react-icons/io"
+import React from "react"
 import CustomTitle from "../Text"
 import Image from "next/image"
 import { logoutService } from "@/services/api/auth"
