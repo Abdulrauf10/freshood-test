@@ -70,7 +70,7 @@ const TabWrapper = ({
 
   return (
     <Tabs isFitted sx={{ marginTop: "1rem" }}>
-      <TabList sx={{ border: "none", width: "50%" }}>
+      <TabList sx={{ border: "none" }}>
         <Tab _selected={selectedProps}>
           <Text color="#016748" fontWeight={"700"}>
             Products

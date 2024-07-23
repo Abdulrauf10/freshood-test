@@ -49,14 +49,6 @@ const ProductCard: FC<ProductCardProps> = ({
             />
           </Box>
         </Skeleton>
-        <IconButton
-          aria-label="Add to favorites"
-          icon={<FaHeart color="white" />}
-          position="absolute"
-          top="2"
-          right="2"
-          backgroundColor={"transparent"}
-        />
         <Box p="3">
           <Box lineHeight="tight">
             <Skeleton isLoaded={!isLoading}>

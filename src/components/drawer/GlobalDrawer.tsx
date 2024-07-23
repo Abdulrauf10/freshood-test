@@ -33,7 +33,11 @@ const GlobalDrawer: React.FC<GlobalDrawerProps> = ({ children }) => {
       </Box>
 
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"xl"}>
-        <DrawerOverlay>
+        <DrawerOverlay
+          sx={{
+            zIndex: 99999
+          }}
+        >
           <DrawerContent>
             <DrawerCloseButton />
             <DrawerBody pt={10}>{children}</DrawerBody>

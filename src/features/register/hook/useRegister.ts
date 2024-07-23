@@ -117,7 +117,7 @@ const useRegister = () => {
       phone_number: phone_number,
       country_id: country_id,
       city_id: city_id,
-      prefers_marketing_updates: prefers_marketing_updates
+      prefers_marketing_updates: prefers_marketing_updates || false
     }
     mutation.mutate(newPayload)
   }

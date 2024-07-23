@@ -10,11 +10,8 @@ import {
   VStack,
   useMediaQuery,
   Skeleton,
-  Image,
-  Grid,
-  GridItem
+  Avatar
 } from "@chakra-ui/react"
-import { IoIosArrowBack } from "react-icons/io"
 import GlobalDrawer from "@/components/drawer/GlobalDrawer"
 import Setting from "@/components/drawer/Setting"
 import PersonalInfo from "@/components/drawer/PersonalInformation"
@@ -23,9 +20,6 @@ import { useDrawer } from "@/context/drawerContext"
 import EditPersonalInfo from "@/components/drawer/EditPersonalInformation"
 import AddressesList from "@/components/drawer/AddressesList"
 import AddAddresses from "@/components/drawer/AddAddresses"
-import Slider, { Settings } from "react-slick"
-import "slick-carousel/slick/slick.css"
-import "slick-carousel/slick/slick-theme.css"
 import useTopBanners from "@/hooks/useTopBanners"
 import StoreInformation from "@/components/drawer/StoreInformation"
 import EditStoreInformation from "@/components/drawer/EditStoreInformation"
@@ -36,6 +30,7 @@ import useListProduct from "@/hooks/useListProduct"
 import TabWrapper from "./TabWrapper"
 import useGetProductMine from "@/hooks/useGetProductMine"
 import ChangePassword from "@/components/drawer/ChangePassword"
+import Image from "next/image"
 
 const MyAccountMerchant = () => {
   const { isExpanded } = useSidebarStore()
@@ -83,32 +78,6 @@ const MyAccountMerchant = () => {
     }
   }
 
-  const sliderRef = useRef<Slider>(null)
-
-  const settings: Settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    draggable: true,
-    appendDots: (dots) => (
-      <Box mt={4}>
-        <ul style={{ margin: "0px" }}> {dots} </ul>
-      </Box>
-    ),
-    customPaging: (i) => (
-      <Box
-        width="10px"
-        height="10px"
-        bg="gray.400"
-        borderRadius="50%"
-        display="inline-block"
-      ></Box>
-    )
-  }
-
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop ===
@@ -136,11 +105,11 @@ const MyAccountMerchant = () => {
         width="full"
         sx={{
           marginBottom: isMobile ? "1rem" : "2.5rem",
-          height: isMobile ? "45vh" : "70vh",
+          height: isMobile ? "40vh" : "65vh",
           backgroundImage: "url(/merchant/BG.png)",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "top",
-          backgroundSize: isMobile ? "100vw 45vh" : "100vw 70vh",
+          backgroundSize: isMobile ? "100vw 40vh" : "100vw 65vh",
           padding: isMobile ? "0 14px" : "0 48px"
         }}
       >
@@ -166,32 +135,33 @@ const MyAccountMerchant = () => {
           </Flex>
         </Box>
         <Box
-          sx={{ marginBottom: "1rem" }}
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: isMobile ? "108px" : "322px",
+            marginBottom: "1rem"
+          }}
           pb={isMobile ? "10px" : 0}
-          width={"100%"}
         >
-          <Slider ref={sliderRef} {...settings}>
-            {dataTopBanners?.data?.map((data, idx) => (
-              <Image
-                height={isMobile ? "108px" : "322px"}
-                key={idx}
-                src={data?.image?.url}
-                alt="banner"
-                borderRadius={"20px"}
-              />
-            ))}
-          </Slider>
-          {isLoadingTopBanners && (
-            <Skeleton height={isMobile ? "108px" : "322px"} />
-          )}
+          <Image
+            src="/merchant/bg-jumbotron.png"
+            alt="freshood-image"
+            objectFit="cover"
+            fill={true}
+            priority={false}
+            style={{
+              borderRadius: "24px"
+            }}
+          />
         </Box>
         <VStack alignItems={"start"}>
           <Flex pt={"10px"}>
-            <Box
+            <Avatar
               w="50px"
               h="50px"
               borderRadius={"full"}
               backgroundColor={"#1abc9c"}
+              src="/merchant/apple-icon.png"
             />
             <VStack pl={4}>
               <Text

@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation"
 import useSessionStore from "@/store/useSessionStore"
 import { useMutation, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
-import { changePassword, editPersonal } from "@/services/api/auth"
+import {
+  changePassword,
+  editPersonal,
+  logoutService
+} from "@/services/api/auth"
 
 type PasswordFormInput = {
   current_password: string
@@ -58,7 +62,8 @@ const useChangePassword = () => {
           duration: 2000,
           isClosable: true
         })
-        replace("/password-confirmation")
+        logoutService()
+        replace("/")
       },
       onError: (error: any) => {
         console.log(error)

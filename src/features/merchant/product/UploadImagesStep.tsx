@@ -1,9 +1,9 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Box, Flex, Grid, GridItem, Skeleton, Text } from "@chakra-ui/react"
 import Image from "next/image"
-import { FaChevronDown } from "react-icons/fa"
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"
 import { CiCamera } from "react-icons/ci"
 import "react-image-crop/dist/ReactCrop.css"
 import useImageList from "@/hooks/useImageList"
@@ -43,9 +43,14 @@ const UploadImageStep = ({
   handleSubmit: any
   onSubmit: any
 }) => {
-  const { isLoading: isLoadingImage, data: dataImage } = useImageList()
+  const [orderBy, setOrderBy] = useState("asc")
+  const { isLoading: isLoadingImage, data: dataImage } = useImageList(orderBy)
 
-  const onChange = (e: any) => {
+  const onRecentClick = () => {
+    setOrderBy(orderBy === "desc" ? "asc" : "desc")
+  }
+
+  const onChange = async (e: any) => {
     let uniqueArr: string[] = []
     let defaultValue = ""
     if (!e.target.files.length) return
@@ -72,17 +77,25 @@ const UploadImageStep = ({
   }
 
   const handleSelectImage = (image: ImageType) => {
-    if (selectedImages.length <= 10) {
-      const temp = [...selectedImages]
-      const index = temp.findIndex((data) => data.url === image.url)
+    const temp = [...selectedImages]
+    let index = temp.findIndex((data) => data.url === image.url)
+    if (selectedImages.length < 10) {
       if (index === -1) {
         temp.push(image)
       } else {
         temp.splice(index, 1)
       }
-      setSelectedImages(temp)
-      setValue("files", temp)
+    } else {
+      if (index === -1) {
+        temp.shift()
+        temp.push(image)
+      } else {
+        index = temp.findIndex((data) => data.url === image.url)
+        temp.splice(index, 1)
+      }
     }
+    setSelectedImages(temp)
+    setValue("files", temp)
   }
 
   const checkImageOrder = (id: number) => {
@@ -104,7 +117,6 @@ const UploadImageStep = ({
     >
       <Flex
         justifyContent="center"
-        alignItems="center"
         sx={{
           width: isMobile ? "100%" : "45%"
         }}
@@ -151,21 +163,23 @@ const UploadImageStep = ({
           width: isMobile ? "100%" : "55%"
         }}
       >
-        <Flex
-          gap={2}
-          alignItems="center"
-          sx={{ padding: "14px", cursor: "pointer" }}
-        >
-          <Text
-            sx={{
-              fontSize: "19px",
-              fontWeight: "500"
-            }}
+        <Box onClick={onRecentClick}>
+          <Flex
+            gap={2}
+            alignItems="center"
+            sx={{ padding: "14px", cursor: "pointer" }}
           >
-            Recents
-          </Text>
-          <FaChevronDown />
-        </Flex>
+            <Text
+              sx={{
+                fontSize: "19px",
+                fontWeight: "500"
+              }}
+            >
+              Recents
+            </Text>
+            {orderBy === "asc" ? <FaChevronDown /> : <FaChevronUp />}
+          </Flex>
+        </Box>
         <Grid templateColumns="repeat(3, 1fr)" gap={isLoadingImage ? 1 : 0}>
           <GridItem sx={{ height: "170px", width: "auto" }}>
             <Flex
@@ -221,7 +235,8 @@ const UploadImageStep = ({
                       sizes="50"
                       priority={false}
                       style={{
-                        objectFit: "cover"
+                        objectFit: "cover",
+                        cursor: "pointer"
                       }}
                       onClick={() => {
                         setOpenEdit(false)
