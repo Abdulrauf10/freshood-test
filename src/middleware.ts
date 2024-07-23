@@ -2,7 +2,7 @@ import axios from "axios"
 import { NextResponse, NextRequest } from "next/server"
 import { AUTH } from "./config/endpoint"
 
-const protectedRoutes = ["/forgot-password", "/merchant"]
+const protectedRoutes = ["/merchant"]
 const authRoutes = ["/", "/register"]
 
 const checkSession = async (sessionId: { value: string }) => {
@@ -48,11 +48,5 @@ export async function middleware(request: NextRequest) {
 
 // protected routes
 export const config = {
-  matcher: [
-    "/",
-    "/register",
-    "/account-review",
-    "/forgot-password",
-    "/merchant/:path*"
-  ]
+  matcher: ["/", "/register", "/account-review", "/merchant/:path*"]
 }
